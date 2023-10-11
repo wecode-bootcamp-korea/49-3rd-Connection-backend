@@ -2,10 +2,10 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 
-const userRouter = require("./src/routers");
-require("dotenv").config();
 
+require("dotenv").config();
 const app = express();
+const userRouter = require("./src/routers");
 
 app.set("port", process.env.PORT || 8000);
 app.use(cors());
