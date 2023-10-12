@@ -74,7 +74,7 @@ CREATE TABLE `order_details` (
 CREATE TABLE `orders` (
   `id` int NOT NULL AUTO_INCREMENT,
   `total_price` int NOT NULL,
-  `shipping_method` int NOT NULL,
+  `shipping_method` varchar(255) NOT NULL,
   `user_id` int NOT NULL,
   `payment_id` int NOT NULL,
   `created_at` timestamp NOT NULL,
@@ -82,19 +82,19 @@ CREATE TABLE `orders` (
   KEY `user_id` (`user_id`),
   KEY `payment_id` (`payment_id`),
   CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`payment_id`) REFERENCES `payments` (`id`) ON DELETE CASCADE
+  CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `payments`
+-- Table structure for table `payment`
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `payments` (
+CREATE TABLE `payment` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `payment_method` varchar(255) NOT NULL,
+  `method` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -107,7 +107,7 @@ CREATE TABLE `payments` (
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `product_categories` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `category_name` int NOT NULL,
+  `category_name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -198,11 +198,15 @@ CREATE TABLE `schema_migrations` (
 CREATE TABLE `seller_premium` (
   `id` int NOT NULL AUTO_INCREMENT,
   `seller_id` int NOT NULL,
+  `payment_id` int NOT NULL,
+  `price` int NOT NULL,
   `created_at` timestamp NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `seller_id` (`seller_id`),
-  CONSTRAINT `seller_premium_ibfk_1` FOREIGN KEY (`seller_id`) REFERENCES `sellers` (`id`) ON DELETE CASCADE
+  KEY `payment_id` (`payment_id`),
+  CONSTRAINT `seller_premium_ibfk_1` FOREIGN KEY (`seller_id`) REFERENCES `sellers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `seller_premium_ibfk_2` FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -216,7 +220,7 @@ CREATE TABLE `sellers` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `image` varchar(1000) NOT NULL,
-  `zip_code` int NOT NULL,
+  `zip_code` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
   `address_details` varchar(255) NOT NULL,
   `phone_number` varchar(255) NOT NULL,
@@ -238,11 +242,15 @@ CREATE TABLE `sellers` (
 CREATE TABLE `user_premium` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
+  `payment_id` int NOT NULL,
+  `price` int NOT NULL,
   `created_at` timestamp NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `user_premium_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `payment_id` (`payment_id`),
+  CONSTRAINT `user_premium_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `user_premium_ibfk_2` FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -254,11 +262,12 @@ CREATE TABLE `user_premium` (
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `kakao` varchar(255) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `phone_number` varchar(255) NOT NULL,
-  `zip_code` int NOT NULL,
+  `zip_code` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
   `address_details` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL,

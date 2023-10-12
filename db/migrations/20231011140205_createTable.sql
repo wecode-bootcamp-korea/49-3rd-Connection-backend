@@ -1,11 +1,12 @@
 -- migrate:up
 CREATE TABLE `users` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `kakao` VARCHAR(255),
   `name` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) NOT NULL,
   `password` VARCHAR(255) NOT NULL,
   `phone_number` VARCHAR(255) NOT NULL,
-  `zip_code` INT NOT NULL,
+  `zip_code` VARCHAR(255) NOT NULL,
   `address` VARCHAR(255) NOT NULL,
   `address_details` VARCHAR(255) NOT NULL,
   `created_at` TIMESTAMP NOT NULL,
@@ -40,15 +41,10 @@ CREATE TABLE `reviews` (
 CREATE TABLE `orders` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `total_price` INT NOT NULL,
-  `shipping_method` INT NOT NULL,
+  `shipping_method` VARCHAR(255) NOT NULL,
   `user_id` INT NOT NULL,
   `payment_id` INT NOT NULL,
   `created_at` TIMESTAMP NOT NULL
-);
-
-CREATE TABLE `payments` (
-  `id` INT PRIMARY KEY AUTO_INCREMENT,
-  `payment_method` VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE `carts` (
@@ -75,7 +71,7 @@ CREATE TABLE `sellers` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `image` VARCHAR(1000) NOT NULL,
-  `zip_code` INT NOT NULL,
+  `zip_code` VARCHAR(255) NOT NULL,
   `address` VARCHAR(255) NOT NULL,
   `address_details` VARCHAR(255) NOT NULL,
   `phone_number` VARCHAR(255) NOT NULL,
@@ -87,6 +83,8 @@ CREATE TABLE `sellers` (
 CREATE TABLE `user_premium` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `user_id` INT NOT NULL,
+  `payment_id` INT NOT NULL,
+  `price` INT NOT NULL,
   `created_at` TIMESTAMP NOT NULL,
   `updated_at` TIMESTAMP
 );
@@ -94,13 +92,15 @@ CREATE TABLE `user_premium` (
 CREATE TABLE `seller_premium` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `seller_id` INT NOT NULL,
+  `payment_id` INT NOT NULL,
+  `price` INT NOT NULL,
   `created_at` TIMESTAMP NOT NULL,
   `updated_at` TIMESTAMP
 );
 
 CREATE TABLE `product_categories` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
-  `category_name` INT NOT NULL
+  `category_name` VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE `likes` (
@@ -109,13 +109,16 @@ CREATE TABLE `likes` (
   `user_id` INT NOT NULL
 );
 
+CREATE TABLE `payment` (
+  `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `method` VARCHAR(255) NOT NULL
+);
+
 ALTER TABLE `products` ADD FOREIGN KEY (`seller_id`) REFERENCES `sellers` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `products` ADD FOREIGN KEY (`product_category_id`) REFERENCES `product_categories` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `orders` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `orders` ADD FOREIGN KEY (`payment_id`) REFERENCES `payments` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `carts` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
@@ -140,6 +143,12 @@ ALTER TABLE `seller_premium` ADD FOREIGN KEY (`seller_id`) REFERENCES `sellers` 
 ALTER TABLE `order_details` ADD FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `order_details` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `seller_premium` ADD FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `orders` ADD FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `user_premium` ADD FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`) ON DELETE CASCADE;
 
 -- migrate:down
 
