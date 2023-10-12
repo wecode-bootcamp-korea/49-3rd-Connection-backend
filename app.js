@@ -1,32 +1,30 @@
-const express = require("express");
-const morgan = require("morgan");
-const cors = require("cors");
-
-
-require("dotenv").config();
+const http = require('http');
+const express = require('express');
+const cors = require('cors');
+const morgan = require('morgan');
+require('dotenv').config();
+// const { router } = require("./src/routes");
+const router = express.Router();
 const app = express();
-const userRouter = require("./src/routers");
-
-app.set("port", process.env.PORT || 8000);
 app.use(cors());
-app.use(morgan("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.use(userRouter);
-app.use((req, _, next) => {
-  const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
-  error.status = 404;
-  next(error);
+app.use(morgan('combined'));
+app.use(router);
+app.get('/', async (req, res) => {
+  try {
+    return res.status(200).json({ message: "Welcome to Team2's server!" });
+  } catch (err) {
+    console.log(err);
+  }
 });
-
-app.use((err, _, res, next) => {
-  res.status(err.status || 500);
-  return res.json({
-    error: `${err.status ? err.status : ""} ${err.message}`,
-  });
-});
-
-app.listen(app.get("port"), () => {
-  console.log(`listening.... 🦻http://localhost:${app.get("port")}`);
-});
+const server = http.createServer(app);
+const portNumber = process.env.PORT || 8000;
+const start = async () => {
+  try {
+    await server.listen(portNumber);
+    console.log(`Server is listening on ${portNumber}`);
+  } catch (err) {
+    console.error(err);
+  }
+};
+start();
