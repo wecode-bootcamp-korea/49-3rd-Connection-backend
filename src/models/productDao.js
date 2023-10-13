@@ -24,7 +24,7 @@ const getProductByCategoryId = async (
     FROM reviews
     WHERE reviews.product_id = products.id), 0) AS rating
    FROM products
-   LEFT JOIN categories ON products.product_category_id = categories.id
+   LEFT JOIN product_categories ON products.product_category_id = product_categories.id
    WHERE products.product_category_id=${categoryId}`;
 
   query += orderingQuery;
@@ -55,7 +55,7 @@ const getProductBySellerId = async (sellerId, orderingQuery, limit, offset) => {
     FROM reviews
     WHERE reviews.product_id = products.id), 0) AS rating
    FROM products
-   LEFT JOIN categories ON products.product_category_id = categories.id
+   LEFT JOIN product_categories ON products.product_category_id = product_categories.id
    WHERE products.seller_id=${sellerId}`;
 
   query += orderingQuery;
