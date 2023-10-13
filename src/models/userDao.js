@@ -1,0 +1,65 @@
+const { AppDataSource } = require('./dataSource');
+
+const findById = async (id) => {
+  const [user] = await AppDataSource.query(
+    `
+    SELECT
+      *
+    FROM
+      users
+    WHERE
+      id = ?
+    `,
+    [id]
+  );
+
+  return user;
+};
+
+const findByEmail = async(email) => {
+  const [user] = await AppDataSource.query(
+    `
+    SELECT
+      *
+    FROM
+      users
+    WHERE
+      email = ?
+    `,
+    [email]
+  );
+
+  return user;
+};
+
+const signUp = async (
+  name,
+  email,
+  password,
+  phoneNumber,
+  zipCode,
+  address,
+  addressDetails
+) => {
+  await AppDataSource.query(
+    `
+      INSERT INTO users(
+        name,
+        email,
+        password,
+        phone_number,
+        zip_code,
+        address,
+        address_details
+      ) VALUES
+        (?, ?, ?, ?, ?, ?, ?)
+    `,
+      [name, email, password, phoneNumber, zipCode, address, addressDetails]
+  );
+};
+
+module.exports = {
+  findById,
+  findByEmail,
+  signUp,
+};
