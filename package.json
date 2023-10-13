@@ -23,5 +23,6 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.1",
     "typeorm": "^0.3.17"
-  }
+  },
+  "description": ""
 }

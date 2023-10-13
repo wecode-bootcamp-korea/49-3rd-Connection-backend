@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 exports.tokenGeneration = (userId) => {
   const token = jwt.sign({ id: userId }, process.env.JWT_SECRET);
@@ -23,9 +23,9 @@ exports.throwError = (code, message) => {
   if (!code) return;
   const error = new Error();
   let errorMessage = new Map([
-    [400, "bad request"],
-    [401, "unAuthorized"],
-    [500, "internal server error"],
+    [400, 'bad request'],
+    [401, 'unAuthorized'],
+    [500, 'internal server error'],
   ]);
   if (!errorMessage.get(code) || message) {
     errorMessage.set(code, message);
