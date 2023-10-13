@@ -4,7 +4,6 @@ CREATE TABLE `products` (
   `name` VARCHAR(255) NOT NULL,
   `images` VARCHAR(2000) NOT NULL,
   `price` INT NOT NULL,
-  `quantity` INT NOT NULL,
   `discount_rate` INT,
   `product_category_id` INT NOT NULL,
   `seller_id` INT NOT NULL,
