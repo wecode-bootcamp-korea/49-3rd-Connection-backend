@@ -4,12 +4,16 @@ const cors = require('cors');
 const morgan = require('morgan');
 require('dotenv').config();
 const { router } = require('./src/routers');
+const { errorHandler } = require('./src/utils/errorHandler');
 // const router = express.Router();
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 app.use(morgan('combined'));
 app.use(router);
+app.use(errorHandler);
+
 app.get('/', async (req, res) => {
   try {
     return res.status(200).json({ message: "Welcome to Team2's server!" });

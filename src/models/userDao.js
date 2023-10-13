@@ -16,7 +16,7 @@ const findById = async (id) => {
   return user;
 };
 
-const findByEmail = async(email) => {
+const findByEmail = async (email) => {
   const [user] = await AppDataSource.query(
     `
     SELECT
@@ -30,6 +30,22 @@ const findByEmail = async(email) => {
   );
 
   return user;
+};
+
+const getSellerId = async (sellerId) => {
+  const [seller] = await AppDataSource.query(
+    `
+    SELECT
+      *
+    FROM
+      users
+    WHERE
+      seller_id = ?
+    `,
+    [sellerId]
+  );
+
+  return seller;
 };
 
 const signUp = async (
@@ -54,12 +70,13 @@ const signUp = async (
       ) VALUES
         (?, ?, ?, ?, ?, ?, ?)
     `,
-      [name, email, password, phoneNumber, zipCode, address, addressDetails]
+    [name, email, password, phoneNumber, zipCode, address, addressDetails]
   );
 };
 
 module.exports = {
   findById,
   findByEmail,
+  getSellerId,
   signUp,
 };
