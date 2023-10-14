@@ -1,7 +1,10 @@
 const express = require('express');
-const { productRouter } = require('./productRouter');
 
 const router = express.Router();
+
+const cartRouter = require('./cartRouter');
+
+router.use('/carts', cartRouter);
 
 router.use('/products', productRouter);
 
