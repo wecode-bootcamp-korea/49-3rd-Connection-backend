@@ -1,6 +1,13 @@
 const { throwError } = require('../../utils/throwError.js');
 const { cartService } = require('../services');
-const {getCartService,speedCheckService,makeCartService,addItemService,quantityUpdateServiceremoveCartService} = cartService;
+const {
+  getCartService,
+  speedCheckService,
+  makeCartService,
+  addItemService,
+  quantityUpdateService,
+  removeCartService
+} = cartService;
 
 // 장바구니 조회
 const getCartController = async (req, res, next) => {
@@ -47,3 +54,16 @@ const updateCartController = async (req, res, next) => {
     const userId = req.user.id;
   } catch (error) {}
 };
+
+const removeCarcontroller = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+  } catch (error) {}
+}
+
+module.exports = {
+  getCartController,
+  creatCartController,
+  updateCartController,
+  removeCarcontroller
+}

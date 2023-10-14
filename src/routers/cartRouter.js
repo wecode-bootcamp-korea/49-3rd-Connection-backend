@@ -7,5 +7,6 @@ const router = express.Router();
 router.get('/', verifyToken, getCartController);
 router.post('/', verifyToken, creatCartController);
 router.patch('/', verifyToken, updateCartController);
+router.delete('/,', verifyToken, removeCarcontroller);
 
 module.exports = router;
