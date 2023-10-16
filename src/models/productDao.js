@@ -125,7 +125,7 @@ const getProductBySellerId = async (sellerId, orderingQuery, limit, offset) => {
   products.price AS originalPrice,
   products.discount_rate AS discountRate,
   products.price * (products.discount_rate / 100) AS discountAmount,
-  products.price - (products.price * (products.discount_rate / 100)) AS price,
+  products.price - (products.price * (products.discount_rate / 100)) AS totalPrice,
   (
     SELECT COUNT(reviews.product_id)
     FROM reviews

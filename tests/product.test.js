@@ -13,8 +13,8 @@ describe('get product', () => {
     app = createApp();
     await AppDataSource.initialize();
     await AppDataSource.query(`
-      INSERT INTO users (id, name, email, password)
-      VALUES (1, 'testUser', 'user@wecode.co.kr', 'test-password');
+      INSERT INTO products (id, name, email, password, phone_number, zip_code, address, address_details)
+      VALUES (1, 'testUser', 'user@wecode.co.kr', 'test-password', 'test-number', 'test-zipcode', 'test-address', 'test-address_details');
     `);
     await AppDataSource.query(`
       INSERT INTO posts (id, title, content, user_id)

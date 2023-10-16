@@ -79,7 +79,7 @@ const getSellerNameById = async (sellerId) => {
 
 const getProductByCategoryId = async (categoryId, sort, limit, offset) => {
   const orderingQuery = await builder.ordering(sort);
-  console.log(orderingQuery);
+  // console.log(orderingQuery);
   let data = await productDao.getProductByCategoryId(
     categoryId,
     orderingQuery,
