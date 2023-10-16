@@ -8,8 +8,8 @@ CREATE TABLE `sellers` (
   `address_details` VARCHAR(255) NOT NULL,
   `phone_number` VARCHAR(255) NOT NULL,
   `user_id` INT NOT NULL,
-  `created_at` TIMESTAMP NOT NULL, 
-  `updated_at` TIMESTAMP,
+  `created_at` TIMESTAMP NOT NULL DEFAULT NOW(), 
+  `updated_at` TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 

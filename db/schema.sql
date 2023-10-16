@@ -39,8 +39,8 @@ CREATE TABLE `likes` (
   `product_id` int NOT NULL,
   `user_id` int NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_user_product` (`user_id`,`product_id`),
   KEY `product_id` (`product_id`),
-  KEY `user_id` (`user_id`),
   CONSTRAINT `likes_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
   CONSTRAINT `likes_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -77,7 +77,7 @@ CREATE TABLE `orders` (
   `shipping_method` varchar(255) NOT NULL,
   `user_id` int NOT NULL,
   `payment_id` int NOT NULL,
-  `created_at` timestamp NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `payment_id` (`payment_id`),
@@ -139,13 +139,11 @@ CREATE TABLE `products` (
   `name` varchar(255) NOT NULL,
   `images` varchar(2000) NOT NULL,
   `price` int NOT NULL,
-  `quantity` int NOT NULL,
   `discount_rate` int DEFAULT NULL,
-  `discount_price` int DEFAULT NULL,
   `product_category_id` int NOT NULL,
   `seller_id` int NOT NULL,
-  `created_at` timestamp NOT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `product_category_id` (`product_category_id`),
   KEY `seller_id` (`seller_id`),
@@ -167,8 +165,8 @@ CREATE TABLE `reviews` (
   `rating` int NOT NULL,
   `user_id` int NOT NULL,
   `product_id` int NOT NULL,
-  `created_at` timestamp NOT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `product_id` (`product_id`),
@@ -200,8 +198,8 @@ CREATE TABLE `seller_premium` (
   `seller_id` int NOT NULL,
   `payment_id` int NOT NULL,
   `price` int NOT NULL,
-  `created_at` timestamp NOT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `seller_id` (`seller_id`),
   KEY `payment_id` (`payment_id`),
@@ -224,12 +222,9 @@ CREATE TABLE `sellers` (
   `address` varchar(255) NOT NULL,
   `address_details` varchar(255) NOT NULL,
   `phone_number` varchar(255) NOT NULL,
-  `user_id` int NOT NULL,
-  `created_at` timestamp NOT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `sellers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -244,8 +239,8 @@ CREATE TABLE `user_premium` (
   `user_id` int NOT NULL,
   `payment_id` int NOT NULL,
   `price` int NOT NULL,
-  `created_at` timestamp NOT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `payment_id` (`payment_id`),
@@ -270,9 +265,13 @@ CREATE TABLE `users` (
   `zip_code` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
   `address_details` varchar(255) NOT NULL,
-  `created_at` timestamp NOT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `seller_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
+  KEY `seller_id` (`seller_id`),
+  CONSTRAINT `users_ibfk_1` FOREIGN KEY (`seller_id`) REFERENCES `sellers` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -309,5 +308,7 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20231012073642'),
   ('20231012073748'),
   ('20231012073907'),
-  ('20231012074010');
+  ('20231012074010'),
+  ('20231013042827'),
+  ('20231013042949');
 UNLOCK TABLES;
