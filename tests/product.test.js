@@ -13,36 +13,82 @@ describe('get product', () => {
     app = createApp();
     await AppDataSource.initialize();
     await AppDataSource.query(`
-      INSERT INTO products (id, name, email, password, phone_number, zip_code, address, address_details)
-      VALUES (1, 'testUser', 'user@wecode.co.kr', 'test-password', 'test-number', 'test-zipcode', 'test-address', 'test-address_details');
+    INSERT INTO sellers ( name, image, zip_code, address, address_details, phone_number )
+    VALUES ( 'test', 'image', 'test-zipcode', 'test-address', 'test-address_details', 'test-number' );
     `);
     await AppDataSource.query(`
-      INSERT INTO posts (id, title, content, user_id)
-      VALUES (1, 'testTitle', 'testContent', 1);
+      INSERT INTO users ( name, email, password, phone_number, zip_code, address, address_details, seller_id)
+      VALUES ( 'testUser', 'user@wecode.co.kr', 'test-password', 'test-number', 'test-zipcode', 'test-address', 'test-address_details', 1);
+    `);
+    await AppDataSource.query(`
+    INSERT INTO product_categories ( category_name)
+    VALUES ( 'test-category' );
+    `);
+    await AppDataSource.query(`
+    INSERT INTO products ( name, images, price, discount_rate, product_category_id, seller_id )
+    VALUES ( 'test-product', 'image', 20000, 10, 1, 1);
+    `);
+    await AppDataSource.query(`
+    INSERT INTO reviews ( contents, images, rating, user_id, product_id)
+    VALUES ( 'test-product', 'test-image', 2, 1, 1);
     `);
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     // 테스트 데이터베이스의 불필요한 데이터를 전부 지워줍니다.
     await AppDataSource.query(`SET foreign_key_checks = 0;`);
-    await AppDataSource.query(`TRUNCATE posts`);
+    await AppDataSource.query(`TRUNCATE reviews`);
+    await AppDataSource.query(`TRUNCATE products`);
+    await AppDataSource.query(`TRUNCATE product_categories`);
     await AppDataSource.query(`TRUNCATE users`);
+    await AppDataSource.query(`TRUNCATE sellers`);
 
     // 모든 테스트가 끝나게 되면(afterAll) DB 커넥션을 끊어줍니다.
     await AppDataSource.destroy();
   });
 
-  test('SUCCESS: get posts', async () => {
-    const res = await request(app).get('/posts/').send();
+  test('SUCCESS: get category products', async () => {
+    const res = await request(app).get('/products/category');
+    expect(res.status).toBe(200);
     expect(res.body).toEqual({
-      postData: [
+      message: 'Success',
+      data: [
         {
-          content: 'testContent',
-          id: 1,
-          title: 'testTitle',
-          user_id: 1,
+          categoryId: 1,
+          categoryName: 'test-category',
+          product: [
+            {
+              productId: 1,
+              productName: 'test-product',
+              productImg: 'image',
+              originalPrice: 20000,
+              discountRate: 10,
+              discountAmount: 2000,
+              totalPrice: 18000,
+              reviewNumber: 1,
+              rating: 2,
+            },
+          ],
         },
       ],
     });
+  });
+
+  test('SUCCESS: get seller products', async () => {
+    const res = await request(app).get('/products/seller');
+    expect(res.status).toBe(200);
+    expect(res.body.message).toEqual('Success');
+  });
+
+  test('SUCCESS: get list by sellerId 1', async () => {
+    const res = await request(app).get('/products/seller/1');
+    expect(res.status).toBe(200);
+    expect(res.body.message).toEqual('Success');
+  });
+
+  test('SUCCESS: get list by categoryId 1', async () => {
+    const res = await request(app).get('/products/category/1');
+    expect(res.status).toBe(200);
+    expect(res.body.message).toEqual('Success');
   });
 });

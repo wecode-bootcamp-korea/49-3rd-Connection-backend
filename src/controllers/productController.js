@@ -1,15 +1,26 @@
 const { productService } = require('../services');
 
-const getTotalProduct = async (req, res) => {
+const getCategoryProduct = async (req, res) => {
   try {
-    const result1 = await productService.getTotalProductByCategoryId();
-    const result2 = await productService.getProductRandomSellerId();
-
-    const combinedResult = [...result1, ...result2];
+    const result = await productService.getTotalProductByCategoryId();
 
     return res.status(200).json({
       message: 'Success',
-      data: combinedResult,
+      data: result,
+    });
+  } catch (error) {
+    console.log('error', error);
+    res.status(error.status).json({ message: error.message });
+  }
+};
+
+const getSellerProduct = async (req, res) => {
+  try {
+    const result = await productService.getProductRandomSellerId();
+
+    return res.status(200).json({
+      message: 'Success',
+      data: result,
     });
   } catch (error) {
     console.log('error', error);
@@ -64,7 +75,8 @@ const getProductBySellerId = async (req, res) => {
 };
 
 module.exports = {
-  getTotalProduct,
+  getCategoryProduct,
+  getSellerProduct,
   getProductByCategoryId,
   getProductBySellerId,
 };

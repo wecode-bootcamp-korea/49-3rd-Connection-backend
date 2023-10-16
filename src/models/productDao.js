@@ -52,6 +52,7 @@ const getTotalProductBySellerId = async (sellerId) => {
    FROM products
    LEFT JOIN product_categories ON products.product_category_id = product_categories.id
    WHERE products.product_category_id=${sellerId}`;
+
   const product = await AppDataSource.query(query);
   return product;
 };

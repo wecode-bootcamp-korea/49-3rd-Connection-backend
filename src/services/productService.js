@@ -43,7 +43,7 @@ const getTotalProductBySellerId = async (sellerId) => {
 const getProductRandomSellerId = async (req, res) => {
   const sellerIds = await productDao.getRandomSellerId();
 
-  const sellerId = [sellerIds[0].id, sellerIds[1].id, sellerIds[2].id];
+  const sellerId = sellerIds.map((item) => item.id);
 
   let result = await Promise.all(
     sellerId.map(async (sellerId) => {
