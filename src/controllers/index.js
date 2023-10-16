@@ -3,7 +3,7 @@ const {
   creatCartController,
   updateCartController,
   removeCarcontroller,
-} = require('./cartController');
+} = require('./cartControllers');
 
 module.exports = {
   cartController: {

@@ -1,17 +1,7 @@
-const {
-  getCartService,
-  speedCheckService,
-  makeCartService,
-  addItemService,
-  quantityUpdateServiceremoveCartService,
-} = require('./cartService');
+const { getCartService } = require('./cartService');
 
 module.exports = {
-  userService: {
+  cartService: {
     getCartService,
-    speedCheckService,
-    makeCartService,
-    addItemService,
-    quantityUpdateServiceremoveCartService,
   },
 };

@@ -2,9 +2,9 @@ const {
   getCartDao,
   easyCheckDao,
   creatCartDao,
-  newProductDao,
-  updateQuantityDao,
-  deletCartDao,
+  // newProductDao,
+  // updateQuantityDao,
+  // deletCartDao,
 } = require('./cartDao');
 
 module.exports = {
@@ -12,8 +12,8 @@ module.exports = {
     getCartDao,
     easyCheckDao,
     creatCartDao,
-    newProductDao,
-    updateQuantityDao,
-    deletCartDao,
+    // newProductDao,
+    // updateQuantityDao,
+    // deletCartDao,
   },
 };
