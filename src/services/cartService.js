@@ -11,7 +11,8 @@ const {
 // 장바구니 조회
 
 const getCartService = async (userId) => {
-  return await getCartDao(userId);
+  const cartItems = await getCartDao(userId);
+  return cartItems
 };
 
 // (users.id, users.name, carts.id, products.seller_id,
