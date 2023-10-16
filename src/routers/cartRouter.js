@@ -1,12 +1,12 @@
 const express = require('express');
-const { verifyToken } = require('../../middlewares');
+const { verifyToken } = require('../middleware');
 const { cartController } = require('../controllers');
-const { getCartController } = cartController;
+
 const router = express.Router();
 
-router.get('/', verifyToken, getCartController);
-router.post('/', verifyToken, creatCartController);
-router.patch('/', verifyToken, updateCartController);
-router.delete('/,', verifyToken, removeCarcontroller);
+router.get('/', cartController.getCartController);
+// cartRouter.post('/', verifyToken, creatCartController);
+// cartRouter.patch('/', verifyToken, updateCartController);
+// cartRouter.delete('/', verifyToken, removeCarcontroller);
 
 module.exports = router;

@@ -1,18 +1,16 @@
-const { throwError } = require('../../utils/throwError.js');
+const { throwError } = require('../utils/throwError');
 const { cartService } = require('../services');
-const {
-  getCartService,
-  speedCheckService,
-  makeCartService,
-  addItemService,
-  quantityUpdateService,
-  removeCartService,
-} = cartService;
+const { getCartService } = cartService;
+// speedCheckService,
+// makeCartService,
+// addItemService,
+// quantityUpdateService,
+// removeCartService,
 
 // 장바구니 조회
 const getCartController = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = 3;
     const cartInformation = await getCartService(userId);
     if (!userId) {
       throwError(400, 'KEY_ERROR');
@@ -25,8 +23,8 @@ const getCartController = async (req, res, next) => {
       data: cartInformation,
     });
   } catch (error) {
-    console.log(err);
-    next(err);
+    console.log('error', error);
+    res.status(error.status).json({ message: error.message });
   }
 };
 // 장바구니 새로 생성
@@ -51,7 +49,7 @@ const removeCarcontroller = async (req, res, next) => {
 
 module.exports = {
   getCartController,
-  creatCartController,
-  updateCartController,
-  removeCarcontroller,
+  // creatCartController,
+  // updateCartController,
+  // removeCarcontroller,
 };
