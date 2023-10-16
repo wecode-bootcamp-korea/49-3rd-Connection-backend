@@ -18,7 +18,13 @@ const getCategoryProduct = async (req, res) => {
   return data;
 };
 
+const getSellerProduct = async (req, res) => {
+  const data = await productDao.getSellerlist();
+  return data;
+};
+
 module.exports = {
   // getSellerProduct,
   getCategoryProduct,
+  getSellerProduct,
 };

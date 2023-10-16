@@ -56,6 +56,18 @@ const getCategoryProduct = async (req, res) => {
   }
 };
 
+const getSellerProduct = async (req, res) => {
+  try {
+    const sellerproducts = await productService.getSellerProduct(); // 카테고리의 제품 목록
+
+    return res.status(200).json({
+      product: sellerproducts,
+    }); //
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "seller's products are not found" });
+  }
+};
 // name,images,price,discount_rate,discount_price,priduct_category_id
 // userId: 사용자 ID
 // category: 제품 카테고리
@@ -67,4 +79,5 @@ const getCategoryProduct = async (req, res) => {
 module.exports = {
   // getSellerProduct,
   getCategoryProduct,
+  getSellerProduct,
 };
