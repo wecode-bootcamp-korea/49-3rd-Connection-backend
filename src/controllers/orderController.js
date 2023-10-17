@@ -7,11 +7,11 @@ const B = async (req, res) => {
 
     const token = req.headers.authorization;
     const { C } = req.body;
-
+    orderService;
     // service 파일의 비즈니스 로직으로 'content' 보냄
     await postService.B(C);
 
-    const { id } = jwt.verify(token, process.env.TYPEORM_JWT);
+    // const { id } = jwt.verify(token, process.env.TYPEORM_JWT);
 
     console.log(id);
 
