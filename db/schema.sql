@@ -260,11 +260,11 @@ CREATE TABLE `users` (
   `kakao` varchar(255) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `phone_number` varchar(255) NOT NULL,
-  `zip_code` varchar(255) NOT NULL,
-  `address` varchar(255) NOT NULL,
-  `address_details` varchar(255) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `phone_number` varchar(255) DEFAULT NULL,
+  `zip_code` varchar(255) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `address_details` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `seller_id` int DEFAULT NULL,
@@ -310,5 +310,7 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20231012073907'),
   ('20231012074010'),
   ('20231013042827'),
-  ('20231013042949');
+  ('20231013042949'),
+  ('20231015082323'),
+  ('20231015102315');
 UNLOCK TABLES;
