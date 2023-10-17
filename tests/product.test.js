@@ -47,39 +47,6 @@ describe('get product', () => {
     await AppDataSource.destroy();
   });
 
-  test('SUCCESS: get category products', async () => {
-    const res = await request(app).get('/products/category');
-    expect(res.status).toBe(200);
-    expect(res.body).toEqual({
-      message: 'Success',
-      data: [
-        {
-          categoryId: 1,
-          categoryName: 'test-category',
-          product: [
-            {
-              productId: 1,
-              productName: 'test-product',
-              productImg: 'image',
-              originalPrice: 20000,
-              discountRate: 10,
-              discountAmount: 2000,
-              totalPrice: 18000,
-              reviewNumber: 1,
-              rating: 2,
-            },
-          ],
-        },
-      ],
-    });
-  });
-
-  test('SUCCESS: get seller products', async () => {
-    const res = await request(app).get('/products/seller');
-    expect(res.status).toBe(200);
-    expect(res.body.message).toEqual('Success');
-  });
-
   test('SUCCESS: get list by sellerId 1', async () => {
     const res = await request(app).get('/products/seller/1');
     expect(res.status).toBe(200);
