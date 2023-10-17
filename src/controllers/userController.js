@@ -1,4 +1,3 @@
-const { default: axios } = require('axios');
 const { userService } = require('../services');
 const { keyCheck } = require('../utils/keyCheck');
 
