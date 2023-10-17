@@ -107,7 +107,7 @@ const getProductByCategoryId = async (
     WHERE reviews.product_id = products.id), 0) AS rating
    FROM products
    LEFT JOIN product_categories ON products.product_category_id = product_categories.id
-   WHERE products.product_category_id=${categoryId}`;
+   WHERE products.seller_id=${sellerId}`;
 
   query += orderingQuery;
 
