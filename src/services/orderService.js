@@ -1,19 +1,16 @@
 const jwt = require('jsonwebtoken');
 const { orderDao } = require('../models');
 
-const B = async (C) => {
-
-  if( ) {
-    const error = new Error (" ")
-    error.statusCode = 400;
-    error.code= " "
-  throw error 
-  }
-
-  const A = await userDao. B ( C );
-  return A;
+const createOrders = async (totalPrice, shippingmethod, payment_id) => {
+  const newPost = await postDao.createPost(
+    userId,
+    threadsId,
+    content,
+    createdAt
+  );
+  return newPost;
 };
 
 module.exports = {
-  "B" : B,
+  createOrders: createOrders,
 };

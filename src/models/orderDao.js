@@ -1,12 +1,22 @@
 const { AppDataSource } = require('./dataSource.js');
 
-const B = async () => {
-  const A = await myDataSource.query(`
-
-  `);
-  return A;
+const createOrders = async (totalPrice, shippingMethod, paymentId) => {
+  const orderInformation = await myDataSource.query(`
+    INSERT INTO 
+      orders(
+        total price, 
+        shipping_method, 
+        payment_id
+    ) 
+    VALUES (
+      '${totalPrice}', 
+      '${shippingMethod}', 
+      '${paymentId}'
+    ) 
+    `);
+  return orderInformation;
 };
 
 module.exports = {
-  B,
+  createOrders,
 };
