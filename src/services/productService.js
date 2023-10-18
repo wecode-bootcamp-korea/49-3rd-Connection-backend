@@ -10,14 +10,22 @@ const getSellerNameById = async (sellerId) => {
   return data;
 };
 
-const getProductByCategoryId = async (categoryId, sort, limit, offset) => {
+const getProducts = async (filter, sort, limit, offset) => {
+  console.log(filter);
+
+  let whereQuery;
+  if (filter.category) {
+    whereQuery = await builder.whereQueryWithCategory(filter.category);
+  }
+
   const orderingQuery = await builder.ordering(sort);
-  // console.log(orderingQuery);
-  let data = await productDao.getProductByCategoryId(
-    categoryId,
+  const joinQuery = await builder.joinQuery();
+  const limitOffsetQuery = await builder.limitOffsetQuery(limit, offset);
+  let data = await productDao.getProducts(
     orderingQuery,
-    limit,
-    offset
+    joinQuery,
+    whereQuery,
+    limitOffsetQuery
   );
   data.forEach((item) => {
     item.discountAmount = parseInt(item.discountAmount);
@@ -29,10 +37,11 @@ const getProductByCategoryId = async (categoryId, sort, limit, offset) => {
   return data;
 };
 
-const getProductBySellerId = async (sellerId, sort, limit, offset) => {
+const getProductBySellerId = async (filter, sort, limit, offset) => {
   const orderingQuery = await builder.ordering(sort);
+  const whereQuery = await builder.whereQueryWithSeller(filter.seller);
   let data = await productDao.getProductBySellerId(
-    sellerId,
+    whereQuery,
     orderingQuery,
     limit,
     offset
@@ -51,6 +60,6 @@ const getProductBySellerId = async (sellerId, sort, limit, offset) => {
 module.exports = {
   getCategoryNameById,
   getSellerNameById,
-  getProductByCategoryId,
+  getProducts,
   getProductBySellerId,
 };

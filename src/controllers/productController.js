@@ -1,15 +1,13 @@
 const { productService } = require('../services');
 
-const getProductByCategoryId = async (req, res) => {
+const getProducts = async (req, res) => {
   try {
     const { sort = 'rating', limit = 12, offset = 0 } = req.query;
-    const { categoryId } = req.params;
-    const data = await productService.getProductByCategoryId(
-      categoryId,
-      sort,
-      limit,
-      offset
-    );
+    const { categoryId, sellerId } = req.query;
+
+    const filter = { category: categoryId, seller: sellerId };
+
+    const data = await productService.getProducts(filter, sort, limit, offset);
     const name = await productService.getCategoryNameById(categoryId);
 
     return res.status(200).json({
@@ -26,9 +24,14 @@ const getProductByCategoryId = async (req, res) => {
 const getProductBySellerId = async (req, res) => {
   try {
     const { sort = 'rating', limit = 12, offset = 0 } = req.query;
+    const { categoryId } = req.query;
     const { sellerId } = req.params;
+
+    console.log('셀러 아이디 in controller: ', sellerId);
+
+    const filter = { category: categoryId, seller: sellerId };
     const data = await productService.getProductBySellerId(
-      sellerId,
+      filter,
       sort,
       limit,
       offset
@@ -47,6 +50,6 @@ const getProductBySellerId = async (req, res) => {
 };
 
 module.exports = {
-  getProductByCategoryId,
+  getProducts,
   getProductBySellerId,
 };
