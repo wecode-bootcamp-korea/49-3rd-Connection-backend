@@ -1,5 +1,3 @@
-// LEFT JOIN product_categories ON products.product_category_id = product_categories.idconst { AppDataSource } = require('./dataSource');
-
 const ordering = async (sort) => {
   switch (sort) {
     case 'rating':
@@ -13,8 +11,26 @@ const ordering = async (sort) => {
   }
 };
 
-const joinQuery = async () => {
-  return ` LEFT JOIN product_categories ON products.product_category_id = product_categories.id `;
+const selectQueryWithCategory = async () => {
+  return `, product_categories.category_name`;
+};
+
+const selectQueryWithSeller = async () => {
+  return `, sellers.name`;
+};
+
+const joinQueryWithCategory = async () => {
+  return `
+    LEFT JOIN product_categories 
+    ON products.product_category_id = product_categories.id
+  `;
+};
+
+const joinQueryWithSeller = async () => {
+  return `
+    LEFT JOIN sellers
+    ON products.seller_id = sellers.id
+  `;
 };
 
 const whereQueryWithCategory = async (categoryId) => {
@@ -22,17 +38,22 @@ const whereQueryWithCategory = async (categoryId) => {
 };
 
 const whereQueryWithSeller = async (sellerId) => {
-  console.log('쎌러 아이디: ', sellerId);
   return `AND products.seller_id=${sellerId}`;
 };
 
 const limitOffsetQuery = async (limit, offset) => {
-  return `LIMIT ${limit} OFFSET ${offset}`;
+  let query = ``;
+  if (limit) query += `LIMIT ${limit}`;
+  if (offset) query += `OFFSET ${offset}`;
+  return query;
 };
 
 module.exports = {
   ordering,
-  joinQuery,
+  selectQueryWithCategory,
+  selectQueryWithSeller,
+  joinQueryWithCategory,
+  joinQueryWithSeller,
   whereQueryWithCategory,
   whereQueryWithSeller,
   limitOffsetQuery,
