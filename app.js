@@ -2,7 +2,7 @@ const http = require('http');
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const { imageUploader } = require('./imageUploader');
+const { imageUploader } = require('./src/middleware/imageUploader');
 require('dotenv').config();
 // const { router } = require("./src/routes");
 const router = express.Router();
