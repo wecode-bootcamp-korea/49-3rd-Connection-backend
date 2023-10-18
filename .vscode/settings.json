@@ -10,5 +10,6 @@
   "prettier.eslintIntegration": true,
   "prettier.disableLanguages": ["js"],
   "eslint.alwaysShowStatus": true,
-  "files.autoSave": "onFocusChange"
+  "files.autoSave": "onFocusChange",
+  "git-blame.gitWebUrl": ""
 }
