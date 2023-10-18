@@ -7,7 +7,8 @@ const createOrders = async (
   paymentId,
   orderId,
   productId,
-  quantity) => {
+  quantity
+) => {
   // 1) orders table 주문 정보 저장
   const newOrder = await AppDataSource.query(`
     INSERT INTO 
@@ -22,11 +23,15 @@ const createOrders = async (
       '${paymentId}'
     ) 
     `);
-  return newOrder.insert.id;  //.insert.id 하면 자동으로 order_id 뽑아줌 
+
+  console.log(newOrder);
+
+  const orderId = newOrder.insertId;
+  return orderId; //.insert.id 하면 자동으로 order_id 뽑아줌
 };
 
-  // 2) orderDetails table 주문 정보 저장
-  const neworderDetails = await AppDataSource.query(`
+// 2) orderDetails table 주문 정보 저장
+const neworderDetails = await AppDataSource.query(`
     INSERT INTO 
       order_details(
         order_id,
@@ -38,15 +43,11 @@ const createOrders = async (
       "${quantity}" 
       ) 
       `);
-  return neworderDetails;
 
-  // 3) carts 에서 삭제
-  const deletingCarts= await AppDataSource.query(`
+// 3) carts 에서 삭제
+const deletingCarts = await AppDataSource.query(`
     DELETE FROM carts WHERE user_id = ${userId} AND product_id = ${productId} AND quantity = ${quantity}
     `);
-    return deletingCarts;
-};
-
 
 module.exports = {
   createOrders,

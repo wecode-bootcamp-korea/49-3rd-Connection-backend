@@ -11,6 +11,9 @@ const createOrders = async (
   quantity
 ) => {
   // 1) orders table 주문 정보 저장
+  if (!productId) {
+    throwError(400, 'no product');
+  }
   const newOrder = await orderDao.createOrders(
     userId,
     totalPrice,
@@ -22,21 +25,22 @@ const createOrders = async (
   const orderId = newOrder;
 
   // 2) orderDetails table 주문 정보 저장
-  const newOrderDetails = await orderDao.createOrderDetails(
+  await orderDao.createOrderDetails(
     userId,
     orderId,
     productId,
     quantity
-  );
-  return newOrderDetails;
+  )
 
+  if(cartQuantity == quantity)
+  else 
   // 3) carts 에서 삭제
   const deletingCarts = await orderDao.deleteCartsProducts(
     userId,
     productId,
     quantity
   );
-  return deletingCarts;
+
 };
 
 module.exports = {
