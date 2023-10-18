@@ -1,94 +1,27 @@
 const { AppDataSource } = require('./dataSource');
 
-const getCategorylist = async (req, res) => {
-  const products = await AppDataSource.query(
+const getProductDetail = async (req, res) => {
+  const detailProducts = await AppDataSource.query(
     `SELECT
-    product_categories.id AS categoryId,
-    product_categories.category_name AS categoryName,
-    JSON_ARRAYAGG(
-        JSON_OBJECT(
-            'id', products.id,
-            'name', products.name,
-            'url', products.images,
-            'price', products.price,
-            'total_price', (products.price - (products.price * (products.discount_rate / 100))),
-            'discount_rate', products.discount_rate,
-            'discount_price', products.discount_price        )
-    ) AS product_data
-FROM products
-LEFT JOIN product_categories ON products.product_category_id = product_categories.id
-GROUP BY product_categories.id`
+    products.id AS productsId,
+    products.name AS productsName,
+    JSON_ARRAYAGG(JSON_OBJECT('url', product_detail_images.url)) AS productDetailImages,
+    products.images AS productsImg,
+    products.price AS originalPrice,
+    products.discount_rate AS discountRate,
+    products.discount_price AS discountAmount,
+    (products.price - (products.price * (products.discount_rate / 100))) AS totalPrice,
+    COUNT(DISTINCT reviews.id) AS reviewNumbers,
+    IFNULL(SUM(reviews.rating), 0) / COUNT(DISTINCT reviews.id) AS Rating
+  FROM products
+  LEFT JOIN product_detail_images ON products.id = product_detail_images.product_id
+  LEFT JOIN reviews ON products.id = reviews.product_id
+  GROUP BY products.id, products.name, products.price, products.discount_rate, products.discount_price;
+  `
   );
-
-  return products;
+  return detailProducts;
 };
-
-const getSellerlist = async (req, res) => {
-  const sellerProducts = await AppDataSource.query(
-    `SELECT
-    sellers.id AS sellersId,
-    sellers.name AS sellersname,
-    JSON_ARRAYAGG(
-        JSON_OBJECT(
-            'id', products.id,
-            'name', products.name,
-            'url', products.images,
-            'price', products.price,
-            'total_price', (products.price - (products.price * (products.discount_rate / 100))),
-            'discount_rate', products.discount_rate,
-            'discount_price', products.discount_price        )
-    ) AS product_data
-FROM products
-LEFT JOIN sellers ON sellers.id = products.seller_id
-GROUP BY sellers.id`
-  );
-
-  return sellerProducts;
-};
-//   const productsList = await getCategoryList();
-//   const groupedProducts = productsList.reduce((result, item) => {
-//     // 이미 있는 카테고리인지 확인
-//     const existingCategory = result.find(
-//       (group) => group.category === item.category
-//     );
-//     if (!existingCategory) {
-//       // 이미 있는 카테고리가 아닌 경우에만 추가
-//       result.push({
-//         category: item.category,
-//         product_data: JSON.parse(item.product_data), // product_data를 파싱해 JSON 배열로 저장
-//       });
-//     }
-//     return result;
-//   }, []);
-// };
-// console.log(groupedProducts);
-
-// const getCategorylistt = async (req, res) => {
-//   const products = await AppDataSource.query(
-//     `SELECT
-//     product_categories.category_name AS categoryId,
-//     product_categories.category_id AS categoryName
-//     JSON_ARRAYAGG(
-//         JSON_OBJECT(
-//             'id', products.id,
-//             'name', products.name,
-//             'url', products.images,
-//             'price', products.price,
-//             'total_price', (products.price - (products.price * (products.discount_rate / 100))),
-//             'discount_rate', products.discount_rate,
-//             'discount_price', products.discount_price
-//         )
-//     ) AS product_data
-// FROM products
-// LEFT JOIN product_categories ON products.product_category_id = product_categories.id
-// GROUP BY products.id`
-//   );
-
-//   return products;
-// };
 
 module.exports = {
-  getCategorylist,
-  getSellerlist,
-  // groupedProducts
+  getProductDetail,
 };
