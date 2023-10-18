@@ -1,7 +1,15 @@
 const { AppDataSource } = require('./dataSource.js');
 
-const createOrders = async (totalPrice, shippingMethod, paymentId) => {
-  const newOrder = await myDataSource.query(`
+const createOrders = async (
+  userId,
+  totalPrice,
+  shippingMethod,
+  paymentId,
+  orderId,
+  productId,
+  quantity) => {
+  // 1) orders table 주문 정보 저장
+  const newOrder = await AppDataSource.query(`
     INSERT INTO 
       orders(
         total_price, 
@@ -14,11 +22,11 @@ const createOrders = async (totalPrice, shippingMethod, paymentId) => {
       '${paymentId}'
     ) 
     `);
-  return newOrder;
+  return newOrder.insert.id;  //.insert.id 하면 자동으로 order_id 뽑아줌 
 };
 
-const createOrderDetails = async (productId, quantity) => {
-  const neworderDetails = await myDataSource.query(`
+  // 2) orderDetails table 주문 정보 저장
+  const neworderDetails = await AppDataSource.query(`
     INSERT INTO 
       order_details(
         order_id,
@@ -33,7 +41,10 @@ const createOrderDetails = async (productId, quantity) => {
   return neworderDetails;
 };
 
+delete cart WHERE userId and productID and qauntity 
+
+  // 3) carts 에서 삭제
+
 module.exports = {
   createOrders,
-  createOrderDetails,
 };
