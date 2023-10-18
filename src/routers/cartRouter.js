@@ -4,7 +4,7 @@ const { cartController } = require('../controllers');
 const cartRouter = express.Router();
 
 cartRouter.get('/', cartController.getCartController);
-// cartRouter.post('/', cartController.addNewProductController);
+cartRouter.post('/', cartController.addNewProductController);
 // cartRouter.patch('/', cartController.UpdatequantityController);
 // cartRouter.delete('/', verifyToken, cartController.removeCarcontroller);
 

@@ -26,8 +26,10 @@ const getCartController = async (req, res, next) => {
 const addNewProductController = async (req, res, next) => {
   try {
     const userId = 1;
+    console.log('바디값', req.body);
+    console.log('프로덕트 아이디', prodcutId);
     const { prodcutId, quantity } = req.body;
-    await cartService.creatCartService(userId, productId, quantity);
+    await cartService.updateCartService(userId, `${productId}`, `${quantity}`);
     if (!userId) {
       throwError(400, 'Connection Error');
     }
