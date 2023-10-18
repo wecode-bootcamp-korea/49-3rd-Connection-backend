@@ -18,18 +18,16 @@ const createOrders = async (req, res) => {
 
 const createOrderDetails = async (req, res) => {
   try {
-    const { productId, quantity } = req.body;
+    const { orderId, productId, quantity } = req.body;
 
-    await orderService.createOrderDetails(productId, quantity);
+    await orderService.createOrderDetails(orderId, productId, quantity);
     return res
       .status(200)
       .json({ message: 'Created OrderDetails_ productid, 수량 저장' });
   } catch (error) {
-    return res
-      .status(400)
-      .json({
-        message: 'FAILED creating OrderDetails_ productid, 수량 저장 실패',
-      });
+    return res.status(400).json({
+      message: 'FAILED creating OrderDetails_ productid, 수량 저장 실패',
+    });
   }
 };
 

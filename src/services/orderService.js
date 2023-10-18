@@ -10,8 +10,9 @@ const createOrders = async (totalPrice, shippingMethod, paymentId) => {
   return newOrder;
 };
 
-const createOrderDetails = async (productId, quantity) => {
+const createOrderDetails = async (orderId, productId, quantity) => {
   const newOrderDetails = await orderDao.createOrderDetails(
+    orderId,
     productId,
     quantity
   );
