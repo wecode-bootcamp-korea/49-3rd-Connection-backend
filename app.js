@@ -3,7 +3,7 @@ const http = require('http');
 const cors = require('cors');
 const morgan = require('morgan');
 require('dotenv').config();
-const { router } = require('./src/routers');
+const router = require('./src/routers');
 
 const app = express();
 
@@ -20,6 +20,7 @@ app.get('/', async (req, res) => {
     console.log(err);
   }
 });
+
 const server = http.createServer(app);
 const portNumber = process.env.PORT || 8000;
 const start = async () => {

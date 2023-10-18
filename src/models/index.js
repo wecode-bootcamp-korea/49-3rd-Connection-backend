@@ -1,19 +1,5 @@
-const {
-  getCartDao,
-  easyCheckDao,
-  creatCartDao,
-  // newProductDao,
-  // updateQuantityDao,
-  // deletCartDao,
-} = require('./cartDao');
+const cartDao = require('./cartDao');
 
 module.exports = {
-  cartDao: {
-    getCartDao,
-    easyCheckDao,
-    creatCartDao,
-    // newProductDao,
-    // updateQuantityDao,
-    // deletCartDao,
-  },
+  cartDao,
 };

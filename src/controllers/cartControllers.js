@@ -1,19 +1,13 @@
 const { throwError } = require('../utils/throwError');
 const { cartService } = require('../services');
-const { getCartService } = cartService;
-// speedCheckService,
-// makeCartService,
-// addItemService,
-// quantityUpdateService,
-// removeCartService,
 
 // 장바구니 조회
 const getCartController = async (req, res, next) => {
   try {
     const userId = 3;
-    const cartInformation = await getCartService(userId);
+    const cartInformation = await cartService.getCartService(userId);
     if (!userId) {
-      throwError(400, 'KEY_ERROR');
+      throwError(400, 'Connection Error');
     }
     if (!cartInformation) {
       throwError(400, 'CANNOT_SEARCH_CART');
@@ -27,29 +21,76 @@ const getCartController = async (req, res, next) => {
     res.status(error.status).json({ message: error.message });
   }
 };
+
 // 장바구니 새로 생성
-const creatCartController = async (req, res, next) => {
+const addNewProductController = async (req, res, next) => {
   try {
-    const userId = req.user.id;
-  } catch (error) {}
+    const userId = 3;
+    const { prodcutId, quantity } = req.body;
+    await cartService.creatCartService(userId, productId, quantity);
+    if (!userId) {
+      throwError(400, 'Connection Error');
+    }
+    if (!productId) {
+      throwError(400, 'CANNOT_SEARCH_Product');
+    }
+    if (!quantity) {
+      throwError(400, 'CANNOT_SEARCH_Quantity');
+    }
+    return res.status(200).json({
+      message: 'Update Success!',
+      data: await cartService.speedCheckService(userId, productId),
+    });
+  } catch (error) {
+    console.log('error', error);
+    res.status(error.status).json({ message: error.message });
+  }
 };
 
 // 장바구니 업데이트
-const updateCartController = async (req, res, next) => {
+const UpdatequantityController = async (req, res, next) => {
   try {
     const userId = req.user.id;
-  } catch (error) {}
+    const { prodcutId, quantity } = req.body;
+    if (!userId) {
+      throwError(400, 'Connection Error');
+    }
+    if (!productId) {
+      throwError(400, 'CANNOT_SEARCH_Product');
+    }
+    if (!quantity) {
+      throwError(400, 'CANNOT_SEARCH_Quantity');
+    }
+    return res.status(200).json({
+      message: 'Update Success!',
+    });
+  } catch (error) {
+    console.log('error', error);
+    res.status(error.status).json({ message: error.message });
+  }
 };
 
 const removeCarcontroller = async (req, res, next) => {
   try {
     const userId = req.user.id;
-  } catch (error) {}
+    const { prodcutId } = req.body;
+    if (!userId) {
+      throwError(400, 'Connection Error');
+    }
+    if (!productId) {
+      throwError(400, 'CANNOT_SEARCH_Product');
+    }
+    return res.status(200).json({
+      message: 'Delete Success!',
+    });
+  } catch (error) {
+    console.log('error', error);
+    res.status(error.status).json({ message: error.message });
+  }
 };
-
 module.exports = {
   getCartController,
-  // creatCartController,
-  // updateCartController,
+  addNewProductController,
+  UpdatequantityController,
   // removeCarcontroller,
 };

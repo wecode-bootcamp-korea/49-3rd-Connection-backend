@@ -1,15 +1,5 @@
-const {
-  getCartController,
-  creatCartController,
-  updateCartController,
-  removeCarcontroller,
-} = require('./cartControllers');
+const cartController = require('./cartControllers');
 
 module.exports = {
-  cartController: {
-    getCartController,
-    creatCartController,
-    updateCartController,
-    removeCarcontroller,
-  },
+  cartController,
 };

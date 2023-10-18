@@ -1,7 +1,5 @@
-const { getCartService } = require('./cartService');
+const cartService = require('./cartService');
 
 module.exports = {
-  cartService: {
-    getCartService,
-  },
+  cartService,
 };
