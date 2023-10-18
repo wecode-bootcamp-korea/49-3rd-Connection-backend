@@ -31,6 +31,26 @@ const createOrderDetails = async (req, res) => {
   }
 };
 
+const deleteCartsProducts = async (req, res) => {
+  try {
+    const { userId, productId, quantity } = req.body;
+
+    await orderService.deleteCartsProducts(userId, productId, quantity);
+    return res
+      .status(200)
+      .json({
+        message: 'Deleted Ordered Products From Carts_ 장바구니 삭제 완료',
+      });
+  } catch (error) {
+    return res.status(400).json({
+      message:
+        'FAILED Deleting Ordered Products From Carts_ 장바구니 삭제 실패',
+    });
+  }
+};
+
 module.exports = {
   createOrders,
+  createOrderDetails,
+  deleteCartsProducts,
 };
