@@ -36,6 +36,7 @@ const updateCartService = async (userId, productId, quantity) => {
     return addCart;
   }
   if (existingCartItem[0].quantity !== 0) {
+    console.log('너이름이 뭐야?', existingCartItem);
     const updateCart = await cartDao.updateQuantityDao(
       userId,
       productId,
@@ -45,27 +46,34 @@ const updateCartService = async (userId, productId, quantity) => {
   }
 };
 
-const UpdateQuantityService = async (userId, prodcutId, quantity) => {
-  const updateQuantity = await cartDao.updateQuantityDao(
-    userId,
-    productId,
-    quantity
-  );
-  return updateQuantity;
+const UpdateQuantityService = async (userId, productId, quantity) => {
+  const existingCartItem = await cartDao.easyCheckDao(userId, productId);
+  if (existingCartItem[0].quantity !== 0) {
+    const updateQuantity = await cartDao.updateQuantityDao(
+      userId,
+      productId,
+      quantity
+    );
+    return updateQuantity;
+  } else {
+    return await updateCartService(userId, productId, quantity);
+  }
 };
 
 //장바구니 삭제
-// const removeCartService = async (userId,cartId) => {
-//   const checkProductExistence = cartDao.easyCheckDao(cartId)
-//   if (checkProductExistence.quantity > 0){
-//     await UpdatequantityService
-//   } else {await cartDao.deletCartDao(cartId)}
-// };
+const removeCartService = async (userId, productId) => {
+  const checkProductExistence = cartDao.easyCheckDao(userId, productId);
+  if (checkProductExistence.quantity > 0) {
+    await UpdatequantityService;
+  } else {
+    await cartDao.deletCartDao(userId, productId);
+  }
+};
 
 module.exports = {
   getCartService,
   speedCheckService,
   updateCartService,
   UpdateQuantityService,
-  // removeCartService,
+  removeCartService,
 };

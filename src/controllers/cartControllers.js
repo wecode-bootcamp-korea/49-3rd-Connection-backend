@@ -50,8 +50,9 @@ const addNewProductController = async (req, res, next) => {
 // 장바구니 업데이트
 const UpdatequantityController = async (req, res, next) => {
   try {
-    const userId = req.user.id;
-    const { prodcutId, quantity } = req.body;
+    const userId = 1;
+    const { productId, quantity } = req.body;
+    await cartService.UpdateQuantityService(userId, productId, quantity);
     if (!userId) {
       throwError(400, 'Connection Error');
     }
@@ -63,6 +64,7 @@ const UpdatequantityController = async (req, res, next) => {
     }
     return res.status(200).json({
       message: 'Update Success!',
+      data: await cartService.speedCheckService(userId, productId),
     });
   } catch (error) {
     console.log('error', error);
@@ -72,8 +74,9 @@ const UpdatequantityController = async (req, res, next) => {
 
 const removeCarcontroller = async (req, res, next) => {
   try {
-    const userId = req.user.id;
-    const { prodcutId } = req.body;
+    const userId = 1;
+    const { productId } = req.body;
+    await cartService.removeCartService(userId, productId);
     if (!userId) {
       throwError(400, 'Connection Error');
     }
@@ -92,5 +95,5 @@ module.exports = {
   getCartController,
   addNewProductController,
   UpdatequantityController,
-  // removeCarcontroller,
+  removeCarcontroller,
 };

@@ -62,19 +62,19 @@ const updateQuantityDao = async (userId, productId, quantity) => {
   return updateQuantity;
 };
 
-// 장바구니 삭제 (수량이 없을경우, 삭제버튼이 있을경우)
-// const deletCartDao = async (cartId) => {
-//   const deletCart = await AppDataSource.query(
-//     `DELETE FROM carts WHERE cartId = ?;`,
-//     [cartId]
-//   );
-//   return deletCart;
-// };
+//장바구니 삭제 (수량이 없을경우, 삭제버튼이 있을경우)
+const deletCartDao = async (userId, productId) => {
+  const deletCart = await AppDataSource.query(
+    `DELETE FROM carts WHERE user_id = ? AND product_id = ?;`,
+    [userId, productId]
+  );
+  return deletCart;
+};
 
 module.exports = {
   getCartDao,
   easyCheckDao,
   makeCartDao,
   updateQuantityDao,
-  // deletCartDao,
+  deletCartDao,
 };
