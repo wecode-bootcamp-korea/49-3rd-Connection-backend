@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const cartRouter = require('./cartRouter');
-router.use('/carts', cartRouter);
+cartRouter.use('/carts', cartRouter);
 
 module.exports = cartRouter;

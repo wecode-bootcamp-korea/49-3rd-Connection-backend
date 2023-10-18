@@ -25,7 +25,7 @@ const getCartController = async (req, res, next) => {
 // 장바구니 새로 생성
 const addNewProductController = async (req, res, next) => {
   try {
-    const userId = 3;
+    const userId = 1;
     const { prodcutId, quantity } = req.body;
     await cartService.creatCartService(userId, productId, quantity);
     if (!userId) {
