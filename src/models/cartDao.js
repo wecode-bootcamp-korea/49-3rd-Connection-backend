@@ -47,7 +47,7 @@ const easyCheckDao = async (userId, productId) => {
 //장바구니 생성
 const makeCartDao = async (userId, productId, quantity) => {
   const creatCart = await AppDataSource.query(
-    ` INSERT INTO carts (userId, prodcutId, quantity) VALUES (?,?,?)`,
+    ` INSERT INTO carts (user_id, product_id, quantity) VALUES (?,?,?)`,
     [userId, productId, quantity]
   );
   return creatCart;
@@ -56,7 +56,7 @@ const makeCartDao = async (userId, productId, quantity) => {
 // 장바구니 수량 변경
 const updateQuantityDao = async (userId, productId, quantity) => {
   const updateQuantity = await AppDataSource.query(
-    `UPDATE carts SET quantity =? WHERE userId=? and productId=?;`,
+    `UPDATE carts SET quantity =? WHERE user_id=? and product_id=?;`,
     [quantity, userId, productId]
   );
   return updateQuantity;

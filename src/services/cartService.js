@@ -31,7 +31,7 @@ const speedCheckService = async (userId, productId) => {
 // 장바구니 생성
 const updateCartService = async (userId, productId, quantity) => {
   const existingCartItem = await cartDao.easyCheckDao(userId, productId);
-  if (existingCartItem[0].quantity == 0) {
+  if (existingCartItem[0] == null) {
     const addCart = await cartDao.makeCartDao(userId, productId, quantity);
     return addCart;
   }
