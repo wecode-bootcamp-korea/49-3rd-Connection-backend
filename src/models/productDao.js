@@ -3,10 +3,10 @@ const { AppDataSource } = require('./dataSource');
 const getProductDetail = async (req, res) => {
   const detailProducts = await AppDataSource.query(
     `SELECT
-    products.id AS productsId,
-    products.name AS productsName,
+    products.id AS productId,
+    products.name AS productName,
     JSON_ARRAYAGG(JSON_OBJECT('url', product_detail_images.url)) AS productDetailImages,
-    products.images AS productsImg,
+    products.images AS productImg,
     products.price AS originalPrice,
     products.discount_rate AS discountRate,
     products.discount_price AS discountAmount,
