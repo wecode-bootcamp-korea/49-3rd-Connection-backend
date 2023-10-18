@@ -1,7 +1,7 @@
 const { productDao, builder } = require('../models');
 
-const getProductDetail = async (req, res) => {
-  const data = await productDao.getProductDetail();
+const getProductDetail = async (id) => {
+  const data = await productDao.getProductDetail(id);
   data.forEach((item) => {
     item.totalPrice = parseInt(item.totalPrice);
     item.Rating = parseInt(item.Rating);
