@@ -19,8 +19,8 @@ app.get('/', async (req, res) => {
   }
 });
 
-router.post('/test/image', imageUploader.single('image'), (req, res) => {
-  return res.status(200);
+app.post('/test/image', imageUploader.single('image'), (req, res) => {
+  return res.send('good');
 });
 
 const server = http.createServer(app);
