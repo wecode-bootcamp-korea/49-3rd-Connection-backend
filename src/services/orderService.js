@@ -10,10 +10,12 @@ const createOrders = async (
   productId,
   quantity
 ) => {
-  // 1) orders table 주문 정보 저장
+
   if (!productId) {
     throwError(400, 'no product');
   }
+
+  // 1) orders table 주문 정보 저장
   const newOrder = await orderDao.createOrders(
     userId,
     totalPrice,
@@ -21,8 +23,7 @@ const createOrders = async (
     paymentId
   ); // 주문정보 저장은 return해줄 필요 없음
 
-  // orderDetails 에서 저장하기 위한 orderId 가져오기
-  const orderId = newOrder;
+  const orderId = newOrder;      // orderDetails 에서 저장하기 위한 orderId 가져오기
 
   // 2) orderDetails table 주문 정보 저장
   await orderDao.createOrderDetails(
@@ -32,9 +33,13 @@ const createOrders = async (
     quantity
   )
 
+
+  // 3) carts 에서 삭제
+  // carts 의 quantity 와 orderDetails의 quantity가 같으면(if(cart에서 불러오는 Quantity == quantity)), 전체삭제 
+  // 같지 않다면(else), 부분 삭제 
   if(cartQuantity == quantity)
   else 
-  // 3) carts 에서 삭제
+  
   const deletingCarts = await orderDao.deleteCartsProducts(
     userId,
     productId,
