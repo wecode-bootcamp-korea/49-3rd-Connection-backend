@@ -1,4 +1,6 @@
 const { DataSource } = require('typeorm');
+
+console.log('디비커넥샨', process.env.DB_CONNECTION);
 const AppDataSource = new DataSource({
   type: process.env.DB_CONNECTION,
   host: process.env.DB_HOST,
@@ -9,6 +11,4 @@ const AppDataSource = new DataSource({
   logging: true,
 });
 
-module.exports = {
-  AppDataSource,
-};
+module.exports = { AppDataSource };
