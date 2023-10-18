@@ -92,7 +92,8 @@ describe('Get cartitem', () => {
   test('SUCCESS: get carts', async () => {
     const res = await request(app).get('/carts').send();
     expect(res.body).toEqual({
-      Data: [
+      message: 'Cart_Information',
+      data: [
         {
           seller_id: 1,
           products: [
