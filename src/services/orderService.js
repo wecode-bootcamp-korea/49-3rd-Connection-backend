@@ -14,4 +14,5 @@ const createOrderDetails = async (totalPrice, orderid) => {};
 
 module.exports = {
   createOrders: createOrders,
+  createOrderDetails: createOrderDetails,
 };
