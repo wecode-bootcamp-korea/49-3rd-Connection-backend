@@ -20,7 +20,7 @@ app.get('/', async (req, res) => {
 });
 
 router.post('/test/image', imageUploader.single('image'), (req, res) => {
-  res.send('good');
+  return res.status(200);
 });
 
 const server = http.createServer(app);
