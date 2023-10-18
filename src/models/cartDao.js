@@ -4,18 +4,31 @@ const { AppDataSource } = require('./dataSource');
 
 const getCartDao = async (userId) => {
   const checkCart = await AppDataSource.query(
-    `SELECT users.id AS user_id,
-     users.name AS user_name,
-     products.seller_id,
-     products.id AS product_id,
-     products.name AS product_name,
-     carts.quantity,
-     products.price,
-     products.discount_rate
-     FROM users 
-     INNER JOIN carts ON users.id=carts.user_id 
-     INNER JOIN products ON carts.product_id = products.id 
-     WHERE users.id = ?;`,
+    `SELECT
+    seller_id,
+    JSON_ARRAYAGG(
+      JSON_OBJECT(
+        'productId', product_id,
+        'productName', product_name,
+        'quantity', quantity,
+        'originalPrice', price,
+        'discountRate', discount_rate
+      )
+    ) AS products
+  FROM (
+    SELECT 
+      products.seller_id,
+      products.id AS product_id,
+      products.name AS product_name,
+      carts.quantity,
+      products.price,
+      products.discount_rate
+    FROM users 
+    INNER JOIN carts ON users.id=carts.user_id 
+    INNER JOIN products ON carts.product_id = products.id 
+    WHERE users.id = ?
+  ) AS subquery
+  GROUP BY seller_id;`,
     [userId]
   );
 
@@ -23,35 +36,35 @@ const getCartDao = async (userId) => {
 };
 
 // 장바구니 간편조회
-const easyCheckDao = async (userId) => {
-  const checkEasy = await DataSource.query(
-    `SELECT * FROM carts WHERE user_id = ?`,
-    [userId]
+const easyCheckDao = async (userId, productId) => {
+  const checkEasy = await AppDataSource.query(
+    `SELECT * FROM carts WHERE user_id = ? and product_id = ?`,
+    [userId, productId]
   );
   return checkEasy;
 };
 
-// // 장바구니 생성
-// cosnt makeCartDao = async (userId, productId, quantity) =>{
-//   const creatCart = await DataSource.query(
-//     ` INSERT INTO carts (userId, prodcutId, quantity) VALUES (?,?,?)`,
-//   [userId, productId, quantity]
-//   );
-//   return creatCart
-// }
+//장바구니 생성
+const makeCartDao = async (userId, productId, quantity) => {
+  const creatCart = await AppDataSource.query(
+    ` INSERT INTO carts (userId, prodcutId, quantity) VALUES (?,?,?)`,
+    [userId, productId, quantity]
+  );
+  return creatCart;
+};
 
-//장바구니 수량 변경
-// cosnt updateQuantityDao = async (quantity, cartId, productId) =>{
-//   const updateQuantity = await DataSource.query(
-//     `UPDATE carts SET quantity =? WHERE cartId=? and productId=?;`,
-//   [quantity,cartId,productId]
-//   );
-//   return updateQuantity
-// }
+// 장바구니 수량 변경
+const updateQuantityDao = async (userId, productId, quantity) => {
+  const updateQuantity = await AppDataSource.query(
+    `UPDATE carts SET quantity =? WHERE userId=? and productId=?;`,
+    [quantity, userId, productId]
+  );
+  return updateQuantity;
+};
 
-// 장바구니 삭제 (수량이 없을경우)
-// const deletCartDao = async (userId, cartId) => {
-//   const deletCart = await DataSource.query(
+// 장바구니 삭제 (수량이 없을경우, 삭제버튼이 있을경우)
+// const deletCartDao = async (cartId) => {
+//   const deletCart = await AppDataSource.query(
 //     `DELETE FROM carts WHERE cartId = ?;`,
 //     [cartId]
 //   );
@@ -61,7 +74,7 @@ const easyCheckDao = async (userId) => {
 module.exports = {
   getCartDao,
   easyCheckDao,
-  // makeCartDao,
-  // updateQuantityDao,
+  makeCartDao,
+  updateQuantityDao,
   // deletCartDao,
 };

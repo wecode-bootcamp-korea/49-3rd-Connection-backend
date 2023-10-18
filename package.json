@@ -25,6 +25,7 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.1",
     "supertest": "^6.3.3",
+    "react-router-dom": "^6.17.0",
     "typeorm": "^0.3.17"
   },
   "directories": {
