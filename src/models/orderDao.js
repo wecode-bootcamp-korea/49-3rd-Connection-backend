@@ -39,11 +39,14 @@ const createOrders = async (
       ) 
       `);
   return neworderDetails;
-};
-
-delete cart WHERE userId and productID and qauntity 
 
   // 3) carts 에서 삭제
+  const deletingCarts= await AppDataSource.query(`
+    DELETE FROM carts WHERE user_id = ${userId} AND product_id = ${productId} AND quantity = ${quantity}
+    `);
+    return deletingCarts;
+};
+
 
 module.exports = {
   createOrders,
