@@ -1,8 +1,8 @@
 const express = require('express');
-const orderController = require('../controllers');
+const { orderController } = require('../controllers');
 
-const router = express.Router();
+const postRouter = express.Router();
 
-router.post('/', ,orderController.); // 넣어야 함 
+postRouter.post('/', ,orderController.); // 넣어야 함 
 
-module.exports = { router }
+module.exports = { postRouter }
