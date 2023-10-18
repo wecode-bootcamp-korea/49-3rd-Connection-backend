@@ -28,35 +28,24 @@ const speedCheckService = async (userId, productId) => {
   return await cartDao.easyCheckDao(userId, productId);
 };
 
-// 장바구니 생성
+// 장바구니 생성 or 수량 늘리기
 const updateCartService = async (userId, productId, quantity) => {
   const existingCartItem = await cartDao.easyCheckDao(userId, productId);
   if (existingCartItem[0] == null) {
-    const addCart = await cartDao.makeCartDao(userId, productId, quantity);
-    return addCart;
+    return await cartDao.makeCartDao(userId, productId, quantity);
   }
   if (existingCartItem[0].quantity !== 0) {
-    console.log('너이름이 뭐야?', existingCartItem);
-    const updateCart = await cartDao.updateQuantityDao(
-      userId,
-      productId,
-      quantity
-    );
-    return updateCart;
+    return await cartDao.updateQuantityDao(userId, productId, quantity);
   }
 };
 
-const UpdateQuantityService = async (userId, productId, quantity) => {
+// 주문단계 진입하는 장바구니
+const UpdateOrderService = async (userId, productId, quantity) => {
   const existingCartItem = await cartDao.easyCheckDao(userId, productId);
   if (existingCartItem[0].quantity !== 0) {
-    const updateQuantity = await cartDao.updateQuantityDao(
-      userId,
-      productId,
-      quantity
-    );
-    return updateQuantity;
+    return await cartDao.updateQuantityDao(userId, productId, quantity);
   } else {
-    return await updateCartService(userId, productId, quantity);
+    return await cartDao.makeCartDao(userId, productId, quantity);
   }
 };
 
@@ -64,7 +53,7 @@ const UpdateQuantityService = async (userId, productId, quantity) => {
 const removeCartService = async (userId, productId) => {
   const checkProductExistence = cartDao.easyCheckDao(userId, productId);
   if (checkProductExistence.quantity > 0) {
-    await UpdatequantityService;
+    await UpdateOrderService;
   } else {
     await cartDao.deletCartDao(userId, productId);
   }
@@ -74,6 +63,6 @@ module.exports = {
   getCartService,
   speedCheckService,
   updateCartService,
-  UpdateQuantityService,
+  UpdateOrderService,
   removeCartService,
 };

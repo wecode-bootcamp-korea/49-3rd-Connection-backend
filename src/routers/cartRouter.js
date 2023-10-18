@@ -5,7 +5,7 @@ const cartRouter = express.Router();
 
 cartRouter.get('/', verifyToken, cartController.getCartController);
 cartRouter.post('/', verifyToken, cartController.addNewProductController);
-cartRouter.patch('/', verifyToken, cartController.UpdatequantityController);
+cartRouter.patch('/', verifyToken, cartController.UpdateOrderController);
 cartRouter.delete('/', verifyToken, cartController.removeCarcontroller);
 
 module.exports = cartRouter;

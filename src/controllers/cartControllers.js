@@ -47,8 +47,8 @@ const addNewProductController = async (req, res, next) => {
   }
 };
 
-// 장바구니 업데이트
-const UpdatequantityController = async (req, res, next) => {
+// 주문단계 진입 장바구니 업데이트
+const UpdateOrderController = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const { productId, quantity } = req.body;
@@ -56,15 +56,34 @@ const UpdatequantityController = async (req, res, next) => {
     if (!userId) {
       throwError(400, 'Connection Error');
     }
-    if (!productId) {
-      throwError(400, 'CANNOT_SEARCH_Product');
+    if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
+      throwError(400, 'Cart Items Missing or Invalid');
     }
-    if (!quantity) {
-      throwError(400, 'CANNOT_SEARCH_Quantity');
-    }
+    const updateResults = await Promise.all(
+      cartItems.map(async (cartItem) => {
+        const { productId, quantity } = cartItem;
+        if (!productId) {
+          throwError(400, 'CANNOT_SEARCH_Product');
+        }
+        if (!quantity) {
+          throwError(400, 'CANNOT_SEARCH_Quantity');
+        }
+
+        await cartService.UpdateQuantityService(userId, productId, quantity);
+        const speedCheckResult = await cartService.speedCheckService(
+          userId,
+          productId
+        );
+
+        return {
+          productId,
+          speedCheckResult,
+        };
+      })
+    );
     return res.status(200).json({
       message: 'Update Success!',
-      data: await cartService.speedCheckService(userId, productId),
+      data: updateResults,
     });
   } catch (error) {
     console.log('error', error);
@@ -94,6 +113,6 @@ const removeCarcontroller = async (req, res, next) => {
 module.exports = {
   getCartController,
   addNewProductController,
-  UpdatequantityController,
+  UpdateOrderController,
   removeCarcontroller,
 };
