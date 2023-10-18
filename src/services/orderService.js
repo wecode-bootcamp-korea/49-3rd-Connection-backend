@@ -10,6 +10,8 @@ const createOrders = async (totalPrice, shippingMethod, paymentId) => {
   return newOrder;
 };
 
+const createOrderDetails = async (totalPrice, orderid) => {};
+
 module.exports = {
   createOrders: createOrders,
 };
