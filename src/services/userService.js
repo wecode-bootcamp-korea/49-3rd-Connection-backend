@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const { throwError } = require('../utils/throwError');
 const { keyCheck } = require('../utils/keyCheck');
-const rp = require('request-promise');
 
 const findUser = async (userId) => {
   return await userDao.findById(userId);
@@ -22,9 +21,6 @@ const signUp = async (
   const emailRegx = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
   if (!email.match(emailRegx)) throwError(400, 'INVALID_EMAIL');
 
-  const existingUser = await userDao.findByEmail(email);
-  if (existingUser) throwError(400, 'DUPLICATED_EMAIL_ADDRESS');
-
   const passwordRegx = /^(?=.*[0-9])(?=.*[a-z])(?=.*\W)(?!.* ).{8,16}$/;
   if (!password.match(passwordRegx)) throwError(400, 'INVALID_PASSWORD');
 
@@ -40,6 +36,12 @@ const signUp = async (
     address,
     addressDetails
   );
+};
+
+const duplicateEmail = async (email) => {
+  const existingUser = await userDao.findByEmail(email);
+
+  if (existingUser) throwError(400, 'DUPLICATED_EMAIL_ADDRESS');
 };
 
 const signIn = async (email, password) => {
@@ -65,11 +67,11 @@ const sellerSignUp = async (
   phoneNumber,
   userId
 ) => {
-  const exisitingSeller = await userDao.findSeller(name);
-  if (exisitingSeller) throwError(400, 'INVALID_NAME');
+  const existingSeller = await userDao.findSeller(name);
+  if (existingSeller) throwError(400, 'INVALID_NAME');
 
-  const exisitingUser = await userDao.findById(userId);
-  if (exisitingUser.seller_id !== null) throwError(400, 'ALREADY_SELLER');
+  const existingUser = await userDao.findById(userId);
+  if (existingUser.seller_id !== null) throwError(400, 'ALREADY_SELLER');
 
   await userDao.sellerSignUp(
     name,
@@ -78,8 +80,7 @@ const sellerSignUp = async (
     address,
     addressDetails,
     phoneNumber,
-    userId,
-    sellerId
+    userId
   );
 };
 
@@ -169,6 +170,7 @@ const insertAddress = async (
 module.exports = {
   findUser,
   signUp,
+  duplicateEmail,
   signIn,
   sellerSignUp,
   kakaoSignIn,

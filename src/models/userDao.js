@@ -1,7 +1,7 @@
 const { AppDataSource } = require('./dataSource');
 
 const findById = async (id) => {
-  const [user] = await AppDataSource.query(
+  const user = await AppDataSource.query(
     `
     SELECT
       *

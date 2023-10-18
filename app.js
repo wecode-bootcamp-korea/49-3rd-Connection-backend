@@ -6,9 +6,7 @@ require('dotenv').config();
 const { router } = require('./src/routers');
 const { errorHandler } = require('./src/utils/errorHandler');
 // const router = express.Router();
-const passport = require('passport');
 
-require('./src/passport/kakaoStrategy');
 const app = express();
 
 app.use(cors());
@@ -16,7 +14,6 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use(router);
 app.use(errorHandler);
-app.use(passport.initialize());
 
 app.get('/', async (req, res) => {
   try {

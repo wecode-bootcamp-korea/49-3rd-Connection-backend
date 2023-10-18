@@ -37,6 +37,16 @@ const signUp = async (req, res) => {
   });
 };
 
+const duplicateEmail = async (req, res) => {
+  const { email } = req.body;
+
+  await userService.duplicateEmail(email);
+
+  res.status(200).json({
+    message: 'SUCCESS',
+  });
+};
+
 const signIn = async (req, res) => {
   const { email, password } = req.body;
 
@@ -84,8 +94,6 @@ const sellerSignUp = async (req, res) => {
 };
 
 const kakaoSignIn = async (req, res) => {
-  // const kakaoToken = req.headers['authorization'];
-
   const kakaoToken = req.query.code;
 
   const token = await userService.kakaoSignIn(kakaoToken);
@@ -124,6 +132,7 @@ const insertAddress = async (req, res) => {
 module.exports = {
   signUp,
   signIn,
+  duplicateEmail,
   sellerSignUp,
   kakaoSignIn,
   insertAddress,
