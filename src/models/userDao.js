@@ -1,7 +1,7 @@
 const { AppDataSource } = require('./dataSource');
 
 const findById = async (id) => {
-  const user = await AppDataSource.query(
+  const [user] = await AppDataSource.query(
     `
     SELECT
       *
@@ -17,7 +17,7 @@ const findById = async (id) => {
 };
 
 const findBySellerId = async (sellerId) => {
-  const user = await AppDataSource.query(
+  const [user] = await AppDataSource.query(
     `
       SELECT
         *
@@ -144,41 +144,6 @@ const sellerSignUp = async (
   );
 };
 
-const kakaoSignIn = async (kakaoId, name, email) => {
-  return await AppDataSource.query(
-    `
-      INSERT INTO users (
-        kakao,
-        name,
-        email
-      ) VALUES (?, ?, ?)
-    `,
-    [kakaoId, name, email]
-  );
-};
-
-const insertAddress = async (
-  phoneNumber,
-  zipCode,
-  address,
-  addressDetails,
-  userId
-) => {
-  await AppDataSource.query(
-    `
-      UPDATE users
-      SET
-        phone_number = ?,
-        zip_code = ?,
-        address = ?,
-        address_details = ?
-      WHERE
-        id = ?
-    `,
-    [phoneNumber, zipCode, address, addressDetails, userId]
-  );
-};
-
 module.exports = {
   findById,
   findBySellerId,
@@ -187,6 +152,4 @@ module.exports = {
   findByKakao,
   signUp,
   sellerSignUp,
-  kakaoSignIn,
-  insertAddress,
 };

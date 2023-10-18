@@ -93,47 +93,9 @@ const sellerSignUp = async (req, res) => {
   });
 };
 
-const kakaoSignIn = async (req, res) => {
-  const kakaoToken = req.query.code;
-
-  const token = await userService.kakaoSignIn(kakaoToken);
-
-  return res.status(200).json({
-    message: 'SUCCESS',
-    accessToken: token,
-  });
-};
-
-const insertAddress = async (req, res) => {
-  const userId = req.userId;
-
-  const { phoneNumber, zipCode, address, addressDetails } = req.body;
-
-  keyCheck({
-    phoneNumber,
-    zipCode,
-    address,
-    addressDetails,
-  });
-
-  await userService.insertAddress(
-    phoneNumber,
-    zipCode,
-    address,
-    addressDetails,
-    userId
-  );
-
-  return res.status(200).json({
-    message: 'SUCCESS',
-  });
-};
-
 module.exports = {
   signUp,
   signIn,
   duplicateEmail,
   sellerSignUp,
-  kakaoSignIn,
-  insertAddress,
 };
