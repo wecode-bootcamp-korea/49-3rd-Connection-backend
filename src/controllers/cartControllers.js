@@ -4,7 +4,7 @@ const { cartService } = require('../services');
 // 장바구니 조회
 const getCartController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.user.id;
     const cartInformation = await cartService.getCartService(userId);
     if (!userId) {
       throwError(400, 'Connection Error');
@@ -25,7 +25,7 @@ const getCartController = async (req, res, next) => {
 // 장바구니 새로 생성
 const addNewProductController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.user.id;
     const { productId, quantity } = req.body;
     await cartService.updateCartService(userId, productId, quantity);
     if (!userId) {
@@ -50,7 +50,7 @@ const addNewProductController = async (req, res, next) => {
 // 장바구니 업데이트
 const UpdatequantityController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.user.id;
     const { productId, quantity } = req.body;
     await cartService.UpdateQuantityService(userId, productId, quantity);
     if (!userId) {
@@ -74,7 +74,7 @@ const UpdatequantityController = async (req, res, next) => {
 
 const removeCarcontroller = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.user.id;
     const { productId } = req.body;
     await cartService.removeCartService(userId, productId);
     if (!userId) {
