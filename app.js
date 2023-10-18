@@ -2,6 +2,7 @@ const http = require('http');
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const { imageUploader } = require('./imageUploader');
 require('dotenv').config();
 // const { router } = require("./src/routes");
 const router = express.Router();
@@ -17,6 +18,11 @@ app.get('/', async (req, res) => {
     console.log(err);
   }
 });
+
+router.post('/test/image', imageUploader.single('image'), (req, res) => {
+  res.send('good');
+});
+
 const server = http.createServer(app);
 const portNumber = process.env.PORT || 8000;
 const start = async () => {
