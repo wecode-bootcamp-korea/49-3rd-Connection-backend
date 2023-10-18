@@ -5,6 +5,7 @@ const getProductDetail = async (id) => {
   data.forEach((item) => {
     item.totalPrice = parseInt(item.totalPrice);
     item.Rating = parseInt(item.Rating);
+    item.discountAmount = parseInt(item.discountAmount);
   });
   return data;
 };
