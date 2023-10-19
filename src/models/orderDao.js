@@ -1,4 +1,4 @@
-const { AppDataSource } = require('./dataSource.js');
+const { AppDataSource } = require('./dataSource');
 
 // 1) orders table 주문 정보 저장
 const createOrders = async (
@@ -56,18 +56,19 @@ const cartQuantity = async (userId, productId) => {
   SELECT quantity FROM carts WHERE user_id = ${userId} AND product_id = ${productId}
   `);
 }; // quantity는 'select 문을 위해' 받아올 필요 없음 , select문으로 구할 값!
+console.log(cartQuantity);
 
 // 3) carts 에서 전체 삭제
-const deleteAllCarts = async (userId, productId, quantity) => {
+const deleteAllCarts = async (userId, productId) => {
   await AppDataSource.query(`
-    DELETE FROM carts WHERE user_id = ${userId} AND product_id = ${productId} AND quantity = ${quantity}
+    DELETE FROM carts WHERE user_id = ${userId} AND product_id = ${productId} 
     `); // return 필요없음 (res 보내줄 값이 없음 )
 };
 
 // 4) carts 에서 부분 삭제
-const updateCarts = async (userId, productId, quantity) => {
+const updateCarts = async (userId, productId, updateQuantity) => {
   await AppDataSource.query(`
-    UPDATE carts SET quantity= ${quantity}  WHERE user_id = ${userId} AND product_id = ${productId} 
+    UPDATE carts SET  quantity = '${updateQuantity}'  WHERE user_id = ${userId} AND product_id = ${productId} 
     `); // return 필요없음 (res 보내줄 값이 없음 )
 }; //장바구니 테이블 : 수량 변경만 하면 됨
 

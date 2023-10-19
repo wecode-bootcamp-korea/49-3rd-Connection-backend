@@ -1,9 +1,9 @@
-const express = require('express');
 const { orderService } = require('../services');
 
 const createOrders = async (req, res) => {
   try {
-    req.userId = userId;
+    // req.userId = userId; 토큰 있을떄 (미들웨어 사용)
+    // req.body=userId 토큰 없을때 (포스트맨 사용)
     console.log('orderController connected');
 
     // 필요한 값들 다 req 에서 받아옴
@@ -35,3 +35,5 @@ const createOrders = async (req, res) => {
       .json({ message: 'FAILED creating orders 주문정보 저장 실패' });
   }
 };
+
+module.exports = { createOrders };

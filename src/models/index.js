@@ -1,4 +1,4 @@
-const { orderDao } = require('./orderDao');
+const orderDao = require('./orderDao');
 
 module.exports = {
   orderDao,
