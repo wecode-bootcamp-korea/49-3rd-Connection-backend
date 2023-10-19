@@ -10,9 +10,9 @@ const AppDataSource = new DataSource({
   logging: true,
 });
 
-AppDataSource.initialize().then(() => {
-  console.log('Data Source has been initialized!');
-});
+// AppDataSource.initialize().then(() => {
+//   console.log('Data Source has been initialized!');
+// });
 
 module.exports = {
   AppDataSource,

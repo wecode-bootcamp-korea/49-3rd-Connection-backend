@@ -1,9 +1,9 @@
 {
   "name": "49-3rd-connection-backend",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "nodemon server.js",
     "test": "DOTENV_CONFIG_PATH=.env.test jest --setupFiles=dotenv/config"
   },
   "keywords": [],
@@ -26,9 +26,6 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.1",
     "typeorm": "^0.3.17"
-  },
-  "directories": {
-    "test": "test"
   },
   "description": ""
 }

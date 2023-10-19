@@ -1,13 +1,17 @@
-const { createApp } = require('./app');
+require('dotenv').config();
 
-const portNumber = process.env.PORT || 8000;
-const start = async () => {
-  try {
-    const server = createApp();
-    server.listen(portNumber);
-    console.log(`Server is listening on ${portNumber}`);
-  } catch (err) {
-    console.error(err);
-  }
+const { createApp } = require('./app');
+const { AppDataSource } = require('./src/models/dataSource');
+
+const startServer = async () => {
+  const app = createApp();
+  const PORT = process.env.PORT;
+  console.log('hi', PORT);
+  await AppDataSource.initialize().then();
+
+  app.listen(PORT || 8000, () => {
+    console.log(`Listening on Port ${PORT}`);
+  });
 };
-start();
+
+startServer();
