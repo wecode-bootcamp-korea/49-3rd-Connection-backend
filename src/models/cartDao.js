@@ -16,22 +16,21 @@ const getCartDao = async (userId) => {
       )
     ) AS products
   FROM (
-    SELECT 
+    SELECT
       products.seller_id,
       products.id AS product_id,
       products.name AS product_name,
       carts.quantity,
       products.price,
       products.discount_rate
-    FROM users 
-    INNER JOIN carts ON users.id=carts.user_id 
-    INNER JOIN products ON carts.product_id = products.id 
+    FROM users
+    INNER JOIN carts ON users.id=carts.user_id
+    INNER JOIN products ON carts.product_id = products.id
     WHERE users.id = ?
   ) AS subquery
   GROUP BY seller_id;`,
     [userId]
   );
-
   return checkCart;
 };
 

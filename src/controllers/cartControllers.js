@@ -4,7 +4,7 @@ const { cartService } = require('../services');
 // 장바구니 조회
 const getCartController = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = 3;
     const cartInformation = await cartService.getCartService(userId);
     if (!userId) {
       throwError(400, 'Connection Error');
