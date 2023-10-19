@@ -36,8 +36,14 @@ const getCartDao = async (userId) => {
 
 // 장바구니 간편조회
 const easyCheckDao = async (userId, productId) => {
+  // console.log('userId::::::::::', userId, typeof userId);
+  // console.log('productId::::::::::', productId, typeof productId);
   const checkEasy = await AppDataSource.query(
-    `SELECT * FROM carts WHERE user_id = ? and product_id = ?`,
+    `SELECT
+    id AS cartId,
+    product_id AS productId,
+    quantity
+    FROM carts WHERE user_id = ? and product_id = ?`,
     [userId, productId]
   );
   return checkEasy;
@@ -55,16 +61,16 @@ const makeCartDao = async (userId, productId, quantity) => {
 // 장바구니 수량 변경
 const updateQuantityDao = async (userId, productId, quantity) => {
   const updateQuantity = await AppDataSource.query(
-    `UPDATE carts SET quantity =? WHERE user_id=? and product_id=?;`,
+    `UPDATE carts SET quantity =? WHERE user_id=? and product_id=?`,
     [quantity, userId, productId]
   );
   return updateQuantity;
 };
 
-//장바구니 삭제 (수량이 없을경우, 삭제버튼이 있을경우)
+//장바구니 삭제 (삭제버튼)
 const deletCartDao = async (userId, productId) => {
   const deletCart = await AppDataSource.query(
-    `DELETE FROM carts WHERE user_id = ? AND product_id = ?;`,
+    `DELETE FROM carts WHERE user_id = ? AND product_id = ?`,
     [userId, productId]
   );
   return deletCart;

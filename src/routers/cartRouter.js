@@ -4,8 +4,8 @@ const { cartController } = require('../controllers');
 const cartRouter = express.Router();
 
 cartRouter.get('/', cartController.getCartController);
-// cartRouter.post('/', verifyToken, cartController.addNewProductController);
-// cartRouter.patch('/', verifyToken, cartController.UpdateOrderController);
-// cartRouter.delete('/', verifyToken, cartController.removeCarcontroller);
+cartRouter.post('/', cartController.addNewProductController);
+cartRouter.patch('/', cartController.UpdateOrderController);
+cartRouter.delete('/', cartController.removeCarcontroller);
 
 module.exports = cartRouter;

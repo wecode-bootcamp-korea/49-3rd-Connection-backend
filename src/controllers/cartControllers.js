@@ -22,11 +22,12 @@ const getCartController = async (req, res, next) => {
   }
 };
 
-// 장바구니 새로 생성
+// 제품 상세페이지 장바구니 담기 (완료)
 const addNewProductController = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = 1;
     const { productId, quantity } = req.body;
+
     await cartService.updateCartService(userId, productId, quantity);
     if (!userId) {
       throwError(400, 'Connection Error');
@@ -47,43 +48,38 @@ const addNewProductController = async (req, res, next) => {
   }
 };
 
-// 주문단계 진입 장바구니 업데이트
+// 주문단계 진입전 장바구니 업데이트
 const UpdateOrderController = async (req, res, next) => {
   try {
-    const userId = req.user.id;
-    const { productId, quantity } = req.body;
-    await cartService.UpdateQuantityService(userId, productId, quantity);
-    if (!userId) {
-      throwError(400, 'Connection Error');
-    }
-    if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
-      throwError(400, 'Cart Items Missing or Invalid');
-    }
-    const updateResults = await Promise.all(
-      cartItems.map(async (cartItem) => {
-        const { productId, quantity } = cartItem;
+    const userId = 1;
+    const ArrayOfObjects = req.body.data;
+    await Promise.all(
+      ArrayOfObjects.map(async (item) => {
+        const { productId, quantity } = item;
+        item.userId = userId;
+        await cartService.UpdateQuantityService(userId, productId, quantity);
+        if (!userId) {
+          throwError(400, 'Connection Error');
+        }
         if (!productId) {
           throwError(400, 'CANNOT_SEARCH_Product');
         }
         if (!quantity) {
           throwError(400, 'CANNOT_SEARCH_Quantity');
         }
-
-        await cartService.UpdateQuantityService(userId, productId, quantity);
-        const speedCheckResult = await cartService.speedCheckService(
-          userId,
-          productId
-        );
-
-        return {
-          productId,
-          speedCheckResult,
-        };
       })
     );
+    const orderlist = await Promise.all(
+      ArrayOfObjects.map(async (item) => {
+        const { productId, quantity } = item;
+        item.userId = userId;
+        return cartService.speedCheckService(userId, productId); // await 추가
+      })
+    );
+    console.log('orderList:', orderlist);
     return res.status(200).json({
       message: 'Update Success!',
-      data: updateResults,
+      data: orderlist,
     });
   } catch (error) {
     console.log('error', error);
@@ -91,6 +87,7 @@ const UpdateOrderController = async (req, res, next) => {
   }
 };
 
+// 장바구니 삭제
 const removeCarcontroller = async (req, res, next) => {
   try {
     const userId = req.user.id;

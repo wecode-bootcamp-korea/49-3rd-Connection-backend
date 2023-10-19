@@ -25,7 +25,8 @@ const getCartService = async (userId) => {
 };
 
 const speedCheckService = async (userId, productId) => {
-  return await cartDao.easyCheckDao(userId, productId);
+  const speedCheck = await cartDao.easyCheckDao(userId, productId);
+  return speedCheck[0];
 };
 
 // 장바구니 생성 or 수량 늘리기
@@ -35,27 +36,28 @@ const updateCartService = async (userId, productId, quantity) => {
     return await cartDao.makeCartDao(userId, productId, quantity);
   }
   if (existingCartItem[0].quantity !== 0) {
-    return await cartDao.updateQuantityDao(userId, productId, quantity);
+    const addedQuantity = Number(existingCartItem[0].quantity + quantity);
+    return await cartDao.updateQuantityDao(userId, productId, addedQuantity);
   }
 };
 
-// 주문단계 진입하는 장바구니
-const UpdateOrderService = async (userId, productId, quantity) => {
+// 주문단계 전 장바구니 업데이트
+const UpdateQuantityService = async (userId, productId, quantity) => {
   const existingCartItem = await cartDao.easyCheckDao(userId, productId);
   if (existingCartItem[0].quantity !== 0) {
     return await cartDao.updateQuantityDao(userId, productId, quantity);
   } else {
-    return await cartDao.makeCartDao(userId, productId, quantity);
+    throwError;
   }
 };
 
 //장바구니 삭제
 const removeCartService = async (userId, productId) => {
-  const checkProductExistence = cartDao.easyCheckDao(userId, productId);
-  if (checkProductExistence.quantity > 0) {
-    await UpdateOrderService;
+  const checkCartExistence = cartDao.easyCheckDao(userId, productId);
+  if (checkCartExistence[0] !== null) {
+    return await cartDao.deletCartDao(userId, productId);
   } else {
-    await cartDao.deletCartDao(userId, productId);
+    throwError;
   }
 };
 
@@ -63,6 +65,6 @@ module.exports = {
   getCartService,
   speedCheckService,
   updateCartService,
-  UpdateOrderService,
+  UpdateQuantityService,
   removeCartService,
 };
