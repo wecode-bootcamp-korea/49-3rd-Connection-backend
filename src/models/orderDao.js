@@ -50,6 +50,12 @@ const neworderDetails = async (orderId, productId, quantity) => {
 }; // await 앞에 굳이 const로 함수명 정의해주지 않아도 됨. return할 때 필요한 건데, return 안하니
 // 함수명 회색이여도 괜찮음. 여기에서는 return을 해줄 필요 없음 -> 주문 정보 req에서 받아와서 저장이니, res에 보내줄 값이 없기에. (getPost일 땐 return 하겠지만)
 
+// 장바구니 삭제를 위한 수량 가져오기
+const cartQuantity = async (userId, productId, quantity) => {
+  await AppDataSource.query(`
+  SELECT quantity FROM carts WHERE user_id = ${userId} AND product_id = ${productId}
+  `);
+};
 // 3) carts 에서 전체 삭제
 const deleteAllCarts = async (userId, productId, quantity) => {
   await AppDataSource.query(`
@@ -67,6 +73,7 @@ const updateCarts = async (userId, productId, quantity) => {
 module.exports = {
   createOrders,
   neworderDetails,
+  cartQuantity,
   deleteAllCarts,
   updateCarts,
 };

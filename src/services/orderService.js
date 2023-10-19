@@ -29,6 +29,7 @@ const createOrders = async (
     quantity
   );
 
+  const cartQuantity = await orderDao.cartQuantity(userId, productId, quantity);
   // 3) carts 에서 삭제
   // carts 의 quantity 와 orderDetails의 quantity가 같으면(  if(cart에서 불러오는 Quantity == quantity)), 전체삭제
   // 같지 않다면(else), 부분 삭제
@@ -42,6 +43,7 @@ const createOrders = async (
     const updateCarts = await orderDao.updateCarts(userId, productId, quantity);
   }
 };
+// orderDetails 의 quantity에서 내려오는 값, cartQauntity를 따로 가져오는 쿼리문 연결
 
 module.exports = {
   createOrders,
