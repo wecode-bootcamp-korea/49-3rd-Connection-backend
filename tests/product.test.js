@@ -48,13 +48,13 @@ describe('get product', () => {
   });
 
   test('SUCCESS: get list by sellerId 1', async () => {
-    const res = await request(app).get('/products/seller/1');
+    const res = await request(app).get('/products?sellerId=1');
     expect(res.status).toBe(200);
     expect(res.body.message).toEqual('Success');
   });
 
   test('SUCCESS: get list by categoryId 1', async () => {
-    const res = await request(app).get('/products/?categoryId=1');
+    const res = await request(app).get('/products?categoryId=1');
     expect(res.status).toBe(200);
     expect(res.body.message).toEqual('Success');
   });
