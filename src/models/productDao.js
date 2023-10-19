@@ -15,7 +15,7 @@ const getProductDetail = async (id) => {
     (products.price * products.discount_rate)/100 As discountAmount,
     (products.price - (products.price * (products.discount_rate / 100))) AS totalPrice,
     COUNT(DISTINCT reviews.id) AS reviewNumbers,
-   IFNULL( IFNULL(SUM(reviews.rating), 0) / IFNULL(COUNT(reviews.id), 1),0) AS Rating
+    IFNULL( IFNULL(SUM(reviews.rating), 0) / IFNULL(COUNT(reviews.id), 1),0) AS Rating
 FROM products
 LEFT JOIN reviews ON products.id = reviews.product_id
 WHERE products.id = ${id}
