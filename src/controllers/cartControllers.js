@@ -90,7 +90,7 @@ const UpdateOrderController = async (req, res, next) => {
 // 장바구니 삭제
 const removeCarcontroller = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = 1;
     const { productId } = req.body;
     await cartService.removeCartService(userId, productId);
     if (!userId) {
