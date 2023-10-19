@@ -51,7 +51,7 @@ const neworderDetails = async (orderId, productId, quantity) => {
 // 함수명 회색이여도 괜찮음. 여기에서는 return을 해줄 필요 없음 -> 주문 정보 req에서 받아와서 저장이니, res에 보내줄 값이 없기에. (getPost일 땐 return 하겠지만)
 
 // 장바구니 삭제를 위한 수량 가져오기
-const cartQuantity = async (userId, productId, quantity) => {
+const cartQuantity = async (userId, productId) => {
   await AppDataSource.query(`
   SELECT quantity FROM carts WHERE user_id = ${userId} AND product_id = ${productId}
   `);
@@ -66,7 +66,7 @@ const deleteAllCarts = async (userId, productId, quantity) => {
 // 4) carts 에서 부분 삭제
 const updateCarts = async (userId, productId, quantity) => {
   await AppDataSource.query(`
-    UPDATE carts SET quantity= ${quantitiy}  WHERE user_id = ${userId} AND product_id = ${productId} 
+    UPDATE carts SET quantity= ${quantity}  WHERE user_id = ${userId} AND product_id = ${productId} 
     `); // return 필요없음 (res 보내줄 값이 없음 )
 }; //장바구니 테이블 : 수량 변경만 하면 됨
 
