@@ -8,9 +8,7 @@ const AppDataSource = new DataSource({
   database: process.env.DB_DATABASE,
   logging: true,
 });
-AppDataSource.initialize().then(() => {
-  console.log('Data Source has been initialized!');
-});
+
 module.exports = {
   AppDataSource,
 };
