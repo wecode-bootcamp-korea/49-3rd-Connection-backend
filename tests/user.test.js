@@ -153,7 +153,7 @@ describe('Log in', () => {
 
   test('SUCCESS : Log In', async () => {
     const res = await request(app)
-      .post('/users/')
+      .post('/users')
       .send({
         email: 'abcd@email.com',
         password: 'ks123456!!',
@@ -187,15 +187,40 @@ describe('Log in', () => {
 
 describe('Seller Sign Up', () => {
   let app;
-  let userId;
-  let sellerId;
+  let token;
   let accessToken;
+  let nameToken;
 
   beforeAll(async () => {
     app = createApp();
 
     await AppDataSource.initialize();
 
+    let newId;
+    const newSeller = await AppDataSource.query(
+      `INSERT INTO users (
+        name,
+        email,
+        password,
+        phone_number,
+        zip_code,
+        address,
+        address_details
+        ) VALUES (
+          "정지현",
+          "abcd2222@email.com",
+          "ks123456!!",
+          "01012345678",
+          "123456",
+          "테헤란로 427",
+          "10층 라운지"
+      )`
+    );
+    newId = newSeller.insertId;
+    token = jwt.sign({ id: newId }, process.env.JWT_SECRET);
+
+    let userId;
+    let sellerId;
     const seller = await AppDataSource.query(
       `
       INSERT INTO sellers (
@@ -237,8 +262,8 @@ describe('Seller Sign Up', () => {
     userId = user.insertId;
     accessToken = jwt.sign({ id: userId }, process.env.JWT_SECRET);
 
-    let newId;
-    const newSeller = await AppDataSource.query(
+    let alreadyName;
+    const insertUser = await AppDataSource.query(
       `INSERT INTO users (
         name,
         email,
@@ -248,8 +273,8 @@ describe('Seller Sign Up', () => {
         address,
         address_details
         ) VALUES (
-          "정지현",
-          "abcd2222@email.com",
+          "이준호",
+          "abc222@email.com",
           "ks123456!!",
           "01012345678",
           "123456",
@@ -257,8 +282,8 @@ describe('Seller Sign Up', () => {
           "10층 라운지"
       )`
     );
-    newId = newSeller.insertId;
-    token = jwt.sign({ id: newId }, process.env.JWT_SECRET);
+    alreadyName = insertUser.insertId;
+    nameToken = jwt.sign({ id: alreadyName }, process.env.JWT_SECRET);
   });
 
   afterAll(async () => {
@@ -286,22 +311,6 @@ describe('Seller Sign Up', () => {
     expect(res.body.message).toEqual('SUCCESS');
   });
 
-  test('FAILED : invalid name', async () => {
-    const res = await request(app)
-      .post('/users/seller')
-      .set('Authorization', accessToken)
-      .send({
-        name: '류제영',
-        image: '1',
-        zipCode: '123456',
-        address: '테헤란로 427',
-        addressDetails: '10층 라운지',
-        phoneNumber: '01012345678',
-      })
-      .expect(400);
-    expect(res.body.message).toEqual('INVALID_NAME');
-  });
-
   test('FAILED : already seller', async () => {
     const res = await request(app)
       .post('/users/seller')
@@ -316,5 +325,21 @@ describe('Seller Sign Up', () => {
       })
       .expect(400);
     expect(res.body.message).toEqual('ALREADY_SELLER');
+  });
+
+  test('FAILED : invalid name', async () => {
+    const res = await request(app)
+      .post('/users/seller')
+      .set('Authorization', nameToken)
+      .send({
+        name: '류제영',
+        image: '1',
+        zipCode: '123456',
+        address: '테헤란로 427',
+        addressDetails: '10층 라운지',
+        phoneNumber: '01012345678',
+      })
+      .expect(400);
+    expect(res.body.message).toEqual('INVALID_NAME');
   });
 });

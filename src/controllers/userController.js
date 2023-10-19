@@ -37,10 +37,10 @@ const signUp = async (req, res) => {
   });
 };
 
-const duplicateEmail = async (req, res) => {
+const checkDuplicatedEmail = async (req, res) => {
   const { email } = req.body;
 
-  await userService.duplicateEmail(email);
+  await userService.checkDuplicatedEmail(email);
 
   res.status(200).json({
     message: 'SUCCESS',
@@ -96,6 +96,6 @@ const sellerSignUp = async (req, res) => {
 module.exports = {
   signUp,
   signIn,
-  duplicateEmail,
+  checkDuplicatedEmail,
   sellerSignUp,
 };

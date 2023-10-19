@@ -1,10 +1,10 @@
 const { AppDataSource } = require('./dataSource');
 
-const findById = async (id) => {
+const findUserById = async (id) => {
   const [user] = await AppDataSource.query(
     `
     SELECT
-      *
+      seller_id AS sellerId
     FROM
       users
     WHERE
@@ -16,7 +16,7 @@ const findById = async (id) => {
   return user;
 };
 
-const findBySellerId = async (sellerId) => {
+const findUserBySellerId = async (sellerId) => {
   const [user] = await AppDataSource.query(
     `
       SELECT
@@ -25,6 +25,7 @@ const findBySellerId = async (sellerId) => {
         users
       WHERE
         seller_id = ?
+      LMIT 1
     `,
     [sellerId]
   );
@@ -32,11 +33,13 @@ const findBySellerId = async (sellerId) => {
   return user;
 };
 
-const findByEmail = async (email) => {
+const findUserByEmail = async (email) => {
   const [user] = await AppDataSource.query(
     `
     SELECT
-      *
+      email,
+      seller_id AS sellerId,
+      password
     FROM
       users
     WHERE
@@ -48,15 +51,16 @@ const findByEmail = async (email) => {
   return user;
 };
 
-const findSeller = async (name) => {
+const findSellerByName = async (name) => {
   const [user] = await AppDataSource.query(
     `
     SELECT
-      *
+      name
     FROM
       sellers
     WHERE
       name = ?
+    LIMIT 1
     `,
     [name]
   );
@@ -64,23 +68,7 @@ const findSeller = async (name) => {
   return user;
 };
 
-const findByKakao = async (kakaoId) => {
-  const [user] = await AppDataSource.query(
-    `
-    SELECT
-      *
-    FROM
-      users
-    WHERE
-      kakao = ?
-    `,
-    [kakaoId]
-  );
-
-  return user;
-};
-
-const signUp = async (
+const createUser = async (
   name,
   email,
   password,
@@ -106,7 +94,7 @@ const signUp = async (
   );
 };
 
-const sellerSignUp = async (
+const createSeller = async (
   name,
   image,
   zipCode,
@@ -115,41 +103,42 @@ const sellerSignUp = async (
   phoneNumber,
   userId
 ) => {
-  const seller = await AppDataSource.query(
-    `
-      INSERT INTO sellers (
-        name,
-        image,
-        zip_code,
-        address,
-        address_details,
-        phone_number
-      ) VALUES
-        (?, ?, ?, ?, ?, ?)
-    `,
-    [name, image, zipCode, address, addressDetails, phoneNumber]
-  );
+  await AppDataSource.transaction(async (transactionManager) => {
+    const seller = await transactionManager.query(
+      `
+        INSERT INTO sellers (
+          name,
+          image,
+          zip_code,
+          address,
+          address_details,
+          phone_number
+        ) VALUES
+          (?, ?, ?, ?, ?, ?)
+      `,
+      [name, image, zipCode, address, addressDetails, phoneNumber]
+    );
 
-  const sellerId = seller.insertId;
+    const sellerId = seller.insertId;
 
-  await AppDataSource.query(
-    `
-      UPDATE users 
-      SET 
-        seller_id = ? 
-      WHERE 
-        id = ?
-    `,
-    [sellerId, userId]
-  );
+    await transactionManager.query(
+      `
+        UPDATE users 
+        SET 
+          seller_id = ? 
+        WHERE 
+          id = ?
+      `,
+      [sellerId, userId]
+    );
+  });
 };
 
 module.exports = {
-  findById,
-  findBySellerId,
-  findByEmail,
-  findSeller,
-  findByKakao,
-  signUp,
-  sellerSignUp,
+  findUserById,
+  findUserBySellerId,
+  findUserByEmail,
+  findSellerByName,
+  createUser,
+  createSeller,
 };

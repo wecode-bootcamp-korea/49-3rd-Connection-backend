@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const { throwError } = require('../utils/throwError');
 
 const findUser = async (userId) => {
-  return await userDao.findById(userId);
+  return await userDao.findUserById(userId);
 };
 
 const signUp = async (
@@ -25,7 +25,7 @@ const signUp = async (
   const saltRounds = 12;
   const bcryptPassword = await bcrypt.hash(password, saltRounds);
 
-  await userDao.signUp(
+  await userDao.createUser(
     name,
     email,
     bcryptPassword,
@@ -36,17 +36,17 @@ const signUp = async (
   );
 };
 
-const duplicateEmail = async (email) => {
-  const existingUser = await userDao.findByEmail(email);
+const checkDuplicatedEmail = async (email) => {
+  const existingUser = await userDao.findUserByEmail(email);
 
   if (existingUser) throwError(400, 'DUPLICATED_EMAIL_ADDRESS');
 };
 
 const signIn = async (email, password) => {
-  const existingUser = await userDao.findByEmail(email);
+  const existingUser = await userDao.findUserByEmail(email);
   if (!existingUser) throwError(400, 'USER_NOT_FOUND');
   let isSeller = false;
-  if (existingUser.seller_id != null) isSeller = true;
+  if (existingUser.sellerId != null) isSeller = true;
 
   const checkPassword = await bcrypt.compare(password, existingUser.password);
   if (!checkPassword) throwError(400, 'WRONG_PASSWORD');
@@ -65,13 +65,13 @@ const sellerSignUp = async (
   phoneNumber,
   userId
 ) => {
-  const existingSeller = await userDao.findSeller(name);
+  const existingUser = await userDao.findUserById(userId);
+  if (existingUser.sellerId !== null) throwError(400, 'ALREADY_SELLER');
+
+  const existingSeller = await userDao.findSellerByName(name);
   if (existingSeller) throwError(400, 'INVALID_NAME');
 
-  const existingUser = await userDao.findById(userId);
-  if (existingUser.seller_id !== null) throwError(400, 'ALREADY_SELLER');
-
-  await userDao.sellerSignUp(
+  await userDao.createSeller(
     name,
     image,
     zipCode,
@@ -85,7 +85,7 @@ const sellerSignUp = async (
 module.exports = {
   findUser,
   signUp,
-  duplicateEmail,
+  checkDuplicatedEmail,
   signIn,
   sellerSignUp,
 };
