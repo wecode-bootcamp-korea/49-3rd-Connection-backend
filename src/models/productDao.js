@@ -5,7 +5,6 @@ const getTotalCategoryId = async () => {
 
   return ID;
 };
-
 const getCategoryNameById = async (categoryId) => {
   const name = await AppDataSource.query(
     `select product_categories.category_name FROM product_categories
@@ -14,7 +13,6 @@ const getCategoryNameById = async (categoryId) => {
 
   return name;
 };
-
 const getRandomSellerId = async () => {
   const sellers = await AppDataSource.query(
     `SELECT id FROM sellers ORDER BY rand() LIMIT 3;`
@@ -31,7 +29,12 @@ const getSellerNameById = async (sellerId) => {
   return name;
 };
 
-const getTotalProductBySellerId = async (sellerId) => {
+const getProducts = async (
+  orderingQuery,
+  joinQuery,
+  whereQuery,
+  limitOffsetQuery
+) => {
   let query = `SELECT 
   products.id AS productId,
   products.name AS productName,
@@ -50,14 +53,22 @@ const getTotalProductBySellerId = async (sellerId) => {
     FROM reviews
     WHERE reviews.product_id = products.id), 0) AS rating
    FROM products
-   LEFT JOIN product_categories ON products.product_category_id = product_categories.id
-   WHERE products.product_category_id=${sellerId}`;
+   ${joinQuery}
+   WHERE 1=1
+   ${whereQuery}
+   ${orderingQuery}
+   ${limitOffsetQuery}
+   `;
 
-  const product = await AppDataSource.query(query);
-  return product;
+  const products = await AppDataSource.query(query);
+  return products;
 };
 
-const getTotalProductByCategoryId = async (categoryId) => {
+const getProductBySellerId = async (
+  whereQuery,
+  limitOffsetQuery,
+  orderingQuery
+) => {
   let query = `SELECT 
   products.id AS productId,
   products.name AS productName,
@@ -76,17 +87,20 @@ const getTotalProductByCategoryId = async (categoryId) => {
     FROM reviews
     WHERE reviews.product_id = products.id), 0) AS rating
    FROM products
-   LEFT JOIN product_categories ON products.product_category_id = product_categories.id
-   WHERE products.product_category_id=${categoryId}`;
-  const product = await AppDataSource.query(query);
-  return product;
+   WHERE 1=1
+   ${whereQuery}
+   ${orderingQuery}
+   ${limitOffsetQuery}
+ `;
+  const products = await AppDataSource.query(query);
+  return products;
 };
 
 module.exports = {
   getTotalCategoryId,
   getRandomSellerId,
-  getTotalProductBySellerId,
-  getTotalProductByCategoryId,
   getCategoryNameById,
   getSellerNameById,
+  getProducts,
+  getProductBySellerId,
 };
