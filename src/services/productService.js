@@ -6,7 +6,10 @@ const getTotalProductByCategoryId = async () => {
 
   let result = await Promise.all(
     categoryId.map(async (categoryId) => {
-      const product = await productDao.getTotalProductByCategoryId(categoryId);
+      const joinQuery = await builder.joinQuery();
+      console.log('조인쿼리 콘솔!', joinQuery);
+      const whereQuery = await builder.whereQueryWithCategory(categoryId);
+      const product = await productDao.getProducts(joinQuery, whereQuery);
       const categoryName = await productDao.getCategoryNameById(categoryId);
 
       return {
@@ -34,7 +37,8 @@ const getProductRandomSellerId = async (req, res) => {
 
   let result = await Promise.all(
     sellerId.map(async (sellerId) => {
-      const product = await productDao.getTotalProductBySellerId(sellerId);
+      const whereQuery = await builder.whereQueryWithSeller(sellerId);
+      const product = await productDao.getProducts('', whereQuery);
       const sellerName = await productDao.getSellerNameById(sellerId);
 
       return {
@@ -84,31 +88,11 @@ const getProducts = async (filter, sort, limit, offset) => {
   const joinQuery = await builder.joinQuery();
   const limitOffsetQuery = await builder.limitOffsetQuery(limit, offset);
   let data = await productDao.getProducts(
-    orderingQuery,
     joinQuery,
     whereQuery,
+    orderingQuery,
     limitOffsetQuery
   );
-  data.forEach((item) => {
-    item.discountAmount = parseInt(item.discountAmount);
-    item.reviewNumber = parseInt(item.reviewNumber);
-    item.totalPrice = parseInt(item.totalPrice);
-    item.rating = parseInt(item.rating);
-  });
-
-  return data;
-};
-
-const getProductBySellerId = async (filter, sort, limit, offset) => {
-  const orderingQuery = await builder.ordering(sort);
-  const whereQuery = await builder.whereQueryWithSeller(filter.seller);
-  let data = await productDao.getProductBySellerId(
-    whereQuery,
-    orderingQuery,
-    limit,
-    offset
-  );
-
   data.forEach((item) => {
     item.discountAmount = parseInt(item.discountAmount);
     item.reviewNumber = parseInt(item.reviewNumber);
@@ -124,5 +108,4 @@ module.exports = {
   getTotalProductByCategoryId,
   getNameById,
   getProducts,
-  getProductBySellerId,
 };
