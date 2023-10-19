@@ -30,9 +30,13 @@ const createOrders = async (
   );
 
   const cartQuantity = await orderDao.cartQuantity(userId, productId, quantity);
+  // orderDao에서 userId, productId, quantity를 받아온다.
+
   // 3) carts 에서 삭제
   // carts 의 quantity 와 orderDetails의 quantity가 같으면(  if(cart에서 불러오는 Quantity == quantity)), 전체삭제
   // 같지 않다면(else), 부분 삭제
+
+  // 위에서 받아온 cartQuantity, orderdetails에서 받은 quantity
   if (cartQuantity == quantity) {
     const deleteAllCarts = await orderDao.deleteAllCarts(
       userId,

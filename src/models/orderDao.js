@@ -55,7 +55,8 @@ const cartQuantity = async (userId, productId) => {
   await AppDataSource.query(`
   SELECT quantity FROM carts WHERE user_id = ${userId} AND product_id = ${productId}
   `);
-};
+}; // quantity는 'select 문을 위해' 받아올 필요 없음 , select문으로 구할 값!
+
 // 3) carts 에서 전체 삭제
 const deleteAllCarts = async (userId, productId, quantity) => {
   await AppDataSource.query(`
