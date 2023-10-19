@@ -1,13 +1,19 @@
 const { productDao, builder } = require('../models');
 
-const getCategoryNameById = async (categoryId) => {
-  const data = await productDao.getCategoryNameById(categoryId);
-  return data;
-};
-
-const getSellerNameById = async (sellerId) => {
-  const data = await productDao.getSellerNameById(sellerId);
-  return data;
+const getNameById = async (filter) => {
+  let name;
+  let result;
+  console.log(filter);
+  if (filter.seller == 0) {
+    name = await productDao.getCategoryNameById(filter.category);
+    result = name[0].category_name;
+  } else if (filter.category == 0) {
+    name = await productDao.getSellerNameById(filter.seller);
+    result = name[0].name;
+  }
+  console.log(name[0].category_name);
+  console.log(name);
+  return result;
 };
 
 const getProducts = async (filter, sort, limit, offset) => {
@@ -16,6 +22,8 @@ const getProducts = async (filter, sort, limit, offset) => {
   let whereQuery;
   if (filter.category) {
     whereQuery = await builder.whereQueryWithCategory(filter.category);
+  } else {
+    whereQuery = await builder.whereQueryWithSeller(filter.seller);
   }
 
   const orderingQuery = await builder.ordering(sort);
@@ -58,8 +66,7 @@ const getProductBySellerId = async (filter, sort, limit, offset) => {
 };
 
 module.exports = {
-  getCategoryNameById,
-  getSellerNameById,
+  getNameById,
   getProducts,
   getProductBySellerId,
 };

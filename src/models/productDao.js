@@ -59,9 +59,8 @@ const getProducts = async (
 
 const getProductBySellerId = async (
   whereQuery,
-  orderingQuery,
-  limit,
-  offset
+  limitOffsetQuery,
+  orderingQuery
 ) => {
   let query = `SELECT 
   products.id AS productId,
@@ -83,12 +82,9 @@ const getProductBySellerId = async (
    FROM products
    WHERE 1=1
    ${whereQuery}
-   `;
-
-  query += orderingQuery;
-
-  query += `
-    LIMIT ${limit} OFFSET ${offset}`;
+   ${orderingQuery}
+   ${limitOffsetQuery}
+ `;
   const products = await AppDataSource.query(query);
   return products;
 };
