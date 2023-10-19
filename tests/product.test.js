@@ -48,14 +48,48 @@ describe('get product', () => {
   });
 
   test('SUCCESS: get list by sellerId 1', async () => {
-    const res = await request(app).get('/products?sellerId=1');
+    const res = await request(app).get('/products?categoryId=1');
     expect(res.status).toBe(200);
-    expect(res.body.message).toEqual('Success');
+    expect(res.body).toEqual({
+      message: 'Success',
+      name: 'test-category',
+      data: [
+        {
+          productId: 1,
+          productName: 'test-product',
+          productImg: 'image',
+          originalPrice: 20000,
+          discountRate: 10,
+          discountAmount: 2000,
+          totalPrice: 18000,
+          reviewNumber: 1,
+          rating: 2,
+        },
+      ],
+      totalQuantity: 1,
+    });
   });
 
   test('SUCCESS: get list by categoryId 1', async () => {
-    const res = await request(app).get('/products?categoryId=1');
+    const res = await request(app).get('/products?sellerId=1');
     expect(res.status).toBe(200);
-    expect(res.body.message).toEqual('Success');
+    expect(res.body).toEqual({
+      message: 'Success',
+      name: 'test',
+      data: [
+        {
+          productId: 1,
+          productName: 'test-product',
+          productImg: 'image',
+          originalPrice: 20000,
+          discountRate: 10,
+          discountAmount: 2000,
+          totalPrice: 18000,
+          reviewNumber: 1,
+          rating: 2,
+        },
+      ],
+      totalQuantity: 1,
+    });
   });
 });
