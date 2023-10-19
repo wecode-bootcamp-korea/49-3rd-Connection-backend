@@ -1,39 +1,30 @@
 const { AppDataSource } = require('./dataSource');
 
 // 1) orders table 주문 정보 저장
-const createOrders = async (
-  userId,
-  orderId,
-  totalPrice,
-  shippingMethod,
-  paymentId
-) => {
+const createOrders = async (userId, totalPrice, shippingMethod, paymentId) => {
   const newOrder = await AppDataSource.query(`
     INSERT INTO 
       orders(
-        userID, 
-        orderID,
+        user_id, 
         total_price, 
         shipping_method, 
         payment_id
         ) 
     VALUES (
       '${userId}', 
-      '${orderId}', 
       '${totalPrice}', 
       '${shippingMethod}', 
       '${paymentId}'
     ) 
     `);
+  console.log('방금 수행한 작업 정보:', newOrder);
 
-  console.log(newOrder);
-
-  const orderId = newOrder.insertId; // 위에서 저장한 newOrder에서 insertId로 자동으로 order.id만 뽑아내는 코드
-  return orderId; //뽑아낸 order.id를 orderService.js로 보내주기
+  console.log('orderId:', newOrder.insertId);
+  return newOrder.insertId;
 };
 
 // 2) orderDetails table 주문 정보 저장
-const neworderDetails = async (orderId, productId, quantity) => {
+const newOrderDetails = async (orderId, productId, quantity) => {
   await AppDataSource.query(`
     INSERT INTO 
       order_details(
@@ -42,7 +33,7 @@ const neworderDetails = async (orderId, productId, quantity) => {
         quantity
         ) 
     VALUES (
-      "${orderId} ", 
+      "${orderId}", 
       "${productId}", 
       "${quantity}" 
       ) 
@@ -52,11 +43,13 @@ const neworderDetails = async (orderId, productId, quantity) => {
 
 // 장바구니 삭제를 위한 수량 가져오기
 const cartQuantity = async (userId, productId) => {
-  await AppDataSource.query(`
+  const result = await AppDataSource.query(`
   SELECT quantity FROM carts WHERE user_id = ${userId} AND product_id = ${productId}
   `);
+  console.log('수량 확인 콘솔', result[0].quantity);
+  return result[0].quantity;
 }; // quantity는 'select 문을 위해' 받아올 필요 없음 , select문으로 구할 값!
-console.log(cartQuantity);
+// console.log('카트에 들어있는 수량 :', cartQuantity);
 
 // 3) carts 에서 전체 삭제
 const deleteAllCarts = async (userId, productId) => {
@@ -74,7 +67,7 @@ const updateCarts = async (userId, productId, updateQuantity) => {
 
 module.exports = {
   createOrders,
-  neworderDetails,
+  newOrderDetails,
   cartQuantity,
   deleteAllCarts,
   updateCarts,
