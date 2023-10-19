@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "test": "DOTENV_CONFIG_PATH=.env.test jest --setupFiles=dotenv/config --detectOpenHandles"
+    "test": "DOTENV_CONFIG_PATH=.env.test jest --setupFiles=dotenv/config --verbose --runInBand --silent",
+    "start": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -15,9 +15,11 @@
     "jest": "^29.7.0",
     "morgan": "^1.10.0",
     "nodemon": "^3.0.1",
-    "prettier": "^3.0.3"
+    "prettier": "^3.0.3",
+    "supertest": "^6.3.3"
   },
   "dependencies": {
+    "axios": "^1.5.1",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
