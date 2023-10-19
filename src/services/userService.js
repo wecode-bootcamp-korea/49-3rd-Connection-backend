@@ -45,15 +45,13 @@ const checkDuplicatedEmail = async (email) => {
 const signIn = async (email, password) => {
   const existingUser = await userDao.findUserByEmail(email);
   if (!existingUser) throwError(400, 'USER_NOT_FOUND');
-  let isSeller = false;
-  if (existingUser.sellerId != null) isSeller = true;
 
   const checkPassword = await bcrypt.compare(password, existingUser.password);
   if (!checkPassword) throwError(400, 'WRONG_PASSWORD');
 
   const token = jwt.sign({ id: existingUser.id }, process.env.JWT_SECRET);
 
-  return { accessToken: token, isSeller: isSeller };
+  return { accessToken: token, isSeller: !!existingUser.sellerId };
 };
 
 const sellerSignUp = async (

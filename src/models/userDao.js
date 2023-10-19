@@ -16,23 +16,6 @@ const findUserById = async (id) => {
   return user;
 };
 
-const findUserBySellerId = async (sellerId) => {
-  const [user] = await AppDataSource.query(
-    `
-      SELECT
-        *
-      FROM
-        users
-      WHERE
-        seller_id = ?
-      LMIT 1
-    `,
-    [sellerId]
-  );
-
-  return user;
-};
-
 const findUserByEmail = async (email) => {
   const [user] = await AppDataSource.query(
     `
@@ -136,7 +119,6 @@ const createSeller = async (
 
 module.exports = {
   findUserById,
-  findUserBySellerId,
   findUserByEmail,
   findSellerByName,
   createUser,
