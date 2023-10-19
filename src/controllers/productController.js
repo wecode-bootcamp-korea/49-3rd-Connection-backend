@@ -5,6 +5,7 @@ const getProductDetail = async (req, res) => {
     const id = req.params.productId;
     const data = await productService.getProductDetail(id);
 
+    console.log('C', data);
     return res.status(200).json({
       message: 'Success',
       product: data,

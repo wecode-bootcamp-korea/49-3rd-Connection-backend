@@ -1,7 +1,7 @@
 const request = require('supertest');
 
 // supertest의 request에 app을 담아 활용하기 위해 createApp 함수를 불러옵니다.
-const { createApp } = require('./app');
+const { createApp } = require('../app');
 // DB와의 커넥션을 위해 DataSource 객체를 불러옵니다.
 const { AppDataSource } = require('../src/models/dataSource');
 
@@ -13,20 +13,20 @@ describe('get product detail', () => {
     app = createApp();
     await AppDataSource.initialize();
     await AppDataSource.query(`
-    INSERT INTO sellers ( name, image, zip_code, address, address_details, phone_number )
-    VALUES ( 'test', 'image', 'test-zipcode', 'test-address', 'test-address_details', 'test-number' );
-    `);
-    await AppDataSource.query(`
-      INSERT INTO users ( name, email, password, phone_number, zip_code, address, address_details, seller_id)
-      VALUES ( 'testUser', 'user@wecode.co.kr', 'test-password', 'test-number', 'test-zipcode', 'test-address', 'test-address_details', 1);
-    `);
-    await AppDataSource.query(`
-    INSERT INTO product_categories ( category_name)
-    VALUES ( 'test-category' );
+    INSERT INTO users ( name, email, password, phone_number, zip_code, address, address_details, seller_id)
+    VALUES ( 'testUser', 'user@wecode.co.kr', 'test-password', 'test-number', 'test-zipcode', 'test-address', 'test-address_details', 1);
     `);
     await AppDataSource.query(`
     INSERT INTO products ( name, images, price, discount_rate, product_category_id, seller_id )
     VALUES ( 'test-product', 'image', 20000, 10, 1, 1);
+    `);
+    await AppDataSource.query(`
+    INSERT INTO sellers ( name, image, zip_code, address, address_details, phone_number )
+    VALUES ( 'test', 'image', 'test-zipcode', 'test-address', 'test-address_details', 'test-number' );
+    `);
+    await AppDataSource.query(`
+    INSERT INTO product_categories ( category_name)
+    VALUES ( 'test-category' );
     `);
     await AppDataSource.query(`
     INSERT INTO reviews ( contents, images, rating, user_id, product_id)
@@ -40,7 +40,7 @@ describe('get product detail', () => {
 
   afterAll(async () => {
     // 테스트 데이터베이스의 불필요한 데이터를 전부 지워줍니다.
-    // await AppDataSource.query(`SET foreign_key_checks = 0;`);
+    await AppDataSource.query(`SET foreign_key_checks = 0;`);
     await AppDataSource.query(`TRUNCATE products`);
     await AppDataSource.query(`TRUNCATE product_categories`);
     await AppDataSource.query(`TRUNCATE product_detail_images`);

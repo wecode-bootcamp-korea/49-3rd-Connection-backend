@@ -4,9 +4,11 @@ const getProductDetail = async (id) => {
   const data = await productDao.getProductDetail(id);
   data.forEach((item) => {
     item.totalPrice = parseInt(item.totalPrice);
-    item.Rating = parseInt(item.Rating);
+    item.rating = parseInt(item.rating);
     item.discountAmount = parseInt(item.discountAmount);
+    item.reviewNumbers = parseInt(item.reviewNumbers);
   });
+  console.log('data', data);
   return data;
 };
 
