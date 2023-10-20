@@ -49,7 +49,7 @@ const addNewProductController = async (req, res, next) => {
 };
 
 // 주문단계 진입전 장바구니 업데이트
-const UpdateOrderController = async (req, res, next) => {
+const updateOrderController = async (req, res, next) => {
   try {
     const userId = 1;
     const ArrayOfObjects = req.body.data;
@@ -87,8 +87,29 @@ const UpdateOrderController = async (req, res, next) => {
   }
 };
 
+// 주문단계로 들어간 장바구니 조회
+const getOrderItemController = async (req, res, next) => {
+  try {
+    const userId = 1;
+    const OrderItem = await cartService.getOrderItemService(userId);
+    if (!userId) {
+      throwError(400, 'Connection Error');
+    }
+    if (!OrderItem) {
+      throwError(400, 'CANNOT_SEARCH_CART');
+    }
+    return res.status(200).json({
+      message: 'Order_Item',
+      data: OrderItem,
+    });
+  } catch (error) {
+    console.log('error', error);
+    res.status(error.status).json({ message: error.message });
+  }
+};
+
 // 장바구니 삭제
-const removeCarcontroller = async (req, res, next) => {
+const removeCartController = async (req, res, next) => {
   try {
     const userId = 1;
     const { productId } = req.body;
@@ -110,6 +131,7 @@ const removeCarcontroller = async (req, res, next) => {
 module.exports = {
   getCartController,
   addNewProductController,
-  UpdateOrderController,
-  removeCarcontroller,
+  updateOrderController,
+  getOrderItemController,
+  removeCartController,
 };

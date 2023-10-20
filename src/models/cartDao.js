@@ -81,6 +81,41 @@ const updateStatusDao = async (userId, productId) => {
   return updateStatus;
 };
 
+const getOrderItemDao = async (userId) => {
+  const alreadyItems = await AppDataSource.query(
+    `SELECT
+    userId,
+    MAX(userIsPremimum) AS userIsPremium,
+    JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'productId', productId,
+            'productName', productName,
+            'quantity', quantity,
+            'productPrice', productPrice,
+            'discountRate', discountRate
+        )
+    ) AS products
+FROM (
+    SELECT users.id AS userId,
+        user_premium.user_id AS userIsPremimum,
+        products.id AS productId,
+        carts.quantity AS quantity,
+        products.price AS productPrice,
+        products.discount_rate AS discountRate,
+        products.name AS productName
+    FROM users
+    INNER JOIN user_premium ON users.id = user_premium.user_id
+    LEFT JOIN carts ON users.id = carts.user_id
+    LEFT JOIN products ON carts.product_id = products.id
+    LEFT JOIN sellers ON products.seller_id = sellers.id
+    WHERE users.id = ? AND carts.status >= 1 
+) AS subquery
+GROUP BY userId;`,
+    [userId]
+  );
+  return alreadyItems;
+};
+
 //장바구니 삭제 (삭제버튼)
 const deletCartDao = async (userId, productId) => {
   const deletCart = await AppDataSource.query(
@@ -97,4 +132,5 @@ module.exports = {
   updateQuantityDao,
   deletCartDao,
   updateStatusDao,
+  getOrderItemDao,
 };

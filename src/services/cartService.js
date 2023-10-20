@@ -59,6 +59,12 @@ const UpdateQuantityService = async (userId, productId, quantity) => {
     return throwError;
   }
 };
+// 주문 단계로 들어간 장바구니 조회
+
+const getOrderItemService = async (userId) => {
+  const getOrderItem = await cartDao.getOrderItemDao(userId);
+  return getOrderItem;
+};
 
 //장바구니 삭제
 const removeCartService = async (userId, productId) => {
@@ -75,5 +81,6 @@ module.exports = {
   speedCheckService,
   updateCartService,
   UpdateQuantityService,
+  getOrderItemService,
   removeCartService,
 };
