@@ -4,27 +4,28 @@ const { cartDao } = require('../models');
 
 const getCartService = async (userId) => {
   const cartInformation = await cartDao.getCartDao(userId);
-  const finalCart = [];
-  cartInformation.forEach((item) => {
-    const products = item.products.map((product) => ({
-      ...product,
-      totalPrice:
-        product.originalPrice *
-        (1 - product.discountRate / 100) *
-        product.quantity,
-      discountedAmount:
-        product.originalPrice * (product.discountRate / 100) * product.quantity,
-    }));
+  // const finalCart = [];
+  // cartInformation.forEach((item) => {
+  //   const products = item.products.map((product) => ({
+  //     ...product,
+  //     totalPrice:
+  //       product.originalPrice *
+  //       (1 - product.discountRate / 100) *
+  //       product.quantity,
+  //     discountedAmount:
+  //       product.originalPrice * (product.discountRate / 100) * product.quantity,
+  //   }));
 
-    finalCart.push({
-      sellerId: item.seller_id,
-      sellerName: item.sellerName,
-      sellerImage: item.sellerImage,
-      productImage: item.products.images,
-      products,
-    });
-  });
-  return finalCart;
+  //   finalCart.push({
+  //     sellerId: item.seller_id,
+  //     sellerName: item.sellerName,
+  //     sellerImage: item.sellerImage,
+  //     productImage: item.products.images,
+  //     products,
+  //   });
+  // });
+  // return finalCart;
+  return cartInformation;
 };
 
 const speedCheckService = async (userId, productId) => {

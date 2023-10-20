@@ -15,7 +15,9 @@ const getCartDao = async (userId) => {
         'productImage', product_image,
         'quantity', quantity,
         'originalPrice', price,
-        'discountRate', discount_rate
+        'discountRate', discount_rate,
+        'discountedAmount', quantity * productPrice * discountRate/100)
+        'totalPrice', quantity * (productPrice - (productPrice * discountRate/100))
       )
     ) AS products
   FROM (
@@ -23,9 +25,9 @@ const getCartDao = async (userId) => {
       products.seller_id AS sellerId,
       products.id AS product_id,
       products.name AS product_name,
-      carts.quantity,
-      products.price,
-      products.discount_rate,
+      carts.quantity AS quantity,
+      products.price AS productPrice,
+      products.discount_rate AS discountRate,
       products.images AS product_image,
       sellers.name AS sellerName,
       sellers.image AS sellerImage
