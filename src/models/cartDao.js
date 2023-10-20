@@ -72,6 +72,15 @@ const updateQuantityDao = async (userId, productId, quantity) => {
   return updateQuantity;
 };
 
+// 장바구니 상태변경
+const updateStatusDao = async (userId, productId) => {
+  const updateStatus = await AppDataSource.query(
+    `UPDATE carts SET status = status + 1 WHERE user_id=? and product_id=?`,
+    [userId, productId]
+  );
+  return updateStatus;
+};
+
 //장바구니 삭제 (삭제버튼)
 const deletCartDao = async (userId, productId) => {
   const deletCart = await AppDataSource.query(
@@ -87,4 +96,5 @@ module.exports = {
   makeCartDao,
   updateQuantityDao,
   deletCartDao,
+  updateStatusDao,
 };

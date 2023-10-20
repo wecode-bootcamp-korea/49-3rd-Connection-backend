@@ -48,9 +48,15 @@ const updateCartService = async (userId, productId, quantity) => {
 const UpdateQuantityService = async (userId, productId, quantity) => {
   const existingCartItem = await cartDao.easyCheckDao(userId, productId);
   if (existingCartItem[0].quantity !== 0) {
-    return await cartDao.updateQuantityDao(userId, productId, quantity);
+    const updateQuantityResult = await cartDao.updateQuantityDao(
+      userId,
+      productId,
+      quantity
+    );
+    const updateStatusResult = await cartDao.updateStatusDao(userId, productId);
+    await Promise.all([updateQuantityResult, updateStatusResult]);
   } else {
-    throwError;
+    return throwError;
   }
 };
 
