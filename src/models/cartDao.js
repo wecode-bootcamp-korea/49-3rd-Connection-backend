@@ -5,11 +5,14 @@ const { AppDataSource } = require('./dataSource');
 const getCartDao = async (userId) => {
   const checkCart = await AppDataSource.query(
     `SELECT
-    seller_id,
+    sellerId,
+    sellerName,
+    sellerImage,
     JSON_ARRAYAGG(
       JSON_OBJECT(
         'productId', product_id,
         'productName', product_name,
+        'productImage', product_image,
         'quantity', quantity,
         'originalPrice', price,
         'discountRate', discount_rate
@@ -17,18 +20,22 @@ const getCartDao = async (userId) => {
     ) AS products
   FROM (
     SELECT
-      products.seller_id,
+      products.seller_id AS sellerId,
       products.id AS product_id,
       products.name AS product_name,
       carts.quantity,
       products.price,
-      products.discount_rate
+      products.discount_rate,
+      products.images AS product_image,
+      sellers.name AS sellerName,
+      sellers.image AS sellerImage
     FROM users
     INNER JOIN carts ON users.id=carts.user_id
     INNER JOIN products ON carts.product_id = products.id
+    INNER JOIN sellers ON products.seller_id = sellers.id
     WHERE users.id = ?
   ) AS subquery
-  GROUP BY seller_id;`,
+  GROUP BY sellerId;`,
     [userId]
   );
   return checkCart;
@@ -36,8 +43,6 @@ const getCartDao = async (userId) => {
 
 // 장바구니 간편조회
 const easyCheckDao = async (userId, productId) => {
-  // console.log('userId::::::::::', userId, typeof userId);
-  // console.log('productId::::::::::', productId, typeof productId);
   const checkEasy = await AppDataSource.query(
     `SELECT
     id AS cartId,

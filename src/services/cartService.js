@@ -17,7 +17,10 @@ const getCartService = async (userId) => {
     }));
 
     finalCart.push({
-      seller_id: item.seller_id,
+      sellerId: item.seller_id,
+      sellerName: item.sellerName,
+      sellerImage: item.sellerImage,
+      productImage: item.products.images,
       products,
     });
   });

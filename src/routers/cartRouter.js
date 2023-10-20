@@ -8,4 +8,4 @@ cartRouter.post('/', cartController.addNewProductController);
 cartRouter.patch('/', cartController.UpdateOrderController);
 cartRouter.delete('/', cartController.removeCarcontroller);
 
-module.exports = cartRouter;
+module.exports = { cartRouter };

@@ -3,7 +3,7 @@ const request = require('supertest');
 const { createApp } = require('../app');
 const { AppDataSource } = require('../src/models/dataSource');
 
-describe('Get cartitem', () => {
+describe('patch cartItem', () => {
   let app;
 
   beforeAll(async () => {
@@ -66,7 +66,6 @@ describe('Get cartitem', () => {
     VALUES (3, 1, 3, 1);
     `);
   });
-
   afterAll(async () => {
     // 테스트 데이터베이스의 불필요한 데이터를 전부 지워줍니다.
     await AppDataSource.query(`SET foreign_key_checks = 0;`);
@@ -80,58 +79,40 @@ describe('Get cartitem', () => {
     await AppDataSource.destroy();
   });
 
-  // test('FAILED: get carts', async () => {
-  //   // supertest의 request를 활용하여 app에 테스트용 request를 보냅니다.
-  //   await request(app)
-  //     .get('/carts') // HTTP Method, 엔드포인트 주소를 작성합니다.
-  //     // .send({ email: 'wrongEmail', password: 'password001@' })  body를 작성합니다.
-  //     .expect(400) // expect()로 예상되는 statusCode, response를 넣어 테스트할 수 있습니다.
-  //     .expect({ message: 'Failed' });
-  // });
-
-  test('SUCCESS: get carts', async () => {
+  test('FAILED: get carts', async () => {
+    // supertest의 request를 활용하여 app에 테스트용 request를 보냅니다.
+    await request(app)
+      .patch('/carts') // HTTP Method, 엔드포인트 주소를 작성합니다.
+      .send({
+        data: [
+          {
+            productId: 1,
+            quantity: 5,
+          },
+          {
+            productId: 2,
+            quantity: 30,
+          },
+        ],
+      })
+      .expect(400) // expect()로 예상되는 statusCode, response를 넣어 테스트할 수 있습니다.
+      .expect({ message: error.message });
+  });
+  test('SUCCESS: patch carts', async () => {
     const res = await request(app).get('/carts').send();
     expect(res.body).toEqual({
-      message: 'Cart_Information',
+      message: 'Update Success!',
       data: [
         {
-          seller_id: 1,
-          products: [
-            {
-              quantity: 1,
-              productId: 1,
-              productName: '떡꼬치',
-              discountRate: 5,
-              originalPrice: 2000,
-              totalPrice: 1900,
-              discountedAmount: 100,
-            },
-            {
-              quantity: 2,
-              productId: 2,
-              productName: '강낭콩',
-              discountRate: 5,
-              originalPrice: 1000,
-              totalPrice: 1900,
-              discountedAmount: 100,
-            },
-          ],
+          sellerId: 1,
+          productId: 1,
+          quantity: 5,
         },
         {
-          seller_id: 2,
-          products: [
-            {
-              quantity: 1,
-              productId: 3,
-              productName: '카메라',
-              discountRate: 15,
-              originalPrice: 200000,
-              totalPrice: 170000,
-              discountedAmount: 30000,
-            },
-          ],
-        },
-      ],
-    });
-  });
-});
+          sellerId: 1,
+          productId: 2,
+          quantity: 30,
+        }
+      ];
+    })
+  })
