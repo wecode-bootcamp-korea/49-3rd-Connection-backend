@@ -4,6 +4,7 @@ const findUserById = async (id) => {
   const [user] = await AppDataSource.query(
     `
     SELECT
+      zip_code AS zipCode
       seller_id AS sellerId
     FROM
       users
@@ -22,7 +23,8 @@ const findUserByEmail = async (email) => {
     SELECT
       email,
       seller_id AS sellerId,
-      password
+      password,
+      zip_code AS zipCode
     FROM
       users
     WHERE
@@ -117,10 +119,67 @@ const createSeller = async (
   });
 };
 
+const kakaoSignIn = async (kakaoId, name, email) => {
+  return await AppDataSource.query(
+    `
+      INSERT INTO users (
+        kakao,
+        name,
+        email
+      ) VALUES (?, ?, ?)
+    `,
+    [kakaoId, name, email]
+  );
+};
+
+const insertAddress = async (
+  phoneNumber,
+  zipCode,
+  address,
+  addressDetails,
+  userId
+) => {
+  await AppDataSource.query(
+    `
+      UPDATE users
+      SET
+        phone_number = ?,
+        zip_code = ?,
+        address = ?,
+        address_details = ?
+      WHERE
+        id = ?
+    `,
+    [phoneNumber, zipCode, address, addressDetails, userId]
+  );
+};
+
+const findUserByKakao = async (kakao) => {
+  const [user] = await AppDataSource.query(
+    `
+      SELECT
+        kakao,
+        seller_id AS sellerId,
+        zip_code AS zipCode
+      FROM
+        users
+      WHERE
+        kakao = ?
+      LIMIT 1
+    `,
+    [kakao]
+  );
+
+  return user;
+};
+
 module.exports = {
   findUserById,
   findUserByEmail,
   findSellerByName,
   createUser,
   createSeller,
+  kakaoSignIn,
+  insertAddress,
+  findUserByKakao,
 };

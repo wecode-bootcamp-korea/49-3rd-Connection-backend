@@ -6,7 +6,7 @@ const { throwError } = require('../utils/throwError');
 const { keyCheck } = require('../utils/keyCheck');
 
 const findUser = async (userId) => {
-  return await userDao.findById(userId);
+  return await userDao.findUserById(userId);
 };
 
 const signUp = async (
@@ -98,7 +98,7 @@ const kakaoSignIn = async (code) => {
       kakaoToken = res.data.access_token;
     })
     .catch((err) => {
-      console.log('마 여기다', err);
+      console.log('Error : ', err);
     });
 
   let result;
@@ -112,39 +112,29 @@ const kakaoSignIn = async (code) => {
       result = res.data;
     })
     .catch((err) => {
-      console.log('에러임 ㅋ');
+      console.log('error : ', err);
     });
 
   const kakaoId = result.id;
   const name = result.properties.nickname;
   const email = result.kakao_account.email;
 
-  keyCheck({
-    kakaoId,
-    name,
-    email,
-  });
+  const user = await userDao.findUserByKakao(kakaoId);
 
-  const user = await userDao.findByKakao(kakaoId);
-
-  let userId;
+  let userId = user?.id;
 
   if (!user) {
     const result = await userDao.kakaoSignIn(kakaoId, name, email);
     userId = result.insertId;
-  } else {
-    userId = user.id;
   }
 
-  const existingUser = await userDao.findByEmail(email);
-  let isSeller = false;
-  let isAddress = false;
-  if (existingUser.seller_id != null) isSeller = true;
-  if (existingUser.zip_code != null) isAddress = true;
+  const token = jwt.sign({ id: userId }, process.env.JWT_SECRET);
 
-  const token = jwt.sign({ id: existingUser.id }, process.env.JWT_SECRET);
-
-  return { accessToken: token, isSeller: isSeller, isAddress: isAddress };
+  return {
+    accessToken: token,
+    isSeller: !!user.sellerId,
+    isAddress: !!user.zipCode,
+  };
 };
 
 const insertAddress = async (
@@ -154,9 +144,9 @@ const insertAddress = async (
   addressDetails,
   userId
 ) => {
-  const exisitingUser = await userDao.findById(userId);
+  const exisitingUser = await userDao.findUserById(userId);
 
-  if (exisitingUser.zip_code) throwError(409, 'ALREADY');
+  if (exisitingUser.zipCode) throwError(409, 'ALREADY');
   await userDao.insertAddress(
     phoneNumber,
     zipCode,

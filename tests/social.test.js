@@ -3,19 +3,27 @@ const jwt = require('jsonwebtoken');
 const { createApp } = require('../app');
 const { AppDataSource } = require('../src/models/dataSource');
 const axios = require('axios');
+jest.mock('axios');
 
 describe('Social Login', () => {
   let app;
+  let kakaoToken = 'token_1';
 
-  mock.mock;
   beforeAll(async () => {
     app = createApp();
 
     await AppDataSource.initialize();
     await AppDataSource.query(
       `
-      
-      `
+      INSERT INTO users (
+        kakao,
+        name,
+        email
+      ) VALUES (
+        123456, 
+        "박준우",
+        "aaaa@gmail.com"
+      )`
     );
   });
 
@@ -31,7 +39,7 @@ describe('Social Login', () => {
       data: {
         id: 123456,
         properties: {
-          nickname: '류시헌',
+          nickname: '박준우',
         },
         kakao_account: {
           email: 'aaaa@naver.com',
@@ -42,8 +50,9 @@ describe('Social Login', () => {
     await request(app)
       .post('https://kapi.kakao.com/v2/user/me')
       .set({
-        Authorization: 'Bearer kakaoToken',
+        Authorization: `Bearer ${kakaoToken}`,
       })
       .expect(200);
+    expect(res.body.message).toEqual('SUCCESS');
   });
 });
