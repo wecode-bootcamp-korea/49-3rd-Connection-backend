@@ -1,7 +1,5 @@
 const { orderDao } = require('../models');
 
-console.log('컨트롤러에서 서비스 넘어오니');
-
 const createOrders = async (
   // 받아오는 data
   userId,

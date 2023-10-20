@@ -1,6 +1,5 @@
 const { AppDataSource } = require('./dataSource');
 
-console.log('orderDao: 데이터 베이스 확인');
 // 에러 핸들링: user 포인트가 부족할 때 ( 갖고 있는 point보다 비싼 걸 살 때)
 const isUsersPoints = async (userId) => {
   const usersPoints = await AppDataSource.query(`
