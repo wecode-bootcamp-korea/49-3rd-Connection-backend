@@ -9,8 +9,14 @@ const createOrders = async (
   quantity,
 
 ) => {
-  카트수량
-  포인트파악
+  // user points 
+  const userPoints = await orderDao.cartQuantity(userId); 
+  console.log(userPoints);
+  
+  // cart quantity 
+  const cartQuantity = await orderDao.cartQuantity(userId, productId); // await: userId, productId,(orderDetails의 ) quantity를  orderDao로 보내준다
+  console.log(cartQuantity);
+
 
 // 에러핸들링 여기서 시작
 // 에러 핸들링: order.totalPrice > user : 포인트가 부족할 때  ( 갖고 있는 point보다 비싼 걸 살 때) 
@@ -54,8 +60,6 @@ if( productId !== isProductInCarts){
     quantity
   );
 
-  const cartQuantity = await orderDao.cartQuantity(userId, productId); // await: userId, productId,(orderDetails의 ) quantity를  orderDao로 보내준다
-  console.log(cartQuantity);
 
   // 에러 핸들링  transaction 2 : 결제 단계로 실패했는데, (결제 후 단계) orderdetails 테이블에 계속 추가되는 경우
   if(  ){
@@ -77,7 +81,7 @@ if( productId !== isProductInCarts){
         updatePoints
       );
     } 
-    
+
   // 4) carts 에서 부분삭제:  carts 의 quantity 와 orderDetails의 quantity가 다른 경우에, UPDATE 수정 위한 계산식
   const updateQuantity = cartQuantity - quantity;
   // 4) carts 에서 삭제:  carts 의 quantity 와 orderDetails의 quantity가 같으면( if(cart에서 불러오는 Quantity == quantity)): 전체삭제, 같지 않다면(else): 부분 삭제
