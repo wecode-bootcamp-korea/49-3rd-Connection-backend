@@ -1,4 +1,3 @@
-const { default: axios } = require('axios');
 const { userService } = require('../services');
 const { keyCheck } = require('../utils/keyCheck');
 
@@ -32,6 +31,16 @@ const signUp = async (req, res) => {
     address,
     addressDetails
   );
+
+  res.status(200).json({
+    message: 'SUCCESS',
+  });
+};
+
+const checkDuplicatedEmail = async (req, res) => {
+  const { email } = req.body;
+
+  await userService.checkDuplicatedEmail(email);
 
   res.status(200).json({
     message: 'SUCCESS',
@@ -126,4 +135,6 @@ module.exports = {
   sellerSignUp,
   kakaoSignIn,
   insertAddress,
+  checkDuplicatedEmail,
+  sellerSignUp,
 };

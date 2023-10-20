@@ -21,16 +21,13 @@ const signUp = async (
   const emailRegx = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
   if (!email.match(emailRegx)) throwError(400, 'INVALID_EMAIL');
 
-  const existingUser = await userDao.findByEmail(email);
-  if (existingUser) throwError(400, 'DUPLICATED_EMAIL_ADDRESS');
-
   const passwordRegx = /^(?=.*[0-9])(?=.*[a-z])(?=.*\W)(?!.* ).{8,16}$/;
   if (!password.match(passwordRegx)) throwError(400, 'INVALID_PASSWORD');
 
   const saltRounds = 12;
   const bcryptPassword = await bcrypt.hash(password, saltRounds);
 
-  await userDao.signUp(
+  await userDao.createUser(
     name,
     email,
     bcryptPassword,
@@ -41,18 +38,22 @@ const signUp = async (
   );
 };
 
+const checkDuplicatedEmail = async (email) => {
+  const existingUser = await userDao.findUserByEmail(email);
+
+  if (existingUser) throwError(400, 'DUPLICATED_EMAIL_ADDRESS');
+};
+
 const signIn = async (email, password) => {
-  const existingUser = await userDao.findByEmail(email);
+  const existingUser = await userDao.findUserByEmail(email);
   if (!existingUser) throwError(400, 'USER_NOT_FOUND');
-  let isSeller = false;
-  if (existingUser.seller_id != null) isSeller = true;
 
   const checkPassword = await bcrypt.compare(password, existingUser.password);
   if (!checkPassword) throwError(400, 'WRONG_PASSWORD');
 
   const token = jwt.sign({ id: existingUser.id }, process.env.JWT_SECRET);
 
-  return { accessToken: token, isSeller: isSeller };
+  return { accessToken: token, isSeller: !!existingUser.sellerId };
 };
 
 const sellerSignUp = async (
@@ -64,13 +65,13 @@ const sellerSignUp = async (
   phoneNumber,
   userId
 ) => {
-  const exisitingSeller = await userDao.findSeller(name);
-  if (exisitingSeller) throwError(400, 'INVALID_NAME');
+  const existingUser = await userDao.findUserById(userId);
+  if (existingUser.sellerId !== null) throwError(400, 'ALREADY_SELLER');
 
-  const exisitingUser = await userDao.findById(userId);
-  if (exisitingUser.seller_id !== null) throwError(400, 'ALREADY_SELLER');
+  const existingSeller = await userDao.findSellerByName(name);
+  if (existingSeller) throwError(400, 'INVALID_NAME');
 
-  await userDao.sellerSignUp(
+  await userDao.createSeller(
     name,
     image,
     zipCode,
@@ -172,4 +173,5 @@ module.exports = {
   sellerSignUp,
   kakaoSignIn,
   insertAddress,
+  checkDuplicatedEmail,
 };

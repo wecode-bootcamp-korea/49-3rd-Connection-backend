@@ -8,7 +8,6 @@ const startServer = async () => {
   const PORT = process.env.PORT;
 
   await AppDataSource.initialize();
-
   app.listen(PORT, () => {
     console.log(`Listening on Port ${PORT}`);
   });
