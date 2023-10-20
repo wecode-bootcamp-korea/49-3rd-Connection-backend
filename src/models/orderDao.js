@@ -49,7 +49,24 @@ const createOrders = async (userId, totalPrice, shippingMethod, paymentId) => {
   return newOrder.insertId;
 };
 
-// 2) orderDetails table 주문 정보 저장
+// 2) 결제: 포인트 차감을 위한 user points 가져오기
+const userPoints = async (userId) => {
+  const pointsFromUser = await AppDataSource.query(`
+  SELECT points FROM users WHERE id = ${userId} 
+  `);
+  console.log('결제 직전 위한 유저 points 가져오기', pointsFromUser[0].points);
+  return pointsFromUser[0].points;
+}; // quantity는 'select 문을 위해' 받아올 필요 없음 , select문으로 구할 값!
+// console.log('카트에 들어있는 수량 :', cartQuantity);
+
+// 2) 결제:  points 전체 or 부분 차감 (delete 없이)
+const updatePoints = async (userId, updatePoints) => {
+  await AppDataSource.query(`
+    UPDATE users SET  points = '${updatePoints}'  WHERE id = ${userId} 
+    `); // return 필요없음 (res 보내줄 값이 없음 )
+}; //장바구니 테이블 : 수량 변경만 하면 됨
+
+// 3) orderDetails table 주문 정보 저장
 const newOrderDetails = async (orderId, productId, quantity) => {
   await AppDataSource.query(`
     INSERT INTO 
@@ -66,23 +83,6 @@ const newOrderDetails = async (orderId, productId, quantity) => {
       `);
 }; // await 앞에 굳이 const로 함수명 정의해주지 않아도 됨. return할 때 필요한 건데, return 안하니
 // 함수명 회색이여도 괜찮음. 여기에서는 return을 해줄 필요 없음 -> 주문 정보 req에서 받아와서 저장이니, res에 보내줄 값이 없기에. (getPost일 땐 return 하겠지만)
-
-// 3) 결제: 포인트 차감을 위한 user points 가져오기
-const userPoints = async (userId) => {
-  const pointsFromUser = await AppDataSource.query(`
-  SELECT points FROM users WHERE id = ${userId} 
-  `);
-  console.log('결제 직전 위한 유저 points 가져오기', pointsFromUser[0].points);
-  return pointsFromUser[0].points;
-}; // quantity는 'select 문을 위해' 받아올 필요 없음 , select문으로 구할 값!
-// console.log('카트에 들어있는 수량 :', cartQuantity);
-
-// 3) 결제:  points 전체 or 부분 차감 (delete 없이)
-const updatePoints = async (userId, updatePoints) => {
-  await AppDataSource.query(`
-    UPDATE users SET  points = '${updatePoints}'  WHERE id = ${userId} 
-    `); // return 필요없음 (res 보내줄 값이 없음 )
-}; //장바구니 테이블 : 수량 변경만 하면 됨
 
 // 4) 장바구니 삭제를 위한 수량 가져오기
 const cartQuantity = async (userId, productId) => {
