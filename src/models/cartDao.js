@@ -81,6 +81,7 @@ const updateStatusDao = async (userId, productId) => {
   return updateStatus;
 };
 
+//주문단계 조회
 const getOrderItemDao = async (userId) => {
   const alreadyItems = await AppDataSource.query(
     `SELECT
@@ -88,11 +89,10 @@ const getOrderItemDao = async (userId) => {
     MAX(userIsPremimum) AS userIsPremium,
     JSON_ARRAYAGG(
         JSON_OBJECT(
-            'productId', productId,
-            'productName', productName,
-            'quantity', quantity,
-            'productPrice', productPrice,
-            'discountRate', discountRate
+          'productId', productId,
+          'productName', productName,
+          'quantity', quantity,
+          'totalPrice', quantity * (productPrice - (productPrice * discountRate/100))
         )
     ) AS products
 FROM (

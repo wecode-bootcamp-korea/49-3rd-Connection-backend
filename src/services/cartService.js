@@ -63,6 +63,23 @@ const UpdateQuantityService = async (userId, productId, quantity) => {
 
 const getOrderItemService = async (userId) => {
   const getOrderItem = await cartDao.getOrderItemDao(userId);
+  // const finalItems = [];
+  // getOrderItem.forEach((item) => {
+  //   const products = item.products.map((product) => ({
+  //     ...product,
+  //     totalPrice:
+  //       product.productPrice *
+  //       (1 - product.discountRate / 100) *
+  //       product.quantity,
+  //   }));
+
+  //   finalItems.push({
+  //     userId: item.userId,
+  //     userIsPremimum: item.userIsPremium,
+  //     products,
+  //   });
+  // });
+  // return finalItems;
   return getOrderItem;
 };
 
