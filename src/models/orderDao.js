@@ -73,11 +73,11 @@ const userPoints = async (userId) => {
 // console.log('카트에 들어있는 수량 :', cartQuantity);
 
 // 3)-1 points 전체 차감
-const deleteAllPoints = async (userId, userPoints) => {
-  await AppDataSource.query(`
-    DELETE FROM users.points WHERE user_id = ${userId} AND user_points = ${userPoints}
-    `); // return 필요없음 (res 보내줄 값이 없음 )
-};
+// const deleteAllPoints = async (userId, userPoints) => {
+//   await AppDataSource.query(`
+//     DELETE FROM users.points WHERE user_id = ${userId} AND user_points = ${userPoints}
+//     `); // return 필요없음 (res 보내줄 값이 없음 )
+// };
 
 // 3)-2 points 부분 차감
 const updatePoints = async (userId, updatePoints) => {
