@@ -10,9 +10,9 @@ const createOrders = async (
 
 ) => {
   // user points 
-  const userPoints = await orderDao.cartQuantity(userId); 
-  console.log(userPoints);
-  
+  const isUsersPoints = await orderDao.isUsersPoints(userId); 
+  console.log(isUsersPoints);
+
   // cart quantity 
   const cartQuantity = await orderDao.cartQuantity(userId, productId); // await: userId, productId,(orderDetails의 ) quantity를  orderDao로 보내준다
   console.log(cartQuantity);
@@ -36,7 +36,7 @@ if( productId !== isProductInCarts){
 
 
 // 끝나면 주문 시작
-  // 1) orders table 주문 정보 저장
+  // 1) orders table 주문 정보 저장 (orderDao에서. 그러니까 dao로 넘겨주는)
   const newOrder = await orderDao.createOrders(
     userId,
     totalPrice,
@@ -68,19 +68,13 @@ if( productId !== isProductInCarts){
 
   
   // 3) 결제 users 의 points 부분 차감 : users 의 points 와 orderDetails의 totalPrice 가 다른 경우에, UPDATE 수정을 위한 계산식 
-  const updatePoints = userPoints - totalPrice
-  //3) 결제 : users 의 points 와 orderDetails의 totalPrice 가 같으면: 전체삭제, 같지 않다면(else): 부분 삭제
-    if (userPoints == totalPrice) {
-      const deleteAllPoints = await orderDao.deleteAllPoints(
-        userId,
-        userPoints
-      ); // 위에서 받아온 cartQuantity, orderdetails에서 받은 quantity
-    } else {
+  const remainPoints = isUsersPoints - totalPrice
+  //3) 결제 : users 의 points 와 orderDetails의 totalPrice 와 같아도, 적어도 -> 수정으로 통일
       const updatePoints = await orderDao.updatePoints(
         userId,
-        updatePoints
-      );
-    } 
+        remainPoints
+      );//차감한 points(=remainPoints)을 Dao로 보내서, update한다
+  // totalPrice = 2000, isUsersPoints= 5000 -> update 그냥하면 updatePoints= 2000이 됨 (isUsersPoints - totalPrice 해야 함 )
 
   // 4) carts 에서 부분삭제:  carts 의 quantity 와 orderDetails의 quantity가 다른 경우에, UPDATE 수정 위한 계산식
   const updateQuantity = cartQuantity - quantity;
@@ -96,7 +90,7 @@ if( productId !== isProductInCarts){
       userId,
       productId,
       updateQuantity
-    );
+    ); //차감한 수량을 Dao로 보내서, update한다
   } // orderDetails 의 quantity에서 내려오는 값, cartQauntity를 따로 가져오는 쿼리문 연결
 };
 module.exports = { createOrders };

@@ -72,14 +72,7 @@ const userPoints = async (userId) => {
 }; // quantity는 'select 문을 위해' 받아올 필요 없음 , select문으로 구할 값!
 // console.log('카트에 들어있는 수량 :', cartQuantity);
 
-// 3)-1 points 전체 차감
-// const deleteAllPoints = async (userId, userPoints) => {
-//   await AppDataSource.query(`
-//     DELETE FROM users.points WHERE user_id = ${userId} AND user_points = ${userPoints}
-//     `); // return 필요없음 (res 보내줄 값이 없음 )
-// };
-
-// 3)-2 points 부분 차감
+// 3) 결제:  points 전체 or 부분 차감 (delete 없이)
 const updatePoints = async (userId, updatePoints) => {
   await AppDataSource.query(`
     UPDATE users SET  points = '${updatePoints}'  WHERE user_id = ${userId} 
@@ -116,7 +109,6 @@ module.exports = {
   createOrders,
   newOrderDetails,
   userPoints,
-  deleteAllPoints,
   updatePoints,
   cartQuantity,
   deleteAllCarts,
