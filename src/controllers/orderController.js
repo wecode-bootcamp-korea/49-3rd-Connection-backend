@@ -27,7 +27,7 @@ const createOrders = async (req, res) => {
       quantity
     );
 
-    return res.status(200).json({ message: 'Created Orders 주문정보 저장' });
+    return res.status(200).json({ message: 'Success' });
   } catch (error) {
     console.error(error);
   }

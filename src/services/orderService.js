@@ -25,17 +25,17 @@ const createOrders = async (
   // 에러핸들링 여기서 시작
   // 에러 핸들링: order.totalPrice > user : 포인트가 부족할 때  ( 갖고 있는 point보다 비싼 걸 살 때)
   if (totalPrice > isUsersPoints) {
-    throw new Error('user 포인트 부족; 가진 포인트보다 비싼 거 사려고 함');
+    throw new Error('not enough points');
   }
 
   // 에러 핸들링: cart 에 없는 걸 주문할 뗴 -> productId
   if (productId !== isProductInCarts) {
-    throw new Error('장바구니에 없는 product id를 주문함');
+    throw new Error('ordered productId is not in the carts');
   }
 
   // 에러 핸들링 : cart에 담은 수량  < 주문한 수량 (quantity니까 orderDetails에 주문 저장 후, 에러 내보내야 함 )
   if (cartQuantity < quantity) {
-    throw new Error('장바구니에 담은 수량보다, 더 많이 주문함 ');
+    throw new Error('ordered more products than cartsQuantity');
   }
 
   // 끝나면 주문 시작
