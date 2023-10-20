@@ -1,4 +1,4 @@
-// LEFT JOIN product_categories ON products.product_category_id = product_categories.idconst { AppDataSource } = require('./dataSource');
+const { AppDataSource } = require('./dataSource');
 
 const ordering = async (sort) => {
   switch (sort) {
