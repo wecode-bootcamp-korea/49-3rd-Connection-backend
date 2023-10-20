@@ -31,12 +31,12 @@ const createOrders = async (
     throw new Error('ordered productId is not in the carts');
   }
 
-  // 에러 핸들링 : carts에 담은 수량  < 주문한 수량 (quantity니까 orderDetails에 주문 저장 후, 에러 내보내야 함 )
-  if (cartQuantity < quantity) {
-    throw new Error('ordered more products than cartsQuantity');
-  }
+  // // 에러 핸들링 : carts에 담은 수량  < 주문한 수량__  장바구니 < order 수량 많은 경우 없음_ 장바구니에서 저장 후 넘어가니
+  // if (cartQuantity < quantity) {
+  //   throw new Error('ordered more products than cartsQuantity');
+  // }
 
-  // 에러 핸들링 끝. 나주문 시작
+  // 에러 핸들링 끝. 주문 시작
 
   // 1) orders table 주문 정보 저장 (orderDao에서. 그러니까 dao로 넘겨주는)
   const newOrder = await orderDao.createOrders(
