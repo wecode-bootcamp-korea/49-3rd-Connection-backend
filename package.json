@@ -1,9 +1,9 @@
 {
   "name": "49-3rd-connection-backend",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "test": "DOTENV_CONFIG_PATH=.env.test jest --setupFiles=dotenv/config",
+    "test": "DOTENV_CONFIG_PATH=.env.test jest --setupFiles=dotenv/config --verbose --runInBand -- silent",
     "start": "nodemon server.js"
   },
   "keywords": [],
