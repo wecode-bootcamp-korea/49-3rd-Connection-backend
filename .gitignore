@@ -2,7 +2,10 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=vim,macos,node,linux,visualstudiocode,dotenv,webstorm,windows,zsh
 
 ### dotenv ###
-.env
+.env 
+
+# 테스트#
+.env.test
 
 ### Linux ###
 *~
