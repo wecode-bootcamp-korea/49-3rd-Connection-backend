@@ -22,7 +22,6 @@ WHERE products.id = ${id}
 GROUP BY products.id;
   `
   );
-  console.log('먼데', detailProducts);
   return detailProducts;
 };
 
