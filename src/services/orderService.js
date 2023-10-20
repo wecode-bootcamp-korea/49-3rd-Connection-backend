@@ -59,16 +59,14 @@ const createOrders = async (
   const updatePoints = userPoints - totalPrice
   //3) 결제 : users 의 points 와 orderDetails의 totalPrice 가 같으면: 전체삭제, 같지 않다면(else): 부분 삭제
     if (userPoints == totalPrice) {
-      const deleteAllPoints = await orderDao.deleteAllCarts(
+      const deleteAllPoints = await orderDao.deleteAllPoints(
         userId,
-        productId,
-        quantity
+        userPoints
       ); // 위에서 받아온 cartQuantity, orderdetails에서 받은 quantity
     } else {
-      const updatedPoints = await orderDao.updateCarts(
+      const updatePoints = await orderDao.updatePoints(
         userId,
-        productId,
-        updateQuantity
+        updatePoints
       );
     } 
   
