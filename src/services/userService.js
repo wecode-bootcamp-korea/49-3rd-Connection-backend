@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const { throwError } = require('../utils/throwError');
-const { keyCheck } = require('../utils/keyCheck');
 
 const findUser = async (userId) => {
   return await userDao.findUserById(userId);
@@ -66,6 +65,7 @@ const sellerSignUp = async (
   userId
 ) => {
   const existingUser = await userDao.findUserById(userId);
+
   if (existingUser.sellerId !== null) throwError(400, 'ALREADY_SELLER');
 
   const existingSeller = await userDao.findSellerByName(name);
@@ -78,8 +78,7 @@ const sellerSignUp = async (
     address,
     addressDetails,
     phoneNumber,
-    userId,
-    sellerId
+    userId
   );
 };
 
@@ -127,13 +126,14 @@ const kakaoSignIn = async (code) => {
     const result = await userDao.kakaoSignIn(kakaoId, name, email);
     userId = result.insertId;
   }
+  const existingUser = await userDao.findUserByEmail(email);
 
   const token = jwt.sign({ id: userId }, process.env.JWT_SECRET);
 
   return {
     accessToken: token,
-    isSeller: !!user.sellerId,
-    isAddress: !!user.zipCode,
+    isSeller: !!existingUser.sellerId,
+    isAddress: !!existingUser.isAddress,
   };
 };
 

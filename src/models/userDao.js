@@ -4,7 +4,7 @@ const findUserById = async (id) => {
   const [user] = await AppDataSource.query(
     `
     SELECT
-      zip_code AS zipCode
+      zip_code AS zipCode,
       seller_id AS sellerId
     FROM
       users
