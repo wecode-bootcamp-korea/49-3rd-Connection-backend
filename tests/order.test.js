@@ -46,24 +46,29 @@ describe('make order and pay', () => {
     // truncate: 특정 테이블 비움; 테스트 데이터베이스의 불필요한 데이터를 전부 지워줍니다. -> 그래서 .env 에 test database 넣어야 함
     // 위에 table들 여기에 넣음 _ 근데 flow 순서대로 userId > productId > carts> orderId 등
     await AppDataSource.query(`SET foreign_key_checks = 0;`); //외래키 비활성화
-    await AppDataSource.query(`TRUNCATE payments`);
-    await AppDataSource.query(`TRUNCATE carts`);
-    await AppDataSource.query(`TRUNCATE products`);
-    await AppDataSource.query(`TRUNCATE product_categories`);
-    await AppDataSource.query(`TRUNCATE sellers`);
     await AppDataSource.query(`TRUNCATE users`);
-    //   await AppDataSource.query(`SET foreign_key_checks = 1;`); // 외래키 다시 활성화
+    await AppDataSource.query(`TRUNCATE sellers`);
+    await AppDataSource.query(`TRUNCATE product_categories`);
+    await AppDataSource.query(`TRUNCATE products`);
+    await AppDataSource.query(`TRUNCATE carts`);
+    await AppDataSource.query(`TRUNCATE payments`);
+    await AppDataSource.query(`SET foreign_key_checks = 1;`); // 외래키 다시 활성화
 
     // 모든 테스트가 끝나게 되면(afterAll) DB 커넥션을 끊어줍니다.
     await AppDataSource.destroy();
   });
 
   test('SUCCESS: created orders ', async () => {
-    await request(app)
-      .post('/orders')
-      .send({ userId: 1, totalPrice: '1000', shippingMethod: '방문수령', paymentId: 1, productId: 1, quantity: 1 });
-      .expect(201);
-//      expect(res.status).toBe(200);
-//    expect(res.body.message).toEqual('Created Orders 주문정보 저장');
+    await request(app).post('/orders').send({
+      userId: 1,
+      totalPrice: '1000',
+      shippingMethod: '방문수령',
+      paymentId: 1,
+      productId: 1,
+      quantity: 1,
+    });
+    // .expect(200);
+    expect(res.status).toBe(200);
+    expect(res.body.message).toEqual('Created Orders 주문정보 저장');
   });
 }, 10000000000);
