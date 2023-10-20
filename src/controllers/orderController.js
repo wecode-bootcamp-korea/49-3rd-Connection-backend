@@ -1,5 +1,7 @@
 const { orderService } = require('../services');
 
+console.log('controller connected 연결 확인');
+
 const createOrders = async (req, res) => {
   try {
     // req.userId = userId; // 토큰 있을떄 (미들웨어 사용)
@@ -30,5 +32,7 @@ const createOrders = async (req, res) => {
     console.error(error);
   }
 };
+
+console.log('createOrders 확인 ');
 
 module.exports = { createOrders };

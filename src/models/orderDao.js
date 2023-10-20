@@ -1,12 +1,13 @@
 const { AppDataSource } = require('./dataSource');
 
+console.log('orderDao: 데이터 베이스 확인');
 // 에러 핸들링: user 포인트가 부족할 때 ( 갖고 있는 point보다 비싼 걸 살 때)
 const isUsersPoints = async (userId) => {
   const usersPoints = await AppDataSource.query(`
-  SELECT points FROM users WHERE user_id = ${userId} 
+  SELECT points FROM users WHERE id = ${userId}; 
   `);
   console.log(
-    '주문 전, 유저 points 부족하진 않은지 확인',
+    '주문 전, 유저 points 부족하진 않은지 확인:',
     usersPoints[0].points
   );
   return usersPoints[0].points;
@@ -15,10 +16,14 @@ const isUsersPoints = async (userId) => {
 // 에러 핸들링 : carts 에 없는 product id 주문 시, 에러 핸들링 위한 carts의 product id 가져오기
 const isProductInCarts = async (userId, productId) => {
   const cartsProductId = await AppDataSource.query(`
-  SELECT productId FROM carts WHERE user_id = ${userId} AND product_id = ${productId}
+  SELECT product_id FROM carts WHERE user_id = ${userId} AND product_id = ${productId}
   `);
-  console.log('장바구니에 있는 product 인지 확인', cartsProductId[0].productId);
-  return cartsProductId[0].productId;
+  console.log(cartsProductId);
+  console.log(
+    '장바구니에 있는 product 인지 확인:',
+    cartsProductId[0].product_id
+  );
+  return cartsProductId[0].product_id; //return cartsProductId[0].productId;
 };
 
 // 1) orders table 주문 정보 저장
@@ -65,7 +70,7 @@ const newOrderDetails = async (orderId, productId, quantity) => {
 // 3) 결제: 포인트 차감을 위한 user points 가져오기
 const userPoints = async (userId) => {
   const pointsFromUser = await AppDataSource.query(`
-  SELECT points FROM users WHERE user_id = ${userId} 
+  SELECT points FROM users WHERE id = ${userId} 
   `);
   console.log('결제 직전 위한 유저 points 가져오기', pointsFromUser[0].points);
   return pointsFromUser[0].points;
@@ -75,7 +80,7 @@ const userPoints = async (userId) => {
 // 3) 결제:  points 전체 or 부분 차감 (delete 없이)
 const updatePoints = async (userId, updatePoints) => {
   await AppDataSource.query(`
-    UPDATE users SET  points = '${updatePoints}'  WHERE user_id = ${userId} 
+    UPDATE users SET  points = '${updatePoints}'  WHERE id = ${userId} 
     `); // return 필요없음 (res 보내줄 값이 없음 )
 }; //장바구니 테이블 : 수량 변경만 하면 됨
 
