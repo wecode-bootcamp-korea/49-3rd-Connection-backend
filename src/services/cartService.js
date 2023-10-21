@@ -83,6 +83,11 @@ const getOrderItemService = async (userId) => {
   // return finalItems;
   return getOrderItem;
 };
+// 유저 정보 불러오기
+const getUserInfoService = async (userId) => {
+  const getUserInfo = await cartDao.getUserInfoDao(userId);
+  return getUserInfo;
+};
 
 //장바구니 삭제
 const removeCartService = async (userId, productId) => {
@@ -101,4 +106,5 @@ module.exports = {
   UpdateQuantityService,
   getOrderItemService,
   removeCartService,
+  getUserInfoService,
 };

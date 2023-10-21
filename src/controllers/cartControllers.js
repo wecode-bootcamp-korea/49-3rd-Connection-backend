@@ -128,10 +128,33 @@ const removeCartController = async (req, res, next) => {
     res.status(error.status).json({ message: error.message });
   }
 };
+
+// 유저 정보 불러오기
+const getUserInfoController = async (req, res, next) => {
+  try {
+    const userId = 1;
+    const userInformation = await cartService.getUserInfoService(userId);
+    if (!userId) {
+      throwError(400, 'Connection Error');
+    }
+    if (!userInformation) {
+      throwError(400, 'CANNOT_USER_INFORMATION');
+    }
+    return res.status(200).json({
+      message: 'userInformation',
+      data: userInformation,
+    });
+  } catch (error) {
+    console.log('error', error);
+    res.status(error.status).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getCartController,
   addNewProductController,
   updateOrderController,
   getOrderItemController,
   removeCartController,
+  getUserInfoController,
 };

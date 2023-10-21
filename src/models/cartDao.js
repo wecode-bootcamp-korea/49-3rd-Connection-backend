@@ -88,7 +88,7 @@ const getOrderItemDao = async (userId) => {
   const alreadyItems = await AppDataSource.query(
     `SELECT
     userId,
-    MAX(userIsPremimum) AS userIsPremium,
+    MAX(isSubscribe) AS isSubscribe,
     JSON_ARRAYAGG(
         JSON_OBJECT(
           'productId', productId,
@@ -99,7 +99,7 @@ const getOrderItemDao = async (userId) => {
     ) AS products
 FROM (
     SELECT users.id AS userId,
-        user_premium.user_id AS userIsPremimum,
+        user_premium.user_id AS isSubscribe,
         products.id AS productId,
         carts.quantity AS quantity,
         products.price AS productPrice,
@@ -110,12 +110,30 @@ FROM (
     LEFT JOIN carts ON users.id = carts.user_id
     LEFT JOIN products ON carts.product_id = products.id
     LEFT JOIN sellers ON products.seller_id = sellers.id
-    WHERE users.id = ? AND carts.status >= 1 
+    WHERE users.id = ? AND carts.status >= 1
 ) AS subquery
 GROUP BY userId;`,
     [userId]
   );
   return alreadyItems;
+};
+
+//유저 정보 불러오기
+const getUserInfoDao = async (userId) => {
+  const userInfo = await AppDataSource.query(
+    `SELECT users.id AS userId,
+     users.name AS userName,
+     phone_number AS phoneNumber,
+     users.zip_code AS zipCode,
+     users.address AS address,
+     users.address_details AS addressDetail,
+     user_premium.id AS isSubscribe
+     FROM users
+     INNER JOIN user_premium ON users.id = user_premium.user_id
+     WHERE users.id = ?;`,
+    [userId]
+  );
+  return userInfo;
 };
 
 //장바구니 삭제 (삭제버튼)
@@ -135,4 +153,5 @@ module.exports = {
   deletCartDao,
   updateStatusDao,
   getOrderItemDao,
+  getUserInfoDao,
 };

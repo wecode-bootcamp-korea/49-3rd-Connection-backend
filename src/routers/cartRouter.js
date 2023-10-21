@@ -8,5 +8,6 @@ cartRouter.post('/', cartController.addNewProductController);
 cartRouter.patch('/', cartController.updateOrderController);
 cartRouter.delete('/', cartController.removeCartController);
 cartRouter.get('/complete', cartController.getOrderItemController);
+cartRouter.get('/getuserinfo', cartController.getUserInfoController);
 
 module.exports = { cartRouter };
