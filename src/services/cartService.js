@@ -37,16 +37,15 @@ const UpdateQuantityService = async (userId, productId, quantity) => {
     const updateStatusResult = await cartDao.updateStatusDao(userId, productId);
     await Promise.all([updateQuantityResult, updateStatusResult]);
   } else {
-    return throwError;
+    return throwError(404, 'Invalid Path');
   }
 };
 // 주문 단계로 들어간 장바구니 조회
 
 const getOrderItemService = async (userId) => {
   const getOrderItem = await cartDao.getOrderItemDao(userId);
-  console.log(';;;;', getOrderItem[0]);
   if (getOrderItem[0] == null) {
-    return throwError;
+    return throwError(404, 'NO ITEMS');
   } else {
     return getOrderItem;
   }
