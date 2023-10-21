@@ -51,10 +51,9 @@ const addNewProductController = async (req, res, next) => {
 // 주문단계 진입전 장바구니 업데이트
 const updateOrderController = async (req, res, next) => {
   try {
-    const userId = 3;
+    const userId = req.user.id;
     const ArrayOfObjects = req.body.data;
     let orderlist = [];
-    console.log(ArrayOfObjects.length);
     if (ArrayOfObjects.length === 0) {
       throwError(202, 'No products have been selected. ');
     }
