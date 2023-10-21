@@ -104,12 +104,10 @@ describe('patch cartItem', () => {
       message: 'Update Success!',
       data: [
         {
-          sellerId: 1,
           productId: 1,
           quantity: 5,
         },
         {
-          sellerId: 1,
           productId: 2,
           quantity: 30,
         }

@@ -54,16 +54,16 @@ describe('Get cartitem', () => {
     `);
 
     await AppDataSource.query(`
-    INSERT INTO carts (id, user_id, product_id, quantity)
-    VALUES (1, 1, 1, 1);
+    INSERT INTO carts (id, user_id, product_id, quantity, status)
+    VALUES (1, 1, 1, 1, 0);
     `);
     await AppDataSource.query(`
-    INSERT INTO carts (id, user_id, product_id, quantity)
-    VALUES (2, 1, 2, 2);
+    INSERT INTO carts (id, user_id, product_id, quantity, status)
+    VALUES (2, 1, 2, 2, 0);
     `);
     await AppDataSource.query(`
-    INSERT INTO carts (id, user_id, product_id, quantity)
-    VALUES (3, 1, 3, 1);
+    INSERT INTO carts (id, user_id, product_id, quantity, status)
+    VALUES (3, 1, 3, 1, 0);
     `);
   });
 

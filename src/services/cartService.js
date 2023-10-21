@@ -4,27 +4,7 @@ const { cartDao } = require('../models');
 
 const getCartService = async (userId) => {
   const cartInformation = await cartDao.getCartDao(userId);
-  // const finalCart = [];
-  // cartInformation.forEach((item) => {
-  //   const products = item.products.map((product) => ({
-  //     ...product,
-  //     totalPrice:
-  //       product.originalPrice *
-  //       (1 - product.discountRate / 100) *
-  //       product.quantity,
-  //     discountedAmount:
-  //       product.originalPrice * (product.discountRate / 100) * product.quantity,
-  //   }));
 
-  //   finalCart.push({
-  //     sellerId: item.seller_id,
-  //     sellerName: item.sellerName,
-  //     sellerImage: item.sellerImage,
-  //     productImage: item.products.images,
-  //     products,
-  //   });
-  // });
-  // return finalCart;
   return cartInformation;
 };
 
@@ -64,24 +44,12 @@ const UpdateQuantityService = async (userId, productId, quantity) => {
 
 const getOrderItemService = async (userId) => {
   const getOrderItem = await cartDao.getOrderItemDao(userId);
-  // const finalItems = [];
-  // getOrderItem.forEach((item) => {
-  //   const products = item.products.map((product) => ({
-  //     ...product,
-  //     totalPrice:
-  //       product.productPrice *
-  //       (1 - product.discountRate / 100) *
-  //       product.quantity,
-  //   }));
-
-  //   finalItems.push({
-  //     userId: item.userId,
-  //     userIsPremimum: item.userIsPremium,
-  //     products,
-  //   });
-  // });
-  // return finalItems;
-  return getOrderItem;
+  console.log(';;;;', getOrderItem[0]);
+  if (getOrderItem[0] == null) {
+    return throwError;
+  } else {
+    return getOrderItem;
+  }
 };
 // 유저 정보 불러오기
 const getUserInfoService = async (userId) => {
