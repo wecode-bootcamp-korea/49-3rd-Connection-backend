@@ -4,8 +4,6 @@ const { cartService } = require('../services');
 // 장바구니 조회
 const getCartController = async (req, res, next) => {
   try {
-    console.log('call');
-    console.log(req.user);
     const userId = req.user.id;
     const cartInformation = await cartService.getCartService(userId);
     if (!userId) {
@@ -85,7 +83,7 @@ const updateOrderController = async (req, res, next) => {
     });
   } catch (error) {
     console.log('error', error);
-    res.status(error.status).json({ message: error.message });
+    res.status(error.status || 500).json({ message: error.message });
   }
 };
 

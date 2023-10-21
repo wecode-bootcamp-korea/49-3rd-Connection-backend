@@ -1,5 +1,6 @@
 const request = require('supertest');
-
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const { createApp } = require('../app');
 const { AppDataSource } = require('../src/models/dataSource');
 
@@ -90,7 +91,12 @@ describe('Get cartitem', () => {
   // });
 
   test('SUCCESS: get carts', async () => {
-    const res = await request(app).get('/carts').send();
+    const userId = 1;
+    const testToken = jwt.sign({ id: userId }, process.env.smaple.JWT_SECRET);
+    const res = await request(app)
+      .get('/carts')
+      .set('Authorization', `Bearer ${testToken}`)
+      .send({ userId });
     expect(res.body).toEqual({
       message: 'Cart_Information',
       data: [
@@ -102,21 +108,21 @@ describe('Get cartitem', () => {
             {
               quantity: 1,
               productId: 1,
-              productName: '떡꼬치',
-              productImage: '4626151',
-              discountRate: 5,
-              originalPrice: 2000,
               totalPrice: 1900,
+              productName: '떡꼬치',
+              discountRate: 5,
+              productImage: '4626151',
+              originalPrice: 2000,
               discountedAmount: 100,
             },
             {
               quantity: 2,
               productId: 2,
-              productName: '강낭콩',
-              productImage: '4626151',
-              discountRate: 5,
-              originalPrice: 1000,
               totalPrice: 1900,
+              productName: '강낭콩',
+              discountRate: 5,
+              productImage: '4626151',
+              originalPrice: 1000,
               discountedAmount: 100,
             },
           ],
@@ -129,11 +135,11 @@ describe('Get cartitem', () => {
             {
               quantity: 1,
               productId: 3,
-              productName: '카메라',
-              productImage: '4626151',
-              discountRate: 15,
-              originalPrice: 200000,
               totalPrice: 170000,
+              productName: '카메라',
+              discountRate: 15,
+              productImage: '4626151',
+              originalPrice: 200000,
               discountedAmount: 30000,
             },
           ],

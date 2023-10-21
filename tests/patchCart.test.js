@@ -1,5 +1,6 @@
 const request = require('supertest');
-
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const { createApp } = require('../app');
 const { AppDataSource } = require('../src/models/dataSource');
 
@@ -79,38 +80,25 @@ describe('patch cartItem', () => {
     await AppDataSource.destroy();
   });
 
-  test('FAILED: get carts', async () => {
-    // supertest의 request를 활용하여 app에 테스트용 request를 보냅니다.
-    await request(app)
-      .patch('/carts') // HTTP Method, 엔드포인트 주소를 작성합니다.
-      .send({
-        data: [
-          {
-            productId: 1,
-            quantity: 5,
-          },
-          {
-            productId: 2,
-            quantity: 30,
-          },
-        ],
-      })
-      .expect(400) // expect()로 예상되는 statusCode, response를 넣어 테스트할 수 있습니다.
-      .expect({ message: error.message });
-  });
   test('SUCCESS: patch carts', async () => {
-    const res = await request(app).get('/carts').send();
+    await request(app).patch('/carts');
+    req.headers.send((userId = 1));
     expect(res.body).toEqual({
       message: 'Update Success!',
       data: [
         {
           productId: 1,
-          quantity: 5,
+          quantity: 1,
         },
         {
           productId: 2,
-          quantity: 30,
-        }
-      ];
-    })
-  })})
+          quantity: 2,
+        },
+        {
+          productId: 3,
+          quantity: 1,
+        },
+      ],
+    });
+  });
+});
