@@ -4,7 +4,11 @@ const { cartDao } = require('../models');
 
 const getCartService = async (userId) => {
   const cartInformation = await cartDao.getCartDao(userId);
-  return cartInformation;
+  if (cartInformation[0] == null) {
+    return console.log('NOTHING');
+  } else {
+    return cartInformation;
+  }
 };
 
 const speedCheckService = async (userId, productId) => {
@@ -27,6 +31,9 @@ const updateCartService = async (userId, productId, quantity) => {
 // 주문단계 전 장바구니 업데이트
 const UpdateQuantityService = async (userId, productId, quantity) => {
   const existingCartItem = await cartDao.easyCheckDao(userId, productId);
+  if (existingCartItem[0] == null) {
+    return console.log('error', error);
+  }
   if (existingCartItem[0].quantity !== 0) {
     const updateQuantityResult = await cartDao.updateQuantityDao(
       userId,
@@ -35,8 +42,6 @@ const UpdateQuantityService = async (userId, productId, quantity) => {
     );
     const updateStatusResult = await cartDao.updateStatusDao(userId, productId);
     await Promise.all([updateQuantityResult, updateStatusResult]);
-  } else {
-    return throwError(404, 'Invalid Path');
   }
 };
 // 주문 단계로 들어간 장바구니 조회
@@ -44,7 +49,7 @@ const UpdateQuantityService = async (userId, productId, quantity) => {
 const getOrderItemService = async (userId) => {
   const getOrderItem = await cartDao.getOrderItemDao(userId);
   if (getOrderItem[0] == null) {
-    return throwError(404, 'NO ITEMS');
+    return console.log('error', error);
   } else {
     return getOrderItem;
   }
@@ -62,7 +67,7 @@ const removeCartService = async (userId, productId) => {
     const deletCartResult = await cartDao.deletCartDao(userId, productId);
     await Promise.all([deletCartResult]);
   } else {
-    return throwError(404, 'Invalid Path');
+    return console.log('error', error);
   }
 };
 module.exports = {

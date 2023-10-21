@@ -81,8 +81,12 @@ describe('patch cartItem', () => {
   });
 
   test('SUCCESS: patch carts', async () => {
-    await request(app).patch('/carts');
-    req.headers.send((userId = 1));
+    const userId = 1;
+    const testToken = jwt.sign({ id: userId }, process.env.JWT_SECRET);
+    const res = await request(app)
+      .patch('/carts')
+      .set('Authorization', `Bearer ${testToken}`)
+      .send();
     expect(res.body).toEqual({
       message: 'Update Success!',
       data: [

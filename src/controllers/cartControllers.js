@@ -53,30 +53,51 @@ const updateOrderController = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const ArrayOfObjects = req.body.data;
-    await Promise.all(
-      ArrayOfObjects.map(async (item) => {
-        const { productId, quantity } = item;
-        item.userId = userId;
-        await cartService.UpdateQuantityService(userId, productId, quantity);
-        if (!userId) {
-          throwError(400, 'Connection Error');
-        }
-        if (!productId) {
-          throwError(400, 'CANNOT_SEARCH_Product');
-        }
-        if (!quantity) {
-          throwError(400, 'CANNOT_SEARCH_Quantity');
-        }
-      })
-    );
-    const orderlist = await Promise.all(
-      ArrayOfObjects.map(async (item) => {
-        const { productId, quantity } = item;
-        item.userId = userId;
-        return cartService.speedCheckService(userId, productId); // await 추가
-      })
-    );
-    console.log('orderList:', orderlist);
+    let orderlist = [];
+    if (ArrayOfObjects.length == null) {
+      throwError(202, 'No products have been selected. ');
+    }
+    if (ArrayOfObjects.length === 1) {
+      const { productId, quantity } = ArrayOfObjects[0];
+
+      if (!userId) {
+        throwError(400, 'Connection Error');
+      }
+      if (!productId) {
+        throwError(400, 'CANNOT_SEARCH_Product');
+      }
+      if (!quantity) {
+        throwError(400, 'CANNOT_SEARCH_Quantity');
+      }
+      await cartService.UpdateQuantityService(userId, productId, quantity);
+      orderlist = await cartService.speedCheckService(userId, productId);
+    } else if (ArrayOfObjects.length > 1) {
+      await Promise.all(
+        ArrayOfObjects.map(async (item) => {
+          const { productId, quantity } = item;
+          item.userId = userId;
+
+          if (!userId) {
+            throwError(400, 'Connection Error');
+          }
+          if (!productId) {
+            throwError(400, 'CANNOT_SEARCH_Product');
+          }
+          if (!quantity) {
+            throwError(400, 'CANNOT_SEARCH_Quantity');
+          }
+          await cartService.UpdateQuantityService(userId, productId, quantity);
+        })
+      );
+      orderlist = await Promise.all(
+        ArrayOfObjects.map(async (item) => {
+          const { productId, quantity } = item;
+          item.userId = userId;
+          return cartService.speedCheckService(userId, productId); // await 추가
+        })
+      );
+    }
+
     return res.status(200).json({
       message: 'Update Success!',
       data: orderlist,

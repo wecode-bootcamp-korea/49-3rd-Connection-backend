@@ -92,7 +92,7 @@ describe('Get cartitem', () => {
 
   test('SUCCESS: get carts', async () => {
     const userId = 1;
-    const testToken = jwt.sign({ id: userId }, process.env.smaple.JWT_SECRET);
+    const testToken = jwt.sign({ id: userId }, process.env.JWT_SECRET);
     const res = await request(app)
       .get('/carts')
       .set('Authorization', `Bearer ${testToken}`)
