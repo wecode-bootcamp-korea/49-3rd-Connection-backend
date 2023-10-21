@@ -18,6 +18,7 @@ exports.verifyToken = (req, res, next) => {
     req.userId = userId;
     next();
   } catch (err) {
+    console.log(err);
     throwError(403, 'invalid token');
   }
 };

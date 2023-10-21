@@ -4,7 +4,9 @@ const { cartService } = require('../services');
 // 장바구니 조회
 const getCartController = async (req, res, next) => {
   try {
-    const userId = 3;
+    console.log('call');
+    console.log(req.user);
+    const userId = req.user.id;
     const cartInformation = await cartService.getCartService(userId);
     if (!userId) {
       throwError(400, 'Connection Error');
@@ -25,7 +27,7 @@ const getCartController = async (req, res, next) => {
 // 제품 상세페이지 장바구니 담기 (완료)
 const addNewProductController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.user.id;
     const { productId, quantity } = req.body;
 
     await cartService.updateCartService(userId, productId, quantity);
@@ -51,7 +53,7 @@ const addNewProductController = async (req, res, next) => {
 // 주문단계 진입전 장바구니 업데이트
 const updateOrderController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.user.id;
     const ArrayOfObjects = req.body.data;
     await Promise.all(
       ArrayOfObjects.map(async (item) => {
@@ -90,7 +92,7 @@ const updateOrderController = async (req, res, next) => {
 // 주문단계로 들어간 장바구니 조회
 const getOrderItemController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.user.id;
     const OrderItem = await cartService.getOrderItemService(userId);
     if (!userId) {
       throwError(400, 'Connection Error');
@@ -111,17 +113,23 @@ const getOrderItemController = async (req, res, next) => {
 // 장바구니 삭제
 const removeCartController = async (req, res, next) => {
   try {
-    const userId = 1;
-    const { productId } = req.body;
-    await cartService.removeCartService(userId, productId);
-    if (!userId) {
-      throwError(400, 'Connection Error');
-    }
-    if (!productId) {
-      throwError(400, 'CANNOT_SEARCH_Product');
-    }
+    const userId = req.user.id;
+    const arrayOfDelete = req.body.data;
+    await Promise.all(
+      arrayOfDelete.map(async (item) => {
+        const { productId } = item;
+        item.userId = userId;
+        await cartService.removeCartService(userId, productId);
+        if (!userId) {
+          throwError(400, 'Connection Error');
+        }
+        if (!productId) {
+          throwError(400, 'CANNOT_SEARCH_Product');
+        }
+      })
+    );
     return res.status(200).json({
-      message: 'Delete Success!',
+      message: 'Delete item!',
     });
   } catch (error) {
     console.log('error', error);
@@ -132,7 +140,7 @@ const removeCartController = async (req, res, next) => {
 // 유저 정보 불러오기
 const getUserInfoController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.user.id;
     const userInformation = await cartService.getUserInfoService(userId);
     if (!userId) {
       throwError(400, 'Connection Error');

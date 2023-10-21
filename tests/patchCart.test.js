@@ -10,60 +10,60 @@ describe('patch cartItem', () => {
     app = createApp();
     await AppDataSource.initialize();
     await AppDataSource.query(`
-    INSERT INTO users (id, name, email, password, phone_number, zip_code, address, address_details)
-    VALUES (1, 'soonhyung', 'soonhyung@naver.com', '123456', '01023456789', '4567', 'address', 'address_details'); 
+    INSERT INTO users (name, email, password, phone_number, zip_code, address, address_details)
+    VALUES ('soonhyung', 'soonhyung@naver.com', '123456', '01023456789', '4567', 'address', 'address_details'); 
     `);
     await AppDataSource.query(`
-    INSERT INTO sellers (id, name, image , zip_code, address, address_details, phone_number)
-    VALUES (1, 'soonwoo', '541326' , '1665' , 'address', 'address_details', '01012345678');
+    INSERT INTO sellers (name, image , zip_code, address, address_details, phone_number)
+    VALUES ('soonwoo', '541326' , '1665' , 'address', 'address_details', '01012345678');
     `);
     await AppDataSource.query(`
-    INSERT INTO users (id, name, email, password, phone_number, zip_code, address, address_details, seller_id)
-    VALUES (2, 'soonwoo', 'soonwoo@naver.com', '123456', '01023456789', '4567', 'address', 'address_details',1);
+    INSERT INTO users (name, email, password, phone_number, zip_code, address, address_details)
+    VALUES ('soonwoo', 'soonwoo@naver.com', '123456', '01023456789', '4567', 'address', 'address_details');
     `);
     await AppDataSource.query(`
-    INSERT INTO sellers (id, name, image , zip_code, address, address_details, phone_number)
-    VALUES (2, 'byungwoo', '541326' , '1665' , 'address', 'address_details', '01012345678');
+    INSERT INTO sellers (name, image , zip_code, address, address_details, phone_number)
+    VALUES ('byungwoo', '541326' , '1665' , 'address', 'address_details', '01012345678');
     `);
     await AppDataSource.query(`
-    INSERT INTO users (id, name, email, password, phone_number, zip_code, address, address_details, seller_id)
-    VALUES (3, 'byungwoo', 'byungwoo@naver.com', '123456', '01023456789', '4567', 'address', 'address_details',2);    
+    INSERT INTO users (name, email, password, phone_number, zip_code, address, address_details)
+    VALUES ('byungwoo', 'byungwoo@naver.com', '123456', '01023456789', '4567', 'address', 'address_details');    
     `);
     await AppDataSource.query(`
-    INSERT INTO product_categories (id, category_name)
-    VALUES (1, '푸드');
+    INSERT INTO product_categories (category_name)
+    VALUES ('푸드');
     `);
     await AppDataSource.query(`
-    INSERT INTO product_categories (id, category_name)
-    VALUES (2, '디지털');
-    `);
-
-    await AppDataSource.query(`
-    INSERT INTO products (id, name, images, price, discount_rate, product_category_id, seller_id)
-    VALUES (1, '떡꼬치', '4626151', 2000, 5, 1, 1);
+    INSERT INTO product_categories (category_name)
+    VALUES ('디지털');
     `);
 
     await AppDataSource.query(`
-    INSERT INTO products (id, name, images, price, discount_rate, product_category_id, seller_id)
-    VALUES (2, '강낭콩', '4626151', 1000, 5, 1, 1);;
+    INSERT INTO products (name, images, price, discount_rate, product_category_id, seller_id)
+    VALUES ('떡꼬치', '4626151', 2000, 5, 1, 1);
     `);
 
     await AppDataSource.query(`
-    INSERT INTO products (id, name, images, price, discount_rate, product_category_id, seller_id)
-    VALUES (3, '카메라', '4626151', 200000, 15, 2, 2);
+    INSERT INTO products (name, images, price, discount_rate, product_category_id, seller_id)
+    VALUES ('강낭콩', '4626151', 1000, 5, 1, 1);;
     `);
 
     await AppDataSource.query(`
-    INSERT INTO carts (id, user_id, product_id, quantity)
-    VALUES (1, 1, 1, 1);
+    INSERT INTO products (name, images, price, discount_rate, product_category_id, seller_id)
+    VALUES ('카메라', '4626151', 200000, 15, 2, 2);
+    `);
+
+    await AppDataSource.query(`
+    INSERT INTO carts (user_id, product_id, quantity)
+    VALUES ( 1, 1, 1);
     `);
     await AppDataSource.query(`
-    INSERT INTO carts (id, user_id, product_id, quantity)
-    VALUES (2, 1, 2, 2);
+    INSERT INTO carts (user_id, product_id, quantity)
+    VALUES (1, 2, 2);
     `);
     await AppDataSource.query(`
-    INSERT INTO carts (id, user_id, product_id, quantity)
-    VALUES (3, 1, 3, 1);
+    INSERT INTO carts (user_id, product_id, quantity)
+    VALUES (1, 3, 1);
     `);
   });
   afterAll(async () => {

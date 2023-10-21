@@ -4,7 +4,6 @@ const { cartDao } = require('../models');
 
 const getCartService = async (userId) => {
   const cartInformation = await cartDao.getCartDao(userId);
-
   return cartInformation;
 };
 
@@ -60,12 +59,12 @@ const getUserInfoService = async (userId) => {
 const removeCartService = async (userId, productId) => {
   const checkCartExistence = cartDao.easyCheckDao(userId, productId);
   if (checkCartExistence[0] !== null) {
-    return await cartDao.deletCartDao(userId, productId);
+    const deletCartResult = await cartDao.deletCartDao(userId, productId);
+    await Promise.all([deletCartResult]);
   } else {
-    throwError;
+    return throwError(404, 'Invalid Path');
   }
 };
-
 module.exports = {
   getCartService,
   speedCheckService,

@@ -14,11 +14,11 @@ const getCartDao = async (userId) => {
         'productName', product_name,
         'productImage', product_image,
         'quantity', quantity,
-        'originalPrice', price,
-        'discountRate', discount_rate,
-        'discountedAmount', quantity * productPrice * discountRate/100)
+        'originalPrice', productPrice,
+        'discountRate', discountRate,
+        'discountedAmount', quantity * productPrice * discountRate/100,
         'totalPrice', quantity * (productPrice - (productPrice * discountRate/100))
-      )
+      ) 
     ) AS products
   FROM (
     SELECT
@@ -77,7 +77,7 @@ const updateQuantityDao = async (userId, productId, quantity) => {
 // 장바구니 상태변경
 const updateStatusDao = async (userId, productId) => {
   const updateStatus = await AppDataSource.query(
-    `UPDATE carts SET status = status + 1 WHERE user_id=? and product_id=?`,
+    `UPDATE carts SET status = 1 WHERE user_id=? and product_id=?`,
     [userId, productId]
   );
   return updateStatus;

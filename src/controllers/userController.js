@@ -57,6 +57,8 @@ const signIn = async (req, res) => {
 
   const token = await userService.signIn(email, password);
 
+  console.log('토큰: ', token);
+
   res.status(200).json({
     message: 'SUCCESS',
     accessToken: token,
