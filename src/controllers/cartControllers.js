@@ -51,10 +51,11 @@ const addNewProductController = async (req, res, next) => {
 // 주문단계 진입전 장바구니 업데이트
 const updateOrderController = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = 3;
     const ArrayOfObjects = req.body.data;
     let orderlist = [];
-    if (ArrayOfObjects.length == null) {
+    console.log(ArrayOfObjects.length);
+    if (ArrayOfObjects.length === 0) {
       throwError(202, 'No products have been selected. ');
     }
     if (ArrayOfObjects.length === 1) {
@@ -70,7 +71,7 @@ const updateOrderController = async (req, res, next) => {
         throwError(400, 'CANNOT_SEARCH_Quantity');
       }
       await cartService.UpdateQuantityService(userId, productId, quantity);
-      orderlist = await cartService.speedCheckService(userId, productId);
+      orderlist[0] = await cartService.speedCheckService(userId, productId);
     } else if (ArrayOfObjects.length > 1) {
       await Promise.all(
         ArrayOfObjects.map(async (item) => {
