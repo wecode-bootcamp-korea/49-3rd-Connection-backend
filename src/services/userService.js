@@ -26,6 +26,10 @@ const signUp = async (
   const saltRounds = 12;
   const bcryptPassword = await bcrypt.hash(password, saltRounds);
 
+  const points = 0;
+  const paymentId = 1;
+  const price = 4900;
+
   await userDao.createUser(
     name,
     email,
@@ -33,7 +37,10 @@ const signUp = async (
     phoneNumber,
     zipCode,
     address,
-    addressDetails
+    addressDetails,
+    points,
+    paymentId,
+    price
   );
 };
 
@@ -50,9 +57,17 @@ const signIn = async (email, password) => {
   const checkPassword = await bcrypt.compare(password, existingUser.password);
   if (!checkPassword) throwError(400, 'WRONG_PASSWORD');
 
+  const isPremium = await userDao.findUserByPremiumId(existingUser.id);
+  const isPremiumValue = isPremium.userId ? 1 : 0;
+
   const token = jwt.sign({ id: existingUser.id }, process.env.JWT_SECRET);
 
-  return { accessToken: token, isSeller: !!existingUser.sellerId };
+  return {
+    accessToken: token,
+    isSeller: !!existingUser.sellerId,
+    isSubscribe: isPremiumValue,
+    points: existingUser.points,
+  };
 };
 
 const sellerSignUp = async (

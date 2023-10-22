@@ -17,5 +17,10 @@ userRouter.put(
 );
 
 userRouter.get('/kakao/callback', userController.kakaoSignIn);
+userRouter.post(
+  '/premium',
+  verifyToken,
+  asyncWrap(userController.insertPremium)
+);
 
 module.exports = { userRouter };

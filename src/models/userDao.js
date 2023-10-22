@@ -21,10 +21,12 @@ const findUserByEmail = async (email) => {
   const [user] = await AppDataSource.query(
     `
     SELECT
+      id,
       email,
       seller_id AS sellerId,
       password,
-      zip_code AS zipCode
+      zip_code AS zipCode,
+      points
     FROM
       users
     WHERE
@@ -60,23 +62,50 @@ const createUser = async (
   phoneNumber,
   zipCode,
   address,
-  addressDetails
+  addressDetails,
+  points,
+  paymentId,
+  price
 ) => {
-  await AppDataSource.query(
-    `
-      INSERT INTO users (
+  await AppDataSource.transaction(async (transactionManager) => {
+    const insertUser = await transactionManager.query(
+      `
+        INSERT INTO users (
+          name,
+          email,
+          password,
+          phone_number,
+          zip_code,
+          address,
+          address_details,
+          points
+        ) VALUES
+          (?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+      [
         name,
         email,
         password,
-        phone_number,
-        zip_code,
+        phoneNumber,
+        zipCode,
         address,
-        address_details
-      ) VALUES
-        (?, ?, ?, ?, ?, ?, ?)
-    `,
-    [name, email, password, phoneNumber, zipCode, address, addressDetails]
-  );
+        addressDetails,
+        points,
+      ]
+    );
+    const userId = insertUser.insertId;
+    await transactionManager.query(
+      `
+        INSERT INTO user_premium (
+          user_id,
+          payment_id,
+          price
+        ) VALUES
+          (?, ?, ?)
+      `,
+      [userId, paymentId, price]
+    );
+  });
 };
 
 const createSeller = async (
@@ -173,6 +202,38 @@ const findUserByKakao = async (kakao) => {
   return user;
 };
 
+const findUserByPremiumId = async (userId) => {
+  const [user] = await AppDataSource.query(
+    `
+      SELECT
+        user_id AS userId
+      FROM
+        user_premium
+      WHERE
+        user_id = ?
+    `,
+    [userId]
+  );
+
+  return user;
+};
+
+const getPremium = async (userId) => {
+  await AppDataSource.query(
+    `
+     SELECT
+      user_id,
+      payment_id,
+      price
+    FROM
+      user_premium
+    WHERE
+      user_id = ?
+    `,
+    [userId]
+  );
+};
+
 module.exports = {
   findUserById,
   findUserByEmail,
@@ -182,4 +243,6 @@ module.exports = {
   kakaoSignIn,
   insertAddress,
   findUserByKakao,
+  findUserByPremiumId,
+  getPremium,
 };

@@ -65,6 +65,7 @@ const signIn = async (req, res) => {
 
 const sellerSignUp = async (req, res) => {
   const userId = req.userId;
+  console.log('aaaaaa', userId);
 
   const { name, image, zipCode, address, addressDetails, phoneNumber } =
     req.body;
@@ -129,6 +130,22 @@ const insertAddress = async (req, res) => {
   });
 };
 
+const insertPremium = async (req, res) => {
+  const userId = req.userId;
+
+  const { paymentId } = req.body;
+
+  keyCheck({
+    paymentId,
+  });
+
+  await userService.insertPremium(userId, paymentId);
+
+  return res.status(200).json({
+    message: 'SUCCESS',
+  });
+};
+
 module.exports = {
   signUp,
   signIn,
@@ -137,4 +154,5 @@ module.exports = {
   insertAddress,
   checkDuplicatedEmail,
   sellerSignUp,
+  insertPremium,
 };
