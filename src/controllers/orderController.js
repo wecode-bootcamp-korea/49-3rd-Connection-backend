@@ -4,11 +4,12 @@ console.log('controller connected 연결 확인');
 
 const createOrders = async (req, res) => {
   try {
-    // req.userId = userId; // 토큰 있을떄 (미들웨어 사용)
+    // userId는 토큰에서 -> 미들웨어 사용
+    req.userId = userId;
 
     // 필요한 값들 다 req 에서 받아옴
     const {
-      userId,
+      //    userId,
       totalPrice,
       shippingMethod,
       paymentId,
