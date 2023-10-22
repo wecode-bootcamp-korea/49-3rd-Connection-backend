@@ -1,4 +1,5 @@
 const { productDao, builder } = require('../models');
+const { whereQueryWithCategory } = require('../models/builder');
 
 const getTotalProductByCategoryId = async () => {
   const categoryIds = await productDao.getTotalCategoryId();
@@ -103,7 +104,23 @@ const getProducts = async (filter, sort, limit, offset) => {
   return data;
 };
 
+const getProductAmount = async (filter) => {
+  let id;
+  let whereQuery;
+  if (filter.seller === 0) {
+    id = filter.category;
+    whereQuery = await builder.whereQueryWithCategory(id);
+  } else {
+    id = filter.seller;
+    whereQuery = await builder.whereQueryWithSeller(id);
+  }
+  console.log(whereQuery);
+  const result = await productDao.getProductAmount(whereQuery);
+  return result;
+};
+
 module.exports = {
+  getProductAmount,
   getProductRandomSellerId,
   getTotalProductByCategoryId,
   getNameById,
