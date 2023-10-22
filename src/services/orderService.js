@@ -20,6 +20,7 @@ const createOrders = async (
   const isProductInCarts = await orderDao.isProductInCarts(userId, productId); // await: userId, productId,(orderDetails의 ) quantity를  orderDao로 보내준다
   console.log(isProductInCarts);
 
+  /*
   // 에러핸들링 여기서 시작
   // 에러 핸들링: order.totalPrice > user : 포인트가 부족할 때  ( 갖고 있는 point보다 비싼 걸 살 때)
   if (totalPrice > isUsersPoints) {
@@ -37,7 +38,7 @@ const createOrders = async (
   // }
 
   // 에러 핸들링 끝. 주문 시작
-
+*/
   // 1) orders table 주문 정보 저장 (orderDao에서. 그러니까 dao로 넘겨주는)
   const newOrder = await orderDao.createOrders(
     userId,

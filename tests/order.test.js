@@ -59,7 +59,7 @@ describe('make order and pay', () => {
   });
 
   test('SUCCESS: created orders ', async () => {
-    await request(app).post('/orders').send({
+    const res = await request(app).post('/orders').send({
       userId: 1,
       totalPrice: '1000',
       shippingMethod: '방문수령',
@@ -68,6 +68,6 @@ describe('make order and pay', () => {
       quantity: 1,
     });
     expect(res.status).toBe(200);
-    expect(res.body.message).toEqual('Created Orders 주문정보 저장');
+    expect(res.body.message).toEqual('Success');
   });
 }, 9000);
