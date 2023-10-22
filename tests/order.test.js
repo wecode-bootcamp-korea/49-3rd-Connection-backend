@@ -67,8 +67,7 @@ describe('make order and pay', () => {
       productId: 1,
       quantity: 1,
     });
-    // .expect(200);
     expect(res.status).toBe(200);
     expect(res.body.message).toEqual('Created Orders 주문정보 저장');
   });
-}, 10000000000);
+}, 9000);
