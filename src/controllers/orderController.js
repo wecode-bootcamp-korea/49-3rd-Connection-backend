@@ -27,7 +27,11 @@ const createOrders = async (req, res) => {
 
     return res.status(200).json({ message: 'Success' });
   } catch (error) {
-    console.error(error);
+    return res.status(400).json({ message: '장바구니에 없는 제품 주문' });
+    return res
+      .status(400)
+      .json({ message: '장바구니에 있는 수량보다 많이 주문' });
+    return res.status(400).json({ message: '포인트 부족' });
   }
 };
 
