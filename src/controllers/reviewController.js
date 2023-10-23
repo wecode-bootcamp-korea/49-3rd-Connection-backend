@@ -2,7 +2,7 @@ const { reviewService } = require('../services');
 
 const getReviews = async (req, res) => {
   try {
-    const productId = req.params.productId; // 매개변수 이름을 productId로 변경
+    const productId = req.params.productId;
     const data = await reviewService.getReviews(productId);
 
     return res.status(200).json({
@@ -17,7 +17,7 @@ const getReviews = async (req, res) => {
 
 const createReviews = async (req, res) => {
   try {
-    const { userId, contents, images, productId, rating } = req.body; // 데이터는 request body
+    const { userId, contents, images, productId, rating } = req.body;
     const data = await reviewService.createReviews(
       userId,
       contents,
