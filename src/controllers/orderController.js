@@ -2,7 +2,7 @@ const { orderService } = require('../services');
 
 console.log('controller connected 연결 확인');
 
-const createOrders = async (req, res) => {
+const createOrders = async (req, res, next) => {
   try {
     const userId = req.userId; //const { userId } = req;  // userId는 토큰에서 -> 미들웨어 사용
 
@@ -27,11 +27,7 @@ const createOrders = async (req, res) => {
 
     return res.status(200).json({ message: 'Success' });
   } catch (error) {
-    return res.status(400).json({ message: '장바구니에 없는 제품 주문' });
-    return res
-      .status(400)
-      .json({ message: '장바구니에 있는 수량보다 많이 주문' });
-    return res.status(400).json({ message: '포인트 부족' });
+    next(error);
   }
 };
 
