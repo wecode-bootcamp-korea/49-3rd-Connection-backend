@@ -16,7 +16,7 @@ const getCartDao = async (userId) => {
         'quantity', quantity,
         'originalPrice', productPrice,
         'discountRate', discountRate,
-        'discountedAmount', quantity * (productPrice * discountRate/100,)
+        'discountedAmount', quantity * (productPrice * discountRate/100),
         'totalPrice', quantity * (productPrice - (productPrice * discountRate/100))
       ) 
     ) AS products

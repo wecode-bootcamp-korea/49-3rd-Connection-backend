@@ -48,6 +48,7 @@ const UpdateQuantityService = async (userId, productId, quantity) => {
 
 const getOrderItemService = async (userId) => {
   const getOrderItem = await cartDao.getOrderItemDao(userId);
+  console.log(';;;;;;;;;;;;;', getOrderItem);
   if (getOrderItem[0] == null) {
     return console.log('error', error);
   } else {
