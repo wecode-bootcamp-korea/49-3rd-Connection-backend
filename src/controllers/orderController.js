@@ -27,7 +27,14 @@ const createOrders = async (req, res, next) => {
 
     return res.status(200).json({ message: 'Success' });
   } catch (error) {
-    next(error);
+    // next(error);
+    res
+      .status(error.status)
+      .json({ message: 'ordered productId is not in the carts' });
+    res
+      .status(error.status)
+      .json({ message: 'ordered more products than cartsQuantity' });
+    res.status(error.status).json({ message: 'not enough points' });
   }
 };
 

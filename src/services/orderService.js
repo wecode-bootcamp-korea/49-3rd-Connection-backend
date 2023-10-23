@@ -1,4 +1,5 @@
 const { orderDao } = require('../models');
+const { throwError } = require('../utils/throwError');
 
 const createOrders = async (
   // 받아오는 data
@@ -14,7 +15,7 @@ const createOrders = async (
 
   // 에러 핸들링: order.totalPrice > user : 포인트가 부족할 때  ( 갖고 있는 point보다 비싼 걸 살 때)
   if (totalPrice > isUsersPoints) {
-    throw new Error('not enough points');
+    throwError('not enough points');
   }
 
   // 1) orders table 주문 정보 저장 (orderDao에서. 그러니까 dao로 넘겨주는)
@@ -29,7 +30,7 @@ const createOrders = async (
   const orderId = newOrder; // orderDetails 에서 저장하기 위한 orderId 가져오기
   console.log(orderId);
 
-  // 에러 핸들링  transaction 1 : orderDetails 로 insert into 실패했는데, order 테이블에 계속 추가되는 경우
+  // transaction 1 : orderDetails 로 insert into 실패했는데, order 테이블에 계속 추가되는 경우
   /*  if(  ){
     throw new Error('2단계 orderDetails 주문정보 저장 실패, 처음으로 롤백! ')
   } 
@@ -42,7 +43,7 @@ const createOrders = async (
   // totalPrice = 2000, isUsersPoints= 5000 -> update 그냥하면 updatePoints= 2000이 됨 (isUsersPoints - totalPrice 해야 함 )
 
   /*
-  // 에러 핸들링  transaction 2 : 결제 단계로 실패했는데, (결제 후 단계) orderdetails 테이블에 계속 추가되는 경우
+  //transaction 2 : 결제 단계로 실패했는데, (결제 후 단계) orderdetails 테이블에 계속 추가되는 경우
   if(  ){
     throw new Error('3단계 결제 실패, 처음으로 롤백! ')
   } 
@@ -64,7 +65,7 @@ const createOrders = async (
     console.log(isProductInCarts);
 
     if (productId !== isProductInCarts) {
-      throw new Error('ordered productId is not in the carts');
+      throwError('ordered productId is not in the carts');
     }
 
     const cartUpdatePromises = [];
@@ -75,7 +76,7 @@ const createOrders = async (
 
     // 에러 핸들링 : carts에 담은 수량  < 주문한 수량__  장바구니 < order 수량 많은 경우 없음_ 장바구니에서 저장 후 넘어가니
     if (cartQuantity < quantity) {
-      throw new Error('ordered more products than cartsQuantity');
+      throwError('ordered more products than cartsQuantity');
     }
 
     // 3) orderDetails table 주문 정보 저장
