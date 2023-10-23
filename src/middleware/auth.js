@@ -15,11 +15,10 @@ exports.verifyToken = (req, res, next) => {
       token.replace('Bearer ', ''),
       process.env.JWT_SECRET
     );
+
     const userId = decoded['id'];
     req.user = decoded;
     req.userId = userId;
-
-    console.log(userId);
 
     next();
   } catch (err) {
