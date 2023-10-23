@@ -4,11 +4,11 @@ console.log('controller connected 연결 확인');
 
 const createOrders = async (req, res) => {
   try {
-    req.userId = userId; //const { userId } = req;  // userId는 토큰에서 -> 미들웨어 사용
+    const userId = req.userId; //const { userId } = req;  // userId는 토큰에서 -> 미들웨어 사용
 
     // 필요한 값들 다 req 에서 받아옴
     const {
-      //    userId, // without token
+      // userId, // without token
       totalPrice,
       shippingMethod,
       paymentId,
