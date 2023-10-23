@@ -30,6 +30,7 @@ const createOrders = async (req, res) => {
   } catch (error) {
     // next(error);
     const errorMessages = [];
+
     if (error.message === 'ordered productId is not in the carts') {
       errorMessages.push('ordered productId is not in the carts');
     }
@@ -39,7 +40,11 @@ const createOrders = async (req, res) => {
     if (error.message === 'not enough points') {
       errorMessages.push('not enough points');
     }
-    res.status(error.status).json({ message: errorMessages });
+    if (errorMessages.length === 0) {
+      return res.status(error.status || 200).json({ message: 'Success' });
+    } else {
+      res.status(error.status || 500).json({ message: errorMessages });
+    }
   }
 };
 
