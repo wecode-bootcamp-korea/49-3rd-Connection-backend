@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "DOTENV_CONFIG_PATH=.env.test jest --setupFiles=dotenv/config --runInBand --verbose --silent"
+    "test": "DOTENV_CONFIG_PATH=.env.test jest --setupFiles=dotenv/config --runInBand --silent --verbose"
   },
   "keywords": [],
   "author": "",

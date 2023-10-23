@@ -80,25 +80,43 @@ describe('patch cartItem', () => {
     await AppDataSource.destroy();
   });
 
-  test('SUCCESS: patch carts', async () => {
+  test.only('SUCCESS: patch carts', async () => {
     const userId = 1;
     const testToken = jwt.sign({ id: userId }, process.env.JWT_SECRET);
     const res = await request(app)
       .patch('/carts')
       .set('Authorization', `Bearer ${testToken}`)
-      .send();
+      .send({
+        data: [
+          {
+            productId: 1,
+            quantity: 1,
+          },
+          {
+            productId: 2,
+            quantity: 2,
+          },
+          {
+            productId: 3,
+            quantity: 1,
+          },
+        ],
+      });
     expect(res.body).toEqual({
       message: 'Update Success!',
       data: [
         {
+          cartId: 1,
           productId: 1,
           quantity: 1,
         },
         {
+          cartId: 2,
           productId: 2,
           quantity: 2,
         },
         {
+          cartId: 3,
           productId: 3,
           quantity: 1,
         },
