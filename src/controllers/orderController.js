@@ -2,7 +2,8 @@ const { orderService } = require('../services');
 
 console.log('controller connected 연결 확인');
 
-const createOrders = async (req, res, next) => {
+// const createOrders = async (req, res, next) => {
+const createOrders = async (req, res) => {
   try {
     const userId = req.userId; //const { userId } = req;  // userId는 토큰에서 -> 미들웨어 사용
 
@@ -28,13 +29,17 @@ const createOrders = async (req, res, next) => {
     return res.status(200).json({ message: 'Success' });
   } catch (error) {
     // next(error);
-    res
-      .status(error.status)
-      .json({ message: 'ordered productId is not in the carts' });
-    res
-      .status(error.status)
-      .json({ message: 'ordered more products than cartsQuantity' });
-    res.status(error.status).json({ message: 'not enough points' });
+    const errorMessages = [];
+    if (error.message === 'ordered productId is not in the carts') {
+      errorMessages.push('ordered productId is not in the carts');
+    }
+    if (error.message === 'ordered more products than cartsQuantity') {
+      errorMessages.push('ordered more products than cartsQuantity');
+    }
+    if (error.message === 'not enough points') {
+      errorMessages.push('not enough points');
+    }
+    res.status(error.status).json({ message: errorMessages });
   }
 };
 

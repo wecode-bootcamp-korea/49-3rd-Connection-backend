@@ -10,7 +10,6 @@ const asyncWrap = (asyncController) => {
 
 const errorHandler = (err, req, res, next) => {
   console.error(err);
-
   // let statusCode = 400;
   // let message = err.message;
 

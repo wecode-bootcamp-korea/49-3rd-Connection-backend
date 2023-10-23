@@ -14,9 +14,7 @@ const createOrders = async (
   console.log(isUsersPoints);
 
   // 에러 핸들링: order.totalPrice > user : 포인트가 부족할 때  ( 갖고 있는 point보다 비싼 걸 살 때)
-  if (totalPrice > isUsersPoints) {
-    throwError('not enough points');
-  }
+  if (totalPrice > isUsersPoints) throwError(400, 'not enough points');
 
   // 1) orders table 주문 정보 저장 (orderDao에서. 그러니까 dao로 넘겨주는)
 
@@ -64,9 +62,8 @@ const createOrders = async (
     const isProductInCarts = await orderDao.isProductInCarts(userId, productId); // await: userId, productId,(orderDetails의 ) quantity를  orderDao로 보내준다
     console.log(isProductInCarts);
 
-    if (productId !== isProductInCarts) {
-      throwError('ordered productId is not in the carts');
-    }
+    if (productId !== isProductInCarts)
+      throwError(400, 'ordered productId is not in the carts');
 
     const cartUpdatePromises = [];
 
@@ -75,9 +72,8 @@ const createOrders = async (
     const updateQuantity = cartQuantity - quantity; //4)carts 에서 부분삭제:  carts 의 quantity 와 orderDetails의 quantity가 다른 경우에, UPDATE 수정 위한 계산
 
     // 에러 핸들링 : carts에 담은 수량  < 주문한 수량__  장바구니 < order 수량 많은 경우 없음_ 장바구니에서 저장 후 넘어가니
-    if (cartQuantity < quantity) {
-      throwError('ordered more products than cartsQuantity');
-    }
+    if (cartQuantity < quantity)
+      throwError(400, 'ordered more products than cartsQuantity');
 
     // 3) orderDetails table 주문 정보 저장
     const newOrderDetails = orderDao.newOrderDetails(
