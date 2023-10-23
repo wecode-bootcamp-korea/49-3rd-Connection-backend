@@ -9,7 +9,9 @@ const getProductDetail = async (id) => {
     item.reviewNumbers = parseInt(item.reviewNumbers);
   });
   console.log('data', data);
+  return data;
 };
+
 const getTotalProductByCategoryId = async () => {
   const categoryIds = await productDao.getTotalCategoryId();
   const categoryId = categoryIds.map((item) => item.id);

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -27,5 +27,9 @@
     "mysql2": "^3.6.1",
     "supertest": "^6.3.3",
     "typeorm": "^0.3.17"
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "description": ""
 }
