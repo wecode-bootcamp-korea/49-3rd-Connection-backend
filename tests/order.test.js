@@ -18,7 +18,7 @@ describe('make order and pay', () => {
     // 하드 코딩해서 직접 값을 key에 입력해주는 것
     // users 테이블 채우기
     await AppDataSource.query(`
-    INSERT INTO users (name, email, password, phone_number, zip_code, address, address_details) VALUES ('ddd', '@', '111', '010', '00000', '강남구', '101동')  
+    INSERT INTO users (name, email, password, phone_number, zip_code, address, address_details) VALUES ('ddd', 'jdh@naver.com', '111', '010', '00000', '강남구', '101동')  
     `);
     // sellers 채우기
     await AppDataSource.query(`
@@ -30,7 +30,7 @@ describe('make order and pay', () => {
   `);
     // products 테이블 채우기
     await AppDataSource.query(`
-    INSERT INTO products (name, images, price, product_category_id, seller_id) VALUES ('감자',"url",'1000', 1, 1) 
+    INSERT INTO products (id, name, images, price, product_category_id, seller_id) VALUES ( '1', '감자',"url",'1000', 1, 1) 
     `);
     // carts 채우기
     await AppDataSource.query(`
@@ -59,14 +59,18 @@ describe('make order and pay', () => {
   });
 
   test('SUCCESS: created orders ', async () => {
-    const res = await request(app).post('/orders').send({
-      userId: 1,
-      totalPrice: '1000',
-      shippingMethod: '방문수령',
-      paymentId: 1,
-      productId: 1,
-      quantity: 1,
-    });
+    const res = await request(app)
+      .post('/orders')
+      .send({
+        userId: 1,
+        totalPrice: 1000,
+        shippingMethod: 'shipping',
+        paymentId: 1,
+        products: [
+          { productId: 1, quantity: 10 },
+          { productId: 2, quantity: 11 },
+        ],
+      });
     expect(res.status).toBe(200);
     expect(res.body.message).toEqual('Success');
   });
