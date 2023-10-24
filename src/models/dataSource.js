@@ -9,6 +9,5 @@ const AppDataSource = new DataSource({
   database: process.env.DB_DATABASE,
   logging: true,
 });
-module.exports = {
-  AppDataSource,
-};
+
+module.exports = { AppDataSource };
