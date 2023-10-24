@@ -42,6 +42,7 @@ describe('get product', () => {
     await AppDataSource.query(`TRUNCATE product_categories`);
     await AppDataSource.query(`TRUNCATE users`);
     await AppDataSource.query(`TRUNCATE sellers`);
+    await AppDataSource.query(`SET foreign_key_checks = 1;`);
 
     // 모든 테스트가 끝나게 되면(afterAll) DB 커넥션을 끊어줍니다.
     await AppDataSource.destroy();
