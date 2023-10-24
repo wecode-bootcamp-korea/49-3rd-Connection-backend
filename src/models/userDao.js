@@ -166,13 +166,13 @@ const kakaoSignIn = async (kakaoId, name, email, points, paymentId, price) => {
 
     await transactionManager.query(
       `
-  INSERT INTO user_premium (
-    user_id,
-    payment_id,
-    price
-  ) VALUES
-    (?, ?, ?)
-  `,
+      INSERT INTO user_premium (
+        user_id,
+        payment_id,
+        price
+      ) VALUES
+        (?, ?, ?)
+      `,
       [userId, paymentId, price]
     );
   });
