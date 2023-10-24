@@ -163,4 +163,5 @@ module.exports = {
   updateStatusDao,
   getOrderItemDao,
   getUserInfoDao,
+  returnCartDao,
 };
