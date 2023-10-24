@@ -115,19 +115,8 @@ const getProducts = async (filter, sort, limit, offset) => {
   return data;
 };
 
-const getProductId = async (filter) => {
-  let id;
-  if (filter.category == 0) {
-    id = filter.seller;
-  } else {
-    id = filter.category;
-  }
-  return parseInt(id);
-};
-
 module.exports = {
   getProductDetail,
-  getProductId,
   getProductRandomSellerId,
   getTotalProductByCategoryId,
   getNameById,

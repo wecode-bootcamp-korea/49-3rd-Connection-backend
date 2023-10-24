@@ -1,8 +1,8 @@
 const userService = require('./userService');
 const productService = require('./productService');
+const orderService = require('./orderServicer');
 const cartService = require('./cartService');
 const reviewService = require('./reviewService');
-const orderService = require('./orderService');
 
 module.exports = {
   userService,
