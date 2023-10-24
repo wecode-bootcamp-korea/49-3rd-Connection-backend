@@ -11,7 +11,6 @@ const createOrders = async (
 ) => {
   // user points
   const isUsersPoints = await orderDao.isUsersPoints(userId);
-  console.log(isUsersPoints);
 
   // 에러 핸들링: order.totalPrice > user : 포인트가 부족할 때  ( 갖고 있는 point보다 비싼 걸 살 때)
   if (totalPrice > isUsersPoints) throwError(400, 'not enough points');
@@ -26,7 +25,6 @@ const createOrders = async (
   ); // 주문정보 저장은 return해줄 필요 없음
 
   const orderId = newOrder; // orderDetails 에서 저장하기 위한 orderId 가져오기
-  console.log(orderId);
 
   // 2) 결제 users 의 points 부분 차감 : users 의 points 와 orderDetails의 totalPrice 가 다른 경우에, UPDATE 수정을 위한 계산식
   const remainPoints = isUsersPoints - totalPrice;
@@ -45,7 +43,6 @@ const createOrders = async (
 
     // 에러 핸들링: carts 에 담기지 않은 product를 주문할 때 -> productId 라서 for()안에 들어가야 함
     const isProductInCarts = await orderDao.isProductInCarts(userId, productId); // await: userId, productId,(orderDetails의 ) quantity를  orderDao로 보내준다
-    console.log(isProductInCarts);
 
     if (productId !== isProductInCarts)
       throwError(400, 'ordered productId is not in the carts');
