@@ -22,13 +22,38 @@ const getCartController = async (req, res, next) => {
   }
 };
 
-// 제품 상세페이지 장바구니 담기 (완료)
+// 제품 상세페이지 장바구니 담기
 const addNewProductController = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const { productId, quantity } = req.body;
+    const { productId, quantity } = req.body.data;
 
     await cartService.updateCartService(userId, productId, quantity);
+    if (!userId) {
+      throwError(400, 'Connection Error');
+    }
+    if (!productId) {
+      throwError(400, 'CANNOT_SEARCH_Product');
+    }
+    if (!quantity) {
+      throwError(400, 'CANNOT_SEARCH_Quantity');
+    }
+    return res.status(200).json({
+      message: 'Update Success!',
+      data: await cartService.speedCheckService(userId, productId),
+    });
+  } catch (error) {
+    console.log('error', error);
+    res.status(error.status).json({ message: error.message });
+  }
+};
+//주문단계 진입전 장바구니 수량 업데이트
+const updateQuantityController = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const { productId, quantity } = req.body.data;
+
+    await cartService.fixedQuantityService(userId, productId, quantity);
     if (!userId) {
       throwError(400, 'Connection Error');
     }
@@ -180,6 +205,7 @@ const getUserInfoController = async (req, res, next) => {
 module.exports = {
   getCartController,
   addNewProductController,
+  updateQuantityController,
   updateOrderController,
   getOrderItemController,
   removeCartController,

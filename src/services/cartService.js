@@ -28,6 +28,10 @@ const updateCartService = async (userId, productId, quantity) => {
   }
 };
 
+const fixedQuantityService = async (userId, productId, quantity) => {
+  return await cartDao.updateQuantityDao(userId, productId, quantity);
+};
+
 // 주문단계 전 장바구니 업데이트
 const UpdateQuantityService = async (userId, productId, quantity) => {
   const existingCartItem = await cartDao.easyCheckDao(userId, productId);
@@ -76,6 +80,7 @@ module.exports = {
   speedCheckService,
   updateCartService,
   UpdateQuantityService,
+  fixedQuantityService,
   getOrderItemService,
   removeCartService,
   getUserInfoService,

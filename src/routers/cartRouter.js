@@ -5,6 +5,11 @@ const cartRouter = express.Router();
 
 cartRouter.get('/', verifyToken, cartController.getCartController);
 cartRouter.post('/', verifyToken, cartController.addNewProductController);
+cartRouter.post(
+  '/updatequantity',
+  verifyToken,
+  cartController.updateQuantityController
+);
 cartRouter.patch('/', verifyToken, cartController.updateOrderController);
 cartRouter.delete('/', verifyToken, cartController.removeCartController);
 cartRouter.get('/complete', verifyToken, cartController.getOrderItemController);
