@@ -10,6 +10,4 @@ const AppDataSource = new DataSource({
   logging: true,
 });
 
-module.exports = {
-  AppDataSource,
-};
+module.exports = { AppDataSource };

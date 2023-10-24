@@ -1,5 +1,17 @@
 const { productDao, builder } = require('../models');
 
+const getProductDetail = async (id) => {
+  const data = await productDao.getProductDetail(id);
+  data.forEach((item) => {
+    item.totalPrice = parseInt(item.totalPrice);
+    item.rating = parseInt(item.rating);
+    item.discountAmount = parseInt(item.discountAmount);
+    item.reviewNumbers = parseInt(item.reviewNumbers);
+  });
+  console.log('data', data);
+  return data;
+};
+
 const getTotalProductByCategoryId = async () => {
   const categoryIds = await productDao.getTotalCategoryId();
   const categoryId = categoryIds.map((item) => item.id);
@@ -103,23 +115,7 @@ const getProducts = async (filter, sort, limit, offset) => {
   return data;
 };
 
-const getProductAmount = async (filter) => {
-  let id;
-  let whereQuery;
-  if (filter.seller === 0) {
-    id = filter.category;
-    whereQuery = await builder.whereQueryWithCategory(id);
-  } else {
-    id = filter.seller;
-    whereQuery = await builder.whereQueryWithSeller(id);
-  }
-  console.log(whereQuery);
-  const result = await productDao.getProductAmount(whereQuery);
-  return result;
-};
-
 module.exports = {
-  getProductAmount,
   getProductRandomSellerId,
   getTotalProductByCategoryId,
   getNameById,

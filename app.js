@@ -1,7 +1,7 @@
 const express = require('express');
+const http = require('http');
 const cors = require('cors');
 const morgan = require('morgan');
-
 const { errorHandler } = require('./src/utils/errorHandler');
 
 const { router } = require('./src/routers');
@@ -14,7 +14,6 @@ const createApp = () => {
   app.use(router);
 
   app.use(errorHandler);
-
 
   return app;
 };
