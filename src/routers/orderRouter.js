@@ -6,7 +6,7 @@ const { verifyToken } = require('../middleware/auth');
 
 const orderRouter = express.Router();
 
-// orderRouter.post('/', orderController.createOrders);
-orderRouter.post('/', verifyToken, asyncWrap(orderController.createOrders));
+orderRouter.post('/', verifyToken, orderController.createOrders);
+// orderRouter.post('/', verifyToken, asyncWrap(orderController.createOrders));
 
 module.exports = { orderRouter };

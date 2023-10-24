@@ -1,5 +1,7 @@
 const { orderDao } = require('../models');
 const { throwError } = require('../utils/throwError');
+// 장바구니에서 넘어왔는지 아닌지를 체크
+// from carts에서 true: 개별 구매 , false: 개별 구매로
 
 const createOrders = async (
   // 받아오는 data
@@ -52,6 +54,7 @@ const createOrders = async (
   // 2. 장바구니-> 구매
   // 장바구니에 여러 products 담을 때
   const orderDetailsPromises = [];
+  const cartUpdatePromises = [];
 
   for (let i = 0; i < products.length; i++) {
     // 배열의 각 productId, quantity 뽑아오기
@@ -64,8 +67,6 @@ const createOrders = async (
 
     if (productId !== isProductInCarts)
       throwError(400, 'ordered productId is not in the carts');
-
-    const cartUpdatePromises = [];
 
     // cart quantity
     const cartQuantity = await orderDao.cartQuantity(userId, productId); // await: userId, productId,(orderDetails의 ) quantity를  orderDao로 보내준다

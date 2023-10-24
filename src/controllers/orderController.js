@@ -28,23 +28,26 @@ const createOrders = async (req, res) => {
 
     return res.status(200).json({ message: 'Success' });
   } catch (error) {
-    // next(error);
-    const errorMessages = [];
+    console.log(error);
+    console.log(' controller error ');
+    // // next(error);
+    // const errorMessages = [];
 
-    if (error.message === 'ordered productId is not in the carts') {
-      errorMessages.push('ordered productId is not in the carts');
-    }
-    if (error.message === 'ordered more products than cartsQuantity') {
-      errorMessages.push('ordered more products than cartsQuantity');
-    }
-    if (error.message === 'not enough points') {
-      errorMessages.push('not enough points');
-    }
-    if (errorMessages.length === 0) {
-      return res.status(error.status || 200).json({ message: 'Success' });
-    } else {
-      res.status(error.status || 500).json({ message: errorMessages });
-    }
+    // if (error.message === 'ordered productId is not in the carts') {
+    //   errorMessages.push('ordered productId is not in the carts');
+    // }
+    // if (error.message === 'ordered more products than cartsQuantity') {
+    //   errorMessages.push('ordered more products than cartsQuantity');
+    // }
+    // if (error.message === 'not enough points') {
+    //   errorMessages.push('not enough points');
+    // }
+    // if (errorMessages.length === 0) {
+    //   return res.status(error.status || 200).json({ message: 'Success' });
+    // } else {
+
+    res.status(error.status || 500).json({ message: error.message });
+    //   res.status(error.status || 500).json({ message: errorMessages });
   }
 };
 
