@@ -28,7 +28,6 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.1",
-    "react-router-dom": "^6.17.0",
     "supertest": "^6.3.3",
     "typeorm": "^0.3.17"
   },
