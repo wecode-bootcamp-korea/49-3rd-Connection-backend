@@ -104,7 +104,7 @@ const updateCarts = async (userId, productId, updateQuantity) => {
     `); // return 필요없음 (res 보내줄 값이 없음 )
 }; //장바구니 테이블 : 수량 변경만 하면 됨
 
-const { AppDataSource } = require('./dataSource');
+// ----------------------바로구매용----------------------------------------
 
 const checkUserPoints = async (userId) => {
   point = await AppDataSource.query(

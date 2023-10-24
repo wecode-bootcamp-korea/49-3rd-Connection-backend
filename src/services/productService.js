@@ -116,6 +116,7 @@ const getProducts = async (filter, sort, limit, offset) => {
 };
 
 module.exports = {
+  getProductDetail,
   getProductRandomSellerId,
   getTotalProductByCategoryId,
   getNameById,
