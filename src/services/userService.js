@@ -1,6 +1,7 @@
 const { userDao } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const axios = require('axios');
 const { throwError } = require('../utils/throwError');
 
 const findUser = async (userId) => {
@@ -25,6 +26,10 @@ const signUp = async (
   const saltRounds = 12;
   const bcryptPassword = await bcrypt.hash(password, saltRounds);
 
+  const points = 0;
+  const paymentId = 1;
+  const price = 4900;
+
   await userDao.createUser(
     name,
     email,
@@ -32,7 +37,10 @@ const signUp = async (
     phoneNumber,
     zipCode,
     address,
-    addressDetails
+    addressDetails,
+    points,
+    paymentId,
+    price
   );
 };
 
@@ -49,9 +57,17 @@ const signIn = async (email, password) => {
   const checkPassword = await bcrypt.compare(password, existingUser.password);
   if (!checkPassword) throwError(400, 'WRONG_PASSWORD');
 
+  const isPremium = await userDao.findUserByPremiumId(existingUser.id);
+  const isPremiumValue = isPremium.userId ? 1 : 0;
+
   const token = jwt.sign({ id: existingUser.id }, process.env.JWT_SECRET);
 
-  return { accessToken: token, isSeller: !!existingUser.sellerId };
+  return {
+    accessToken: token,
+    isSeller: !!existingUser.sellerId,
+    isSubscribe: isPremiumValue,
+    points: existingUser.points,
+  };
 };
 
 const sellerSignUp = async (
@@ -64,6 +80,7 @@ const sellerSignUp = async (
   userId
 ) => {
   const existingUser = await userDao.findUserById(userId);
+
   if (existingUser.sellerId !== null) throwError(400, 'ALREADY_SELLER');
 
   const existingSeller = await userDao.findSellerByName(name);
@@ -80,10 +97,86 @@ const sellerSignUp = async (
   );
 };
 
+const kakaoSignIn = async (code) => {
+  let kakaoToken;
+
+  const queryString = `grant_type=authorization_code&client_id=${process.env.KAKAO_CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}&code=${code}`;
+
+  await axios
+    .post(`https://kauth.kakao.com/oauth/token`, queryString, {
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+      },
+    })
+    .then((res) => {
+      kakaoToken = res.data.access_token;
+    })
+    .catch((err) => {
+      console.log('Error : ', err);
+    });
+
+  let result;
+  await axios
+    .get('https://kapi.kakao.com/v2/user/me', {
+      headers: {
+        Authorization: `Bearer ${kakaoToken}`,
+      },
+    })
+    .then((res) => {
+      result = res.data;
+    })
+    .catch((err) => {
+      console.log('error : ', err);
+    });
+
+  const kakaoId = result.id;
+  const name = result.properties.nickname;
+  const email = result.kakao_account.email;
+
+  const user = await userDao.findUserByKakao(kakaoId);
+
+  let userId = user?.id;
+
+  if (!user) {
+    const result = await userDao.kakaoSignIn(kakaoId, name, email);
+    userId = result.insertId;
+  }
+  const existingUser = await userDao.findUserByEmail(email);
+
+  const token = jwt.sign({ id: userId }, process.env.JWT_SECRET);
+
+  return {
+    accessToken: token,
+    isSeller: !!existingUser.sellerId,
+    isAddress: !!existingUser.isAddress,
+  };
+};
+
+const insertAddress = async (
+  phoneNumber,
+  zipCode,
+  address,
+  addressDetails,
+  userId
+) => {
+  const exisitingUser = await userDao.findUserById(userId);
+
+  if (exisitingUser.zipCode) throwError(409, 'ALREADY');
+  await userDao.insertAddress(
+    phoneNumber,
+    zipCode,
+    address,
+    addressDetails,
+    userId
+  );
+};
+
 module.exports = {
   findUser,
   signUp,
-  checkDuplicatedEmail,
   signIn,
   sellerSignUp,
+  kakaoSignIn,
+  insertAddress,
+  checkDuplicatedEmail,
 };

@@ -10,4 +10,17 @@ userRouter.post('/duplicate', asyncWrap(userController.checkDuplicatedEmail));
 userRouter.post('/', asyncWrap(userController.signIn));
 userRouter.post('/seller', verifyToken, asyncWrap(userController.sellerSignUp));
 
+userRouter.put(
+  '/kakao/address',
+  verifyToken,
+  asyncWrap(userController.insertAddress)
+);
+
+userRouter.get('/kakao/callback', userController.kakaoSignIn);
+userRouter.post(
+  '/premium',
+  verifyToken,
+  asyncWrap(userController.insertPremium)
+);
+
 module.exports = { userRouter };
