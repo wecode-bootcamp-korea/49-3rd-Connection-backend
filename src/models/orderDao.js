@@ -5,10 +5,7 @@ const isUsersPoints = async (userId) => {
   const usersPoints = await AppDataSource.query(`
   SELECT points FROM users WHERE id = ${userId}; 
   `);
-  console.log(
-    '주문 전, 유저 points 부족하진 않은지 확인:',
-    usersPoints[0].points
-  );
+
   return usersPoints[0].points;
 };
 
@@ -18,17 +15,6 @@ const isProductInCarts = async (userId, productId) => {
   SELECT product_id FROM carts WHERE user_id = ${userId} AND product_id = ${productId}
   `);
   if (cartsProductId.length > 0) {
-    console.log(
-      '장바구니에 있는 product 인지 확인:',
-      cartsProductId[0].product_id
-    );
-
-    console.log(cartsProductId);
-    console.log(
-      '장바구니에 있는 product 인지 확인:',
-      cartsProductId[0].product_id
-    );
-
     return cartsProductId[0].product_id;
   } else {
     return null;
@@ -52,9 +38,6 @@ const createOrders = async (userId, totalPrice, shippingMethod, paymentId) => {
       '${paymentId}'
     ) 
     `);
-  console.log('1) order 테이블에 주문 정보 저장:', newOrder);
-
-  console.log('orderId:', newOrder.insertId);
   return newOrder.insertId;
 };
 
@@ -63,7 +46,7 @@ const userPoints = async (userId) => {
   const pointsFromUser = await AppDataSource.query(`
   SELECT points FROM users WHERE id = ${userId} 
   `);
-  console.log('결제 직전 위한 유저 points 가져오기', pointsFromUser[0].points);
+
   return pointsFromUser[0].points;
 }; // quantity는 'select 문을 위해' 받아올 필요 없음 , select문으로 구할 값!
 // console.log('카트에 들어있는 수량 :', cartQuantity);
@@ -99,10 +82,8 @@ const cartQuantity = async (userId, productId) => {
   SELECT quantity FROM carts WHERE user_id = ${userId} AND product_id = ${productId}
   `);
   if (result.length > 0) {
-    console.log('수량 확인 콘솔', result[0].quantity);
     return result[0].quantity;
   } else {
-    console.log('장바구니에 해당 제품이 없음');
     return 0; // 또는 다른 기본값을 반환할 수 있습니다.
   }
 };
