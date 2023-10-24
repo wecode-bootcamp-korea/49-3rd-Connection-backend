@@ -1,7 +1,5 @@
 const { orderDao } = require('../models');
 const { throwError } = require('../utils/throwError');
-// 장바구니에서 넘어왔는지 아닌지를 체크
-// from carts에서 true: 개별 구매 , false: 개별 구매로
 
 const createOrders = async (
   // 받아오는 data
@@ -30,29 +28,13 @@ const createOrders = async (
   const orderId = newOrder; // orderDetails 에서 저장하기 위한 orderId 가져오기
   console.log(orderId);
 
-  // transaction 1 : orderDetails 로 insert into 실패했는데, order 테이블에 계속 추가되는 경우
-  /*  if(  ){
-    throw new Error('2단계 orderDetails 주문정보 저장 실패, 처음으로 롤백! ')
-  } 
-*/
-
   // 2) 결제 users 의 points 부분 차감 : users 의 points 와 orderDetails의 totalPrice 가 다른 경우에, UPDATE 수정을 위한 계산식
   const remainPoints = isUsersPoints - totalPrice;
   // 2) 결제 : users 의 points 와 orderDetails의 totalPrice 와 같아도, 적어도 -> 수정으로 통일
   const updatePoints = await orderDao.updatePoints(userId, remainPoints); //차감한 points(=remainPoints)을 Dao로 보내서, update한다
   // totalPrice = 2000, isUsersPoints= 5000 -> update 그냥하면 updatePoints= 2000이 됨 (isUsersPoints - totalPrice 해야 함 )
 
-  /*
-  //transaction 2 : 결제 단계로 실패했는데, (결제 후 단계) orderdetails 테이블에 계속 추가되는 경우
-  if(  ){
-    throw new Error('3단계 결제 실패, 처음으로 롤백! ')
-  } 
-*/
-
-  // 1. 바로구매 -> 장바구니에 없으면
-
-  // 2. 장바구니-> 구매
-  // 장바구니에 여러 products 담을 때
+  // 장바구니-> 구매 : 장바구니에 여러 products 담을 때
   const orderDetailsPromises = [];
   const cartUpdatePromises = [];
 
