@@ -218,20 +218,20 @@ const findUserByPremiumId = async (userId) => {
   return user;
 };
 
-const getPremium = async (userId) => {
-  await AppDataSource.query(
+const findUserBySellerId = async (sellerId) => {
+  const [user] = await AppDataSource.query(
     `
-     SELECT
-      user_id,
-      payment_id,
-      price
-    FROM
-      user_premium
-    WHERE
-      user_id = ?
+      SELECT
+        user_id AS userId
+      FROM
+        users
+      WHERE 
+        seller_id = ?
     `,
-    [userId]
+    [sellerId]
   );
+
+  return user;
 };
 
 module.exports = {
@@ -244,5 +244,5 @@ module.exports = {
   insertAddress,
   findUserByKakao,
   findUserByPremiumId,
-  getPremium,
+  findUserBySellerId,
 };

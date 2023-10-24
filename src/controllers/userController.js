@@ -65,7 +65,6 @@ const signIn = async (req, res) => {
 
 const sellerSignUp = async (req, res) => {
   const userId = req.userId;
-  console.log('aaaaaa', userId);
 
   const { name, image, zipCode, address, addressDetails, phoneNumber } =
     req.body;
