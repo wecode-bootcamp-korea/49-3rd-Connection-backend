@@ -52,13 +52,13 @@ const UpdateQuantityService = async (userId, productId, quantity) => {
 
 const getOrderItemService = async (userId) => {
   const getOrderItem = await cartDao.getOrderItemDao(userId);
-  console.log(';;;;;;;;;;;;;', getOrderItem);
   if (getOrderItem[0] == null) {
     return console.log('error', error);
   } else {
     return getOrderItem;
   }
 };
+
 // 유저 정보 불러오기
 const getUserInfoService = async (userId) => {
   const getUserInfo = await cartDao.getUserInfoDao(userId);
