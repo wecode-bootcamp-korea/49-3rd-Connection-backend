@@ -18,10 +18,5 @@ cartRouter.get(
   verifyToken,
   cartController.getUserInfoController
 );
-cartRouter.post(
-  '/cartrollback',
-  verifyToken,
-  cartController.rollbackController
-);
 
 module.exports = { cartRouter };

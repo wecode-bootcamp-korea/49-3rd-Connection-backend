@@ -76,10 +76,6 @@ const removeCartService = async (userId, productId) => {
   }
 };
 
-const rollbackService = async (userId) => {
-  return await returnCartDao(userId);
-};
-
 module.exports = {
   getCartService,
   speedCheckService,
@@ -89,5 +85,4 @@ module.exports = {
   getOrderItemService,
   removeCartService,
   getUserInfoService,
-  rollbackService,
 };

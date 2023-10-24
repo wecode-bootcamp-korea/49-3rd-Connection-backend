@@ -145,15 +145,6 @@ const deletCartDao = async (userId, productId) => {
   return deletCart;
 };
 
-// 장바구니 되돌리기
-const returnCartDao = async (userId) => {
-  const returnCart = await AppDataSource.query(
-    `UPDATE carts SET status = 0 WHERE user_id=? and status= 1`,
-    [userId]
-  );
-  return returnCart;
-};
-
 module.exports = {
   getCartDao,
   easyCheckDao,
@@ -163,5 +154,4 @@ module.exports = {
   updateStatusDao,
   getOrderItemDao,
   getUserInfoDao,
-  returnCartDao,
 };

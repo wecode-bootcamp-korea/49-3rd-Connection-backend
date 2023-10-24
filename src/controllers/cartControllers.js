@@ -202,26 +202,6 @@ const getUserInfoController = async (req, res, next) => {
   }
 };
 
-// 장바구니 되돌리기
-const rollbackController = async (req, res, next) => {
-  try {
-    const userId = req.user.id;
-    const rollback = await cartService.rollbackService(userId);
-    if (!userId) {
-      throwError(400, 'Connection Error');
-    }
-    if (!userInformation) {
-      throwError(400, 'CANNOT_USER_INFORMATION');
-    }
-    return res.status(200).json({
-      message: 'Rollback_Complete',
-    });
-  } catch (error) {
-    console.log('error', error);
-    res.status(error.status).json({ message: error.message });
-  }
-};
-
 module.exports = {
   getCartController,
   addNewProductController,
@@ -230,5 +210,4 @@ module.exports = {
   getOrderItemController,
   removeCartController,
   getUserInfoController,
-  rollbackController,
 };
