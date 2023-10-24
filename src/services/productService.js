@@ -1,5 +1,4 @@
 const { productDao, builder } = require('../models');
-const { whereQueryWithCategory } = require('../models/builder');
 
 const getTotalProductByCategoryId = async () => {
   const categoryIds = await productDao.getTotalCategoryId();
