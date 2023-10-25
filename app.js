@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const { imageUploader } = require('./src/middleware/imageUploader');
 const { errorHandler } = require('./src/utils/errorHandler');
 
 const { router } = require('./src/routers');
@@ -17,9 +16,5 @@ const createApp = () => {
 
   return app;
 };
-
-app.post('/test/image', imageUploader.single('image'), (req, res) => {
-  return res.send('good');
-});
 
 module.exports = { createApp };

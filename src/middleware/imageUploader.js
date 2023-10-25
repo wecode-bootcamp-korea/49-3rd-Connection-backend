@@ -20,21 +20,29 @@ const imageUploader = multer({
   storage: multerS3({
     s3: s3Client,
     bucket: 'wecode-connection',
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+
     key: (req, file, callback) => {
       const uploadDirectory = req.query.directory ?? '';
+
       const extension = path.extname(file.originalname);
+
       if (!allowedExtensions.includes(extension)) {
         return callback(new Error('wrong extension'));
       }
+
       callback(null, `${uploadDirectory}/${Date.now()}_${file.originalname}`);
     },
     acl: 'public-read-write',
   }),
+
   fileFilter: (req, file, callback) => {
     const extension = path.extname(file.originalname);
+
     if (!allowedExtensions.includes(extension)) {
       return callback(new Error('wrong extension'));
     }
+
     callback(null, true);
   },
 });
