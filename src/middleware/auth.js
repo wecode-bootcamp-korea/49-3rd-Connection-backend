@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const { throwError } = require('../utils/throwError');
 
 exports.verifyToken = (req, res, next) => {
-  const token = req.header('Authorization');
+  const token = req.headers.authorization;
 
   // 토큰 유무 확인
   if (!token) {
@@ -15,11 +15,10 @@ exports.verifyToken = (req, res, next) => {
       token.replace('Bearer ', ''),
       process.env.JWT_SECRET
     );
+
     const userId = decoded['id'];
     req.user = decoded;
     req.userId = userId;
-
-    console.log(userId);
 
     next();
   } catch (err) {

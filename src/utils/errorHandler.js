@@ -9,7 +9,9 @@ const asyncWrap = (asyncController) => {
 };
 
 const errorHandler = (err, req, res, next) => {
+  console.log('error handler');
   console.error(err);
+
   res.status(err.status).json({ message: err.message });
 };
 

@@ -42,11 +42,28 @@ const getProducts = async (req, res) => {
 
     const data = await productService.getProducts(filter, sort, limit, offset);
     const name = await productService.getNameById(filter);
+    const quantity = await productService.getProductAmount(filter);
+    const id = await productService.getProductId(filter);
     return res.status(200).json({
       message: 'Success',
       name,
+      id,
       data: data,
-      totalQuantity: data.length,
+      totalQuantity: quantity,
+    });
+  } catch (error) {
+    console.log('error', error);
+    res.status(error.status).json({ message: error.message });
+  }
+};
+const getProductDetail = async (req, res) => {
+  try {
+    const id = req.params.productId;
+    const data = await productService.getProductDetail(id);
+
+    return res.status(200).json({
+      message: 'Success',
+      product: data,
     });
   } catch (error) {
     console.log('error', error);
@@ -55,6 +72,7 @@ const getProducts = async (req, res) => {
 };
 
 module.exports = {
+  getProductDetail,
   getCategoryProduct,
   getSellerProduct,
   getProducts,
