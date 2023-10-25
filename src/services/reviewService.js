@@ -1,7 +1,6 @@
 const { reviewDao } = require('../models');
 
 const getReviews = async (productId) => {
-  console.log('S.getReviews', getReviews);
   const data = await reviewDao.getReviews(productId);
   return data;
 };
