@@ -22,6 +22,7 @@ const findUserByEmail = async (email) => {
     `
     SELECT
       id,
+      kakao,
       email,
       seller_id AS sellerId,
       password,
