@@ -18,7 +18,6 @@ const getReviews = async (productId) => {
   `,
     [productId]
   );
-  console.log('D.getReviews', getReviews);
   return getProductReview;
 };
 

@@ -4,6 +4,7 @@ const builder = require('./builder');
 const cartDao = require('./cartDao');
 const reviewDao = require('./reviewDao');
 const orderDao = require('./orderDao');
+const paymentDao = require('./paymentDao');
 
 module.exports = {
   userDao,
@@ -12,4 +13,5 @@ module.exports = {
   cartDao,
   reviewDao,
   orderDao,
+  paymentDao,
 };

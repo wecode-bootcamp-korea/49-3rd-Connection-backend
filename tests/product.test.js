@@ -32,6 +32,10 @@ describe('get product', () => {
     INSERT INTO reviews ( contents, images, rating, user_id, product_id)
     VALUES ( 'test-product', 'test-image', 2, 1, 1);
     `);
+    await AppDataSource.query(`
+    INSERT INTO reviews ( contents, images, rating, user_id, product_id)
+    VALUES ( 'test-product', 'test-image', 2, 1, 1);
+    `);
   });
 
   afterAll(async () => {
