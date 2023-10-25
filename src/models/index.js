@@ -5,6 +5,7 @@ const orderDao = require('./orderDao');
 const { AppDataSource } = require('./dataSource');
 const cartDao = require('./cartDao');
 const reviewDao = require('./reviewDao');
+const paymentDao = require('./paymentDao');
 
 module.exports = {
   userDao,
@@ -14,4 +15,5 @@ module.exports = {
   AppDataSource,
   cartDao,
   reviewDao,
+  paymentDao,
 };

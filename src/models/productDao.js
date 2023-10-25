@@ -100,6 +100,22 @@ const getProducts = async (
   return products;
 };
 
+const findProductByName = async (name) => {
+  const [result] = await AppDataSource.query(
+    `
+      SELECT
+        name
+      FROM
+        products
+      WHERE
+        name = ?
+    `,
+    [name]
+  );
+  console.log(result);
+  return !!result;
+};
+
 module.exports = {
   getProductAmount,
   getTotalCategoryId,
@@ -108,4 +124,5 @@ module.exports = {
   getSellerNameById,
   getProducts,
   getProductDetail,
+  findProductByName,
 };
