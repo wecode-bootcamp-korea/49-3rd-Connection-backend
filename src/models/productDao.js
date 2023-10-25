@@ -23,9 +23,12 @@ const getProductDetail = async (id) => {
     (products.price * products.discount_rate)/100 AS discountAmount,
     (products.price - (products.price * (products.discount_rate / 100))) AS totalPrice,
     COUNT(DISTINCT reviews.id) AS reviewNumbers,
-    IFNULL( IFNULL(SUM(reviews.rating), 0) / IFNULL(COUNT(reviews.id), 1),0) AS rating
+    IFNULL( IFNULL(SUM(reviews.rating), 0) / IFNULL(COUNT(reviews.id), 1),0) AS rating,
+    sellers.latitude AS latitude,
+    sellers.longitude AS longitude
     FROM products
     LEFT JOIN reviews ON products.id = reviews.product_id
+    INNER JOIN sellers ON products.seller_Id = sellers.id
     WHERE products.id = ${id}
     GROUP BY products.id;
   `
