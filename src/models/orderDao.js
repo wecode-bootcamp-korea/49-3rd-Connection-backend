@@ -68,10 +68,10 @@ const newOrderDetails = async (orderId, productId, quantity) => {
         quantity
         ) 
     VALUES (
-      "${orderId}", 
-      "${productId}", 
-      "${quantity}" 
-      ) 
+      "${orderId}",
+      "${productId}",
+      "${quantity}"
+      )
       `);
 }; // await 앞에 굳이 const로 함수명 정의해주지 않아도 됨. return할 때 필요한 건데, return 안하니
 // 함수명 회색이여도 괜찮음. 여기에서는 return을 해줄 필요 없음 -> 주문 정보 req에서 받아와서 저장이니, res에 보내줄 값이 없기에. (getPost일 땐 return 하겠지만)
