@@ -5,10 +5,7 @@ const isUsersPoints = async (userId) => {
   const usersPoints = await AppDataSource.query(`
   SELECT points FROM users WHERE id = ${userId}; 
   `);
-  console.log(
-    '주문 전, 유저 points 부족하진 않은지 확인:',
-    usersPoints[0].points
-  );
+
   return usersPoints[0].points;
 };
 
@@ -18,17 +15,6 @@ const isProductInCarts = async (userId, productId) => {
   SELECT product_id FROM carts WHERE user_id = ${userId} AND product_id = ${productId}
   `);
   if (cartsProductId.length > 0) {
-    console.log(
-      '장바구니에 있는 product 인지 확인:',
-      cartsProductId[0].product_id
-    );
-
-    console.log(cartsProductId);
-    console.log(
-      '장바구니에 있는 product 인지 확인:',
-      cartsProductId[0].product_id
-    );
-
     return cartsProductId[0].product_id;
   } else {
     return null;
@@ -52,9 +38,6 @@ const createOrders = async (userId, totalPrice, shippingMethod, paymentId) => {
       '${paymentId}'
     ) 
     `);
-  console.log('1) order 테이블에 주문 정보 저장:', newOrder);
-
-  console.log('orderId:', newOrder.insertId);
   return newOrder.insertId;
 };
 
@@ -63,7 +46,7 @@ const userPoints = async (userId) => {
   const pointsFromUser = await AppDataSource.query(`
   SELECT points FROM users WHERE id = ${userId} 
   `);
-  console.log('결제 직전 위한 유저 points 가져오기', pointsFromUser[0].points);
+
   return pointsFromUser[0].points;
 }; // quantity는 'select 문을 위해' 받아올 필요 없음 , select문으로 구할 값!
 // console.log('카트에 들어있는 수량 :', cartQuantity);
@@ -99,10 +82,8 @@ const cartQuantity = async (userId, productId) => {
   SELECT quantity FROM carts WHERE user_id = ${userId} AND product_id = ${productId}
   `);
   if (result.length > 0) {
-    console.log('수량 확인 콘솔', result[0].quantity);
     return result[0].quantity;
   } else {
-    console.log('장바구니에 해당 제품이 없음');
     return 0; // 또는 다른 기본값을 반환할 수 있습니다.
   }
 };
@@ -123,6 +104,59 @@ const updateCarts = async (userId, productId, updateQuantity) => {
     `); // return 필요없음 (res 보내줄 값이 없음 )
 }; //장바구니 테이블 : 수량 변경만 하면 됨
 
+// ----------------------바로구매용----------------------------------------
+
+const checkUserPoints = async (userId) => {
+  point = await AppDataSource.query(
+    `SELECT points FROM users WHERE id= ${userId}`
+  );
+  return point[0].points;
+};
+
+const modifyPoint = async (totalPrice, userId) => {
+  await AppDataSource.query(`
+  UPDATE users SET points= points - ${totalPrice} WHERE id = ${userId}`);
+};
+
+const createOrder = async (userId, totalPrice, shippingMethod, paymentId) => {
+  const createOrder = await AppDataSource.query(`INSERT INTO orders 
+  (total_price, shipping_method, user_id, payment_id) 
+  VALUES (${totalPrice}, '${shippingMethod}', ${userId}, ${paymentId})`);
+
+  return createOrder.insertId;
+};
+
+const createOrderDetail = async (orderId, productId, quantity) => {
+  await AppDataSource.query(`INSERT INTO order_details 
+  (quantity, product_id, order_id) 
+  VALUES (${quantity}, ${productId}, ${orderId})`);
+};
+
+const checkCartQuantity = async (userId, productId) => {
+  const result = await AppDataSource.query(
+    `
+  SELECT quantity FROM carts WHERE user_id = ${userId} AND product_id = ${productId};
+`
+  );
+  return result;
+};
+
+const deleteCart = async (userId, productId) => {
+  await AppDataSource.query(
+    `
+        DELETE FROM carts WHERE user_id = ${userId} AND product_id = ${productId};
+      `
+  );
+};
+
+const modifyCart = async (quantity, userId, productId) => {
+  await AppDataSource.query(
+    `
+      UPDATE carts SET quantity= quantity - ${quantity} WHERE user_id = ${userId} AND product_id = ${productId} 
+    `
+  );
+};
+
 module.exports = {
   isUsersPoints,
   isProductInCarts,
@@ -133,4 +167,11 @@ module.exports = {
   cartQuantity,
   deleteAllCarts,
   updateCarts,
+  checkUserPoints,
+  modifyPoint,
+  createOrder,
+  createOrderDetail,
+  checkCartQuantity,
+  deleteCart,
+  modifyCart,
 };

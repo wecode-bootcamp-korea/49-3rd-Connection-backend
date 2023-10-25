@@ -1,6 +1,27 @@
 const { orderService } = require('../services');
 
-console.log('controller connected 연결 확인');
+const createOrder = async (req, res) => {
+  try {
+    const { cart } = req.query;
+    const { userId, totalPrice, shippingMethod, paymentId, products } =
+      req.body;
+    await orderService.createOrder(
+      cart,
+      userId,
+      totalPrice,
+      shippingMethod,
+      paymentId,
+      products
+    );
+
+    return res.status(200).json({
+      message: 'Success',
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(error.status).json({ message: error.message });
+  }
+};
 
 // const createOrders = async (req, res, next) => {
 const createOrders = async (req, res) => {
@@ -15,7 +36,6 @@ const createOrders = async (req, res) => {
       paymentId,
       products,
     } = req.body;
-    console.log(products);
     // await 는 이것들을 다음 단계(orderService)에 보내줄거야
 
     await orderService.createOrders(
@@ -28,8 +48,6 @@ const createOrders = async (req, res) => {
 
     return res.status(200).json({ message: 'Success' });
   } catch (error) {
-    console.log(error);
-    console.log(' controller error ');
     // // next(error);
     // const errorMessages = [];
 
@@ -51,6 +69,4 @@ const createOrders = async (req, res) => {
   }
 };
 
-console.log('createOrders 확인 ');
-
-module.exports = { createOrders };
+module.exports = { createOrders, createOrder };

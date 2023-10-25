@@ -1,5 +1,6 @@
 const { orderDao } = require('../models');
 const { throwError } = require('../utils/throwError');
+const { AppDataSource } = require('../models');
 
 const createOrders = async (
   // 받아오는 data
@@ -11,7 +12,6 @@ const createOrders = async (
 ) => {
   // user points
   const isUsersPoints = await orderDao.isUsersPoints(userId);
-  console.log(isUsersPoints);
 
   // 에러 핸들링: order.totalPrice > user : 포인트가 부족할 때  ( 갖고 있는 point보다 비싼 걸 살 때)
   if (totalPrice > isUsersPoints) throwError(400, 'not enough points');
@@ -26,7 +26,6 @@ const createOrders = async (
   ); // 주문정보 저장은 return해줄 필요 없음
 
   const orderId = newOrder; // orderDetails 에서 저장하기 위한 orderId 가져오기
-  console.log(orderId);
 
   // 2) 결제 users 의 points 부분 차감 : users 의 points 와 orderDetails의 totalPrice 가 다른 경우에, UPDATE 수정을 위한 계산식
   const remainPoints = isUsersPoints - totalPrice;
@@ -45,7 +44,6 @@ const createOrders = async (
 
     // 에러 핸들링: carts 에 담기지 않은 product를 주문할 때 -> productId 라서 for()안에 들어가야 함
     const isProductInCarts = await orderDao.isProductInCarts(userId, productId); // await: userId, productId,(orderDetails의 ) quantity를  orderDao로 보내준다
-    console.log(isProductInCarts);
 
     if (productId !== isProductInCarts)
       throwError(400, 'ordered productId is not in the carts');
@@ -88,4 +86,74 @@ const createOrders = async (
   await Promise.all(cartUpdatePromises);
 };
 
-module.exports = { createOrders };
+// ----------------------바로구매 ------------------------------------
+
+const createOrder = async (
+  cart,
+  userId,
+  totalPrice,
+  shippingMethod,
+  paymentId,
+  products
+) => {
+  await AppDataSource.transaction(async () => {
+    if (cart) {
+      const orderId = await orderDao.createOrder(
+        userId,
+        totalPrice,
+        shippingMethod,
+        paymentId
+      );
+
+      const orderDetail = products.map(async (product) => {
+        const productId = product.productId;
+        const quantity = product.quantity;
+
+        const cartQuantity = await orderDao.checkCartQuantity(
+          userId,
+          productId
+        );
+        if (cartQuantity - quantity < 0) {
+          throwError(400, '카트에 그거 없는데요');
+
+          const point = await orderDao.checkUserPoints(userId);
+          console.log('유저가 가진돈:', point);
+          if (point < totalPrice) {
+            throwError(400, '돈이 부족해요');
+          }
+          await orderDao.modifyPoint(totalPrice, userId);
+        }
+
+        await orderDao.createOrderDetail(orderId, productId, quantity);
+
+        if (cartQuantity[0].quantity == quantity) {
+          await orderDao.deleteCart(userId, productId);
+        } else {
+          await orderDao.modifyCart(quantity, userId, productId);
+        }
+      });
+      await Promise.all(orderDetail);
+    } else {
+      const point = await orderDao.checkUserPoints(userId);
+      console.log('유저가 가진돈:', point);
+      if (point < totalPrice) {
+        throwError(400, '돈이 부족해요');
+      }
+      await orderDao.modifyPoint(totalPrice, userId);
+
+      const orderId = await orderDao.createOrder(
+        userId,
+        totalPrice,
+        shippingMethod,
+        paymentId
+      );
+
+      const productId = products[0].productId;
+      const quantity = products[0].quantity;
+
+      await orderDao.createOrderDetail(orderId, productId, quantity);
+    }
+  });
+};
+
+module.exports = { createOrders, createOrder };

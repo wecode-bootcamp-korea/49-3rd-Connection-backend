@@ -132,16 +132,29 @@ const kakaoSignIn = async (code) => {
   const kakaoId = result.id;
   const name = result.properties.nickname;
   const email = result.kakao_account.email;
+  const points = 0;
+
+  const paymentId = 1;
+  const price = 4900;
 
   const user = await userDao.findUserByKakao(kakaoId);
 
   let userId = user?.id;
 
   if (!user) {
-    const result = await userDao.kakaoSignIn(kakaoId, name, email);
-    userId = result.insertId;
+    userId = await userDao.kakaoSignIn(
+      kakaoId,
+      name,
+      email,
+      points,
+      paymentId,
+      price
+    );
   }
   const existingUser = await userDao.findUserByEmail(email);
+
+  const isPremium = await userDao.findUserByPremiumId(existingUser.id);
+  const isPremiumValue = isPremium.userId ? 1 : 0;
 
   const token = jwt.sign({ id: userId }, process.env.JWT_SECRET);
 
@@ -149,6 +162,8 @@ const kakaoSignIn = async (code) => {
     accessToken: token,
     isSeller: !!existingUser.sellerId,
     isAddress: !!existingUser.isAddress,
+    isSubscribe: isPremiumValue,
+    points: existingUser.points,
   };
 };
 
