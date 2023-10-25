@@ -15,7 +15,9 @@ const signUp = async (
   phoneNumber,
   zipCode,
   address,
-  addressDetails
+  addressDetails,
+  latitude,
+  longitude
 ) => {
   const emailRegx = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
   if (!email.match(emailRegx)) throwError(400, 'INVALID_EMAIL');
@@ -38,6 +40,8 @@ const signUp = async (
     zipCode,
     address,
     addressDetails,
+    latitude,
+    longitude,
     points,
     paymentId,
     price
@@ -79,6 +83,8 @@ const sellerSignUp = async (
   zipCode,
   address,
   addressDetails,
+  latitude,
+  longitude,
   phoneNumber,
   userId
 ) => {
@@ -95,6 +101,8 @@ const sellerSignUp = async (
     zipCode,
     address,
     addressDetails,
+    latitude,
+    longitude,
     phoneNumber,
     userId
   );
@@ -178,6 +186,8 @@ const insertAddress = async (
   zipCode,
   address,
   addressDetails,
+  latitude,
+  longitude,
   userId
 ) => {
   const exisitingUser = await userDao.findUserById(userId);
@@ -188,6 +198,8 @@ const insertAddress = async (
     zipCode,
     address,
     addressDetails,
+    latitude,
+    longitude,
     userId
   );
 };

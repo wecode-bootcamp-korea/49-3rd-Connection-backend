@@ -1,4 +1,5 @@
 const { productDao, builder } = require('../models');
+const { getDistance } = require('../utils/getDistance');
 
 const getProductId = async (filter) => {
   let id;
@@ -39,7 +40,25 @@ const getProductDetail = async (id) => {
   return data;
 };
 
-const getTotalProductByCategoryId = async () => {
+const getTotalProductByCategoryId = async (userId) => {
+  const sellers = await productDao.getSellerCoordinates();
+  const user = await productDao.getUserCoordinates(userId);
+  const userLat = user[0].latitude;
+  const userLon = user[0].longitude;
+  console.log(user);
+  console.log(sellers);
+
+  const nearbySellers = sellers.filter((seller) => {
+    const sellerLat = seller.latitude;
+    const sellerLon = seller.longitude;
+
+    const distance = getDistance(userLat, userLon, sellerLat, sellerLon);
+    console.log(distance);
+    return distance < 500; // 5km 미만인 경우만 필터링
+  });
+  const nearbySellerIds = nearbySellers.map((seller) => seller.id);
+  console.log('셀러아이디:', nearbySellerIds);
+
   const categoryIds = await productDao.getTotalCategoryId();
   const categoryId = categoryIds.map((item) => item.id);
 
@@ -48,7 +67,11 @@ const getTotalProductByCategoryId = async () => {
       const joinQuery = await builder.joinQuery();
       console.log('조인쿼리 콘솔!', joinQuery);
       const whereQuery = await builder.whereQueryWithCategory(categoryId);
-      const product = await productDao.getProducts(joinQuery, whereQuery);
+      const product = await productDao.getProducts(
+        joinQuery,
+        whereQuery,
+        nearbySellerIds
+      );
       const categoryName = await productDao.getCategoryNameById(categoryId);
 
       return {

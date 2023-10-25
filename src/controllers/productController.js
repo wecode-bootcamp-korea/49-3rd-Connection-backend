@@ -2,7 +2,8 @@ const { productService } = require('../services');
 
 const getCategoryProduct = async (req, res) => {
   try {
-    const result = await productService.getTotalProductByCategoryId();
+    const userID = 13;
+    const result = await productService.getTotalProductByCategoryId(userID);
 
     return res.status(200).json({
       message: 'Success',

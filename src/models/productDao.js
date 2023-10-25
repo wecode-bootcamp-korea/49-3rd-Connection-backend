@@ -1,5 +1,31 @@
 const { AppDataSource } = require('./dataSource');
 
+const getSellerCoordinates = async () => {
+  const seller = await AppDataSource.query(
+    `SELECT 
+    id,
+    latitude,
+    longitude
+    FROM Sellers
+    `
+  );
+  return seller;
+};
+
+const getUserCoordinates = async (userId) => {
+  const user = await AppDataSource.query(
+    `SELECT 
+    id,
+    latitude,
+    longitude
+    FROM users
+    WHERE users.id=${userId}
+    `
+  );
+  console.log(user);
+  return user;
+};
+
 const getProductAmount = async (whereQuery) => {
   const product = await AppDataSource.query(
     `SELECT * FROM products WHERE product_category_id
@@ -65,6 +91,7 @@ const getSellerNameById = async (sellerId) => {
 const getProducts = async (
   joinQuery = '',
   whereQuery = '',
+  nearbySellerIds,
   orderingQuery = '',
   limitOffsetQuery = ''
 ) => {
@@ -88,6 +115,7 @@ const getProducts = async (
           FROM products
           ${joinQuery}
           WHERE 1=1
+          AND products.seller_id IN (${nearbySellerIds.join(', ')})
           ${whereQuery}
           ${orderingQuery}
           ${limitOffsetQuery}
@@ -98,6 +126,8 @@ const getProducts = async (
 };
 
 module.exports = {
+  getUserCoordinates,
+  getSellerCoordinates,
   getProductAmount,
   getTotalCategoryId,
   getRandomSellerId,

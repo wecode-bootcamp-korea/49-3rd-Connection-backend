@@ -63,6 +63,8 @@ const createUser = async (
   zipCode,
   address,
   addressDetails,
+  latitude,
+  longitude,
   points,
   paymentId,
   price
@@ -78,9 +80,11 @@ const createUser = async (
           zip_code,
           address,
           address_details,
+          latitude,
+          longitude,
           points
         ) VALUES
-          (?, ?, ?, ?, ?, ?, ?, ?)
+          (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
       [
         name,
@@ -90,6 +94,8 @@ const createUser = async (
         zipCode,
         address,
         addressDetails,
+        latitude,
+        longitude,
         points,
       ]
     );
@@ -114,6 +120,8 @@ const createSeller = async (
   zipCode,
   address,
   addressDetails,
+  latitude,
+  longitude,
   phoneNumber,
   userId
 ) => {
@@ -126,11 +134,22 @@ const createSeller = async (
           zip_code,
           address,
           address_details,
+          latitude,
+          longitude,
           phone_number
         ) VALUES
-          (?, ?, ?, ?, ?, ?)
+          (?, ?, ?, ?, ?, ?, ?, ?)
       `,
-      [name, image, zipCode, address, addressDetails, phoneNumber]
+      [
+        name,
+        image,
+        zipCode,
+        address,
+        addressDetails,
+        latitude,
+        longitude,
+        phoneNumber,
+      ]
     );
 
     const sellerId = seller.insertId;
@@ -185,6 +204,8 @@ const insertAddress = async (
   zipCode,
   address,
   addressDetails,
+  latitude,
+  longitude,
   userId,
   paymentId,
   price
@@ -196,11 +217,13 @@ const insertAddress = async (
         phone_number = ?,
         zip_code = ?,
         address = ?,
-        address_details = ?
+        address_details = ?,
+        latitude = ?,
+        longitude = ?
       WHERE
         id = ?
     `,
-    [phoneNumber, zipCode, address, addressDetails, userId]
+    [phoneNumber, zipCode, address, addressDetails, latitude, longitude, userId]
   );
 };
 

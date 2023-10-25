@@ -1,5 +1,6 @@
 const { userService } = require('../services');
 const { keyCheck } = require('../utils/keyCheck');
+const { getGeoCode } = require('../utils/addressConverter');
 
 const signUp = async (req, res) => {
   const {
@@ -11,6 +12,15 @@ const signUp = async (req, res) => {
     address,
     addressDetails,
   } = req.body;
+
+  const userAddress = address;
+  console.log(userAddress);
+
+  const geoCode = await getGeoCode(userAddress);
+  console.log(geoCode);
+
+  const latitude = geoCode.latitude;
+  const longitude = geoCode.longitude;
 
   keyCheck({
     name,
@@ -29,7 +39,9 @@ const signUp = async (req, res) => {
     phoneNumber,
     zipCode,
     address,
-    addressDetails
+    addressDetails,
+    latitude,
+    longitude
   );
 
   res.status(200).json({
@@ -72,6 +84,10 @@ const sellerSignUp = async (req, res) => {
     req.body.seller
   );
 
+  const geoCode = getGeoCode(address);
+  const latitude = geoCode.latitude;
+  const longitude = geoCode.longitude;
+
   keyCheck({
     name,
     image,
@@ -87,6 +103,8 @@ const sellerSignUp = async (req, res) => {
     zipCode,
     address,
     addressDetails,
+    latitude,
+    longitude,
     phoneNumber,
     userId
   );
@@ -112,6 +130,10 @@ const insertAddress = async (req, res) => {
 
   const { phoneNumber, zipCode, address, addressDetails } = req.body;
 
+  const geoCode = getGeoCode(address);
+  const latitude = geoCode.latitude;
+  const longitude = geoCode.longitude;
+
   keyCheck({
     phoneNumber,
     zipCode,
@@ -124,6 +146,8 @@ const insertAddress = async (req, res) => {
     zipCode,
     address,
     addressDetails,
+    latitude,
+    longitude,
     userId
   );
 
