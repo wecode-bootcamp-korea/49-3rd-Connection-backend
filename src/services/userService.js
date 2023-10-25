@@ -60,6 +60,8 @@ const signIn = async (email, password) => {
   const isPremium = await userDao.findUserByPremiumId(existingUser.id);
   const isPremiumValue = isPremium.userId ? 1 : 0;
 
+  const countCart = await userDao.countCart(existingUser.id);
+
   const token = jwt.sign({ id: existingUser.id }, process.env.JWT_SECRET);
 
   return {
@@ -67,6 +69,8 @@ const signIn = async (email, password) => {
     isSeller: !!existingUser.sellerId,
     isSubscribe: isPremiumValue,
     points: existingUser.points,
+    cartCount: +countCart.quantity ?? 0,
+    isKakao: !!existingUser.kakao,
   };
 };
 
@@ -156,6 +160,8 @@ const kakaoSignIn = async (code) => {
   const isPremium = await userDao.findUserByPremiumId(existingUser.id);
   const isPremiumValue = isPremium.userId ? 1 : 0;
 
+  const countCart = await userDao.countCart(existingUser.id);
+
   const token = jwt.sign({ id: userId }, process.env.JWT_SECRET);
 
   return {
@@ -164,6 +170,8 @@ const kakaoSignIn = async (code) => {
     isAddress: !!existingUser.isAddress,
     isSubscribe: isPremiumValue,
     points: existingUser.points,
+    cartCount: countCart.quantity,
+    isKakao: !!existingUser.kakao,
   };
 };
 
