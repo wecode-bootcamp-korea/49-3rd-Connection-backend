@@ -86,36 +86,20 @@ const updateStatusDao = async (userId, productId) => {
 //주문단계 조회
 const getOrderItemDao = async (userId) => {
   const alreadyItems = await AppDataSource.query(
-    `SELECT
-    userId,
-    MAX(isSubscribe) AS isSubscribe,
+    `SELECT 
     JSON_ARRAYAGG(
         JSON_OBJECT(
-          'productId', productId,
-          'productName', productName,
-          'quantity', quantity,
-          'totalPrice', quantity * (productPrice - (productPrice * discountRate/100))
+            'productId', products.id,
+            'productName', products.name,
+            'totalPrice', (products.price - (products.price * (products.discount_rate / 100)))*quantity,
+            'quantity', quantity
         )
     ) AS products
-FROM (
-    SELECT users.id AS userId,
-        user_premium.user_id AS isSubscribe,
-        products.id AS productId,
-        carts.quantity AS quantity,
-        products.price AS productPrice,
-        products.discount_rate AS discountRate,
-        products.name AS productName
-    FROM users
-    INNER JOIN user_premium ON users.id = user_premium.user_id
-    LEFT JOIN carts ON users.id = carts.user_id
-    LEFT JOIN products ON carts.product_id = products.id
-    LEFT JOIN sellers ON products.seller_id = sellers.id
-    WHERE users.id = ? AND carts.status >= 1
-) AS subquery
-GROUP BY userId;`,
-    [userId]
+FROM products
+INNER JOIN carts ON products.id = carts.product_id 
+WHERE carts.user_id= ${userId} AND carts.status=1`
   );
-  return alreadyItems;
+  return alreadyItems[0];
 };
 
 //유저 정보 불러오기
@@ -126,14 +110,12 @@ const getUserInfoDao = async (userId) => {
      phone_number AS phoneNumber,
      users.zip_code AS zipCode,
      users.address AS address,
-     users.address_details AS addressDetail,
-     user_premium.id AS isSubscribe
+     users.address_details AS addressDetail
      FROM users
-     INNER JOIN user_premium ON users.id = user_premium.user_id
      WHERE users.id = ?;`,
     [userId]
   );
-  return userInfo;
+  return userInfo[0];
 };
 
 //장바구니 삭제 (삭제버튼)

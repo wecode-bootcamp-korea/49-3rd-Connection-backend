@@ -4,7 +4,7 @@ const { cartService } = require('../services');
 // 장바구니 조회
 const getCartController = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
     const cartInformation = await cartService.getCartService(userId);
     if (!userId) {
       throwError(400, 'Connection Error');
@@ -25,8 +25,8 @@ const getCartController = async (req, res, next) => {
 // 제품 상세페이지 장바구니 담기
 const addNewProductController = async (req, res, next) => {
   try {
-    const userId = req.user.id;
-    const { productId, quantity } = req.body.data;
+    const userId = req.userId;
+    const { productId, quantity } = req.body;
 
     await cartService.updateCartService(userId, productId, quantity);
     if (!userId) {
@@ -50,7 +50,7 @@ const addNewProductController = async (req, res, next) => {
 //주문단계 진입전 장바구니 수량 업데이트
 const updateQuantityController = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
     const { productId, quantity } = req.body.data;
 
     await cartService.fixedQuantityService(userId, productId, quantity);
@@ -76,8 +76,9 @@ const updateQuantityController = async (req, res, next) => {
 // 주문단계 진입전 장바구니 업데이트
 const updateOrderController = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
     const ArrayOfObjects = req.body.data;
+    console.log(ArrayOfObjects);
     let orderlist = [];
     if (ArrayOfObjects.length === 0) {
       throwError(202, 'No products have been selected. ');
@@ -101,6 +102,7 @@ const updateOrderController = async (req, res, next) => {
         ArrayOfObjects.map(async (item) => {
           const { productId, quantity } = item;
           item.userId = userId;
+          console.log(item);
 
           if (!userId) {
             throwError(400, 'Connection Error');
@@ -136,7 +138,7 @@ const updateOrderController = async (req, res, next) => {
 // 주문단계로 들어간 장바구니 조회
 const getOrderItemController = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
     const OrderItem = await cartService.getOrderItemService(userId);
     if (!userId) {
       throwError(400, 'Connection Error');
@@ -157,7 +159,7 @@ const getOrderItemController = async (req, res, next) => {
 // 장바구니 삭제
 const removeCartController = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
     const arrayOfDelete = req.body.data;
     await Promise.all(
       arrayOfDelete.map(async (item) => {
@@ -184,7 +186,7 @@ const removeCartController = async (req, res, next) => {
 // 유저 정보 불러오기
 const getUserInfoController = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
     const userInformation = await cartService.getUserInfoService(userId);
     if (!userId) {
       throwError(400, 'Connection Error');
@@ -192,6 +194,7 @@ const getUserInfoController = async (req, res, next) => {
     if (!userInformation) {
       throwError(400, 'CANNOT_USER_INFORMATION');
     }
+    console.log(userInformation);
     return res.status(200).json({
       message: 'userInformation',
       data: userInformation,
