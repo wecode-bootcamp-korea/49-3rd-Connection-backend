@@ -13,7 +13,25 @@ const getProductId = async (filter) => {
   return id;
 };
 
-const getProductAmount = async (filter) => {
+const getProductAmount = async (filter, userId) => {
+  const sellers = await productDao.getSellerCoordinates();
+  const user = await productDao.getUserCoordinates(userId);
+  const userLat = user[0].latitude;
+  const userLon = user[0].longitude;
+  console.log(user);
+  console.log(sellers);
+
+  const nearbySellers = sellers.filter((seller) => {
+    const sellerLat = seller.latitude;
+    const sellerLon = seller.longitude;
+
+    const distance = getDistance(userLat, userLon, sellerLat, sellerLon);
+    console.log(distance);
+    return distance < 5; // 5km 미만인 경우만 필터링
+  });
+  const nearbySellerIds = nearbySellers.map((seller) => seller.id);
+  console.log('셀러아이디:', nearbySellerIds);
+
   let id;
   let whereQuery;
   if (filter.category == 0) {
@@ -24,7 +42,7 @@ const getProductAmount = async (filter) => {
     whereQuery = await builder.whereQueryWithCategory(id);
   }
 
-  const amount = await productDao.getProductAmount(whereQuery);
+  const amount = await productDao.getProductAmount(whereQuery, nearbySellerIds);
   return amount;
 };
 
@@ -54,7 +72,7 @@ const getTotalProductByCategoryId = async (userId) => {
 
     const distance = getDistance(userLat, userLon, sellerLat, sellerLon);
     console.log(distance);
-    return distance < 500; // 5km 미만인 경우만 필터링
+    return distance < 5; // 5km 미만인 경우만 필터링
   });
   const nearbySellerIds = nearbySellers.map((seller) => seller.id);
   console.log('셀러아이디:', nearbySellerIds);
@@ -92,15 +110,33 @@ const getTotalProductByCategoryId = async (userId) => {
   return result;
 };
 
-const getProductRandomSellerId = async (req, res) => {
-  const sellerIds = await productDao.getRandomSellerId();
+const getProductRandomSellerId = async (userId) => {
+  const sellers = await productDao.getSellerCoordinates();
+  const user = await productDao.getUserCoordinates(userId);
+  const userLat = user[0].latitude;
+  const userLon = user[0].longitude;
+  console.log(user);
+  console.log(sellers);
+
+  const nearbySellers = sellers.filter((seller) => {
+    const sellerLat = seller.latitude;
+    const sellerLon = seller.longitude;
+
+    const distance = getDistance(userLat, userLon, sellerLat, sellerLon);
+    console.log(distance);
+    return distance < 500; // 5km 미만인 경우만 필터링
+  });
+  const nearbySellerIds = nearbySellers.map((seller) => seller.id);
+  console.log('셀러아이디:', nearbySellerIds);
+
+  const sellerIds = await productDao.getRandomSellerId(nearbySellerIds);
 
   const sellerId = sellerIds.map((item) => item.id);
 
   let result = await Promise.all(
     sellerId.map(async (sellerId) => {
       const whereQuery = await builder.whereQueryWithSeller(sellerId);
-      const product = await productDao.getProducts('', whereQuery);
+      const product = await productDao.getProduct('', whereQuery);
       const sellerName = await productDao.getSellerNameById(sellerId);
 
       return {
@@ -136,7 +172,24 @@ const getNameById = async (filter) => {
   return result;
 };
 
-const getProducts = async (filter, sort, limit, offset) => {
+const getProducts = async (filter, sort, limit, offset, userId) => {
+  const sellers = await productDao.getSellerCoordinates();
+  const user = await productDao.getUserCoordinates(userId);
+  const userLat = user[0].latitude;
+  const userLon = user[0].longitude;
+  console.log(user);
+  console.log(sellers);
+
+  const nearbySellers = sellers.filter((seller) => {
+    const sellerLat = seller.latitude;
+    const sellerLon = seller.longitude;
+
+    const distance = getDistance(userLat, userLon, sellerLat, sellerLon);
+    console.log(distance);
+    return distance < 5; // 5km 미만인 경우만 필터링
+  });
+  const nearbySellerIds = nearbySellers.map((seller) => seller.id);
+
   console.log(filter);
 
   let whereQuery;
@@ -149,9 +202,11 @@ const getProducts = async (filter, sort, limit, offset) => {
   const orderingQuery = await builder.ordering(sort);
   const joinQuery = await builder.joinQuery();
   const limitOffsetQuery = await builder.limitOffsetQuery(limit, offset);
+  console.log('셀러아이디:', nearbySellerIds);
   let data = await productDao.getProducts(
     joinQuery,
     whereQuery,
+    nearbySellerIds,
     orderingQuery,
     limitOffsetQuery
   );

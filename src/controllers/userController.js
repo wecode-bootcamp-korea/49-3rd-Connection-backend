@@ -1,6 +1,6 @@
 const { userService } = require('../services');
 const { keyCheck } = require('../utils/keyCheck');
-const { getGeoCode } = require('../utils/addressConverter');
+const { getGeoCode } = require('../utils/AddressConverter');
 
 const signUp = async (req, res) => {
   const {

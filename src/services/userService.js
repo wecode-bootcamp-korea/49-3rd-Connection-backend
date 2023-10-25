@@ -73,7 +73,8 @@ const signIn = async (email, password) => {
     isSeller: !!existingUser.sellerId,
     isSubscribe: isPremiumValue,
     points: existingUser.points,
-    cartCount: countCart.quantity,
+    cartCount: +countCart.quantity ?? 0,
+    isKakao: !!existingUser.kakao,
   };
 };
 
@@ -178,6 +179,7 @@ const kakaoSignIn = async (code) => {
     isSubscribe: isPremiumValue,
     points: existingUser.points,
     cartCount: countCart.quantity,
+    isKakao: !!existingUser.kakao,
   };
 };
 
