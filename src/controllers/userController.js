@@ -57,8 +57,6 @@ const signIn = async (req, res) => {
 
   const token = await userService.signIn(email, password);
 
-  console.log('토큰: ', token);
-
   res.status(200).json({
     message: 'SUCCESS',
     accessToken: token,
@@ -68,8 +66,11 @@ const signIn = async (req, res) => {
 const sellerSignUp = async (req, res) => {
   const userId = req.userId;
 
-  const { name, image, zipCode, address, addressDetails, phoneNumber } =
-    req.body;
+  const image = req.file.location;
+
+  const { name, zipCode, address, addressDetails, phoneNumber } = JSON.parse(
+    req.body.seller
+  );
 
   keyCheck({
     name,
