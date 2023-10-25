@@ -5,7 +5,8 @@ const findUserById = async (id) => {
     `
     SELECT
       zip_code AS zipCode,
-      seller_id AS sellerId
+      seller_id AS sellerId,
+      points
     FROM
       users
     WHERE

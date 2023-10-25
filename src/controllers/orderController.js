@@ -1,4 +1,4 @@
-const { orderService } = require('../services');
+const { orderService, userService, cartService } = require('../services');
 
 const createOrder = async (req, res) => {
   try {
@@ -28,6 +28,7 @@ const createOrders = async (req, res) => {
   try {
     const userId = req.userId; //const { userId } = req;  // userId는 토큰에서 -> 미들웨어 사용
 
+    console.log(userId);
     // 필요한 값들 다 req 에서 받아옴
     const {
       // userId, // without token
@@ -37,6 +38,7 @@ const createOrders = async (req, res) => {
       products,
     } = req.body;
     // await 는 이것들을 다음 단계(orderService)에 보내줄거야
+    console.log(totalPrice, shippingMethod, paymentId, products);
 
     await orderService.createOrders(
       userId,
@@ -46,7 +48,16 @@ const createOrders = async (req, res) => {
       products
     );
 
-    return res.status(200).json({ message: 'Success' });
+    const points = await userService.findUser(userId);
+
+    const countCart = await orderService.countCart(userId);
+    console.log(countCart);
+
+    return res.status(200).json({
+      message: 'Success',
+      points: points.points,
+      countCart: countCart,
+    });
   } catch (error) {
     // // next(error);
     // const errorMessages = [];

@@ -1,6 +1,13 @@
-const { orderDao } = require('../models');
+const { orderDao, userDao } = require('../models');
 const { throwError } = require('../utils/throwError');
 const { AppDataSource } = require('../models');
+
+const countCart = async (userId) => {
+  const count = await userDao.countCart(userId);
+  console.log(count.quantity);
+
+  return count.quantity;
+};
 
 const createOrders = async (
   // 받아오는 data
@@ -84,6 +91,8 @@ const createOrders = async (
   }
   await Promise.all(orderDetailsPromises);
   await Promise.all(cartUpdatePromises);
+
+  return userDao.findUserById(userId);
 };
 
 // ----------------------바로구매 ------------------------------------
@@ -156,4 +165,4 @@ const createOrder = async (
   });
 };
 
-module.exports = { createOrders, createOrder };
+module.exports = { createOrders, createOrder, countCart };
