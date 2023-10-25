@@ -1,5 +1,13 @@
 const { AppDataSource } = require('./dataSource');
 
+const getProductAmount = async (whereQuery) => {
+  const product = await AppDataSource.query(
+    `SELECT * FROM products WHERE product_category_id
+    ${whereQuery}`
+  );
+  return product.length;
+};
+
 const getProductDetail = async (id) => {
   const detailProducts = await AppDataSource.query(
     `SELECT
@@ -90,6 +98,7 @@ const getProducts = async (
 };
 
 module.exports = {
+  getProductAmount,
   getTotalCategoryId,
   getRandomSellerId,
   getCategoryNameById,
