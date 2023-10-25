@@ -148,17 +148,36 @@ const createSeller = async (
   });
 };
 
-const kakaoSignIn = async (kakaoId, name, email) => {
-  return await AppDataSource.query(
-    `
+const kakaoSignIn = async (kakaoId, name, email, points, paymentId, price) => {
+  let userId;
+  await AppDataSource.transaction(async (transactionManager) => {
+    const user = await transactionManager.query(
+      `
       INSERT INTO users (
         kakao,
         name,
-        email
-      ) VALUES (?, ?, ?)
+        email,
+        points
+      ) VALUES (?, ?, ?, ?)
     `,
-    [kakaoId, name, email]
-  );
+      [kakaoId, name, email, points]
+    );
+    userId = user.insertId;
+
+    await transactionManager.query(
+      `
+      INSERT INTO user_premium (
+        user_id,
+        payment_id,
+        price
+      ) VALUES
+        (?, ?, ?)
+      `,
+      [userId, paymentId, price]
+    );
+  });
+
+  return userId;
 };
 
 const insertAddress = async (
@@ -166,9 +185,11 @@ const insertAddress = async (
   zipCode,
   address,
   addressDetails,
-  userId
+  userId,
+  paymentId,
+  price
 ) => {
-  await AppDataSource.query(
+  await transactionManager.query(
     `
       UPDATE users
       SET
@@ -189,7 +210,8 @@ const findUserByKakao = async (kakao) => {
       SELECT
         kakao,
         seller_id AS sellerId,
-        zip_code AS zipCode
+        zip_code AS zipCode,
+        points
       FROM
         users
       WHERE
@@ -218,20 +240,20 @@ const findUserByPremiumId = async (userId) => {
   return user;
 };
 
-const getPremium = async (userId) => {
-  await AppDataSource.query(
+const findUserBySellerId = async (sellerId) => {
+  const [user] = await AppDataSource.query(
     `
-     SELECT
-      user_id,
-      payment_id,
-      price
-    FROM
-      user_premium
-    WHERE
-      user_id = ?
+      SELECT
+        user_id AS userId
+      FROM
+        users
+      WHERE 
+        seller_id = ?
     `,
-    [userId]
+    [sellerId]
   );
+
+  return user;
 };
 
 module.exports = {
@@ -244,5 +266,5 @@ module.exports = {
   insertAddress,
   findUserByKakao,
   findUserByPremiumId,
-  getPremium,
+  findUserBySellerId,
 };
