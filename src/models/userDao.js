@@ -256,6 +256,22 @@ const findUserBySellerId = async (sellerId) => {
   return user;
 };
 
+const countCart = async (userId) => {
+  const [user] = await AppDataSource.query(
+    `
+      SELECT
+        SUM(quantity) AS quantity
+      FROM
+        carts
+      WHERE
+        user_id =?
+    `,
+    [userId]
+  );
+
+  return user;
+};
+
 module.exports = {
   findUserById,
   findUserByEmail,
@@ -267,4 +283,5 @@ module.exports = {
   findUserByKakao,
   findUserByPremiumId,
   findUserBySellerId,
+  countCart,
 };
