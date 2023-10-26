@@ -1,6 +1,34 @@
-const { paymentDao, productDao } = require('../models');
+const {
+  paymentDao,
+  productDao,
+  cartDao,
+  userDao,
+  orderDao,
+} = require('../models');
 const axios = require('axios');
 const { throwError } = require('../utils/throwError');
+
+const updateCart = async (userId, products, course) => {
+  if (course == '') {
+    for (let i = 0; i < products.length; i++) {
+      const cartQuantity = await orderDao.checkCartQuantity(
+        userId,
+        products[i].productId
+      );
+      if (cartQuantity[0].quantity - products[i].quantity == 0) {
+        await cartDao.deletCartDao(userId, products[i].productId);
+      } else {
+        await orderDao.modifyCart(
+          products[i].quantity,
+          userId,
+          products[i].productId
+        );
+      }
+    }
+  }
+  const cart = await userDao.countCart(userId);
+  return cart;
+};
 
 const createPayment = async (imp_uid, userId) => {
   const getToken = await axios({
@@ -40,5 +68,6 @@ const createPayment = async (imp_uid, userId) => {
 };
 
 module.exports = {
+  updateCart,
   createPayment,
 };

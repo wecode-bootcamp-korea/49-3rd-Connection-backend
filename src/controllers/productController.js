@@ -5,6 +5,8 @@ const getCategoryProduct = async (req, res) => {
     const userId = req.userId;
     const result = await productService.getTotalProductByCategoryId(userId);
 
+    console.log(result);
+
     return res.status(200).json({
       message: 'SUCCESS',
       data: result,
@@ -19,6 +21,8 @@ const getSellerProduct = async (req, res) => {
   try {
     const userId = req.userId;
     const result = await productService.getProductRandomSellerId(userId);
+
+    console.log(result);
 
     return res.status(200).json({
       message: 'SUCCESS',

@@ -6,7 +6,7 @@ const getReviews = async (req, res) => {
     const data = await reviewService.getReviews(productId);
 
     return res.status(200).json({
-      message: 'Success',
+      message: 'SUCCESS',
       review: data,
     });
   } catch (error) {
@@ -27,7 +27,7 @@ const createReviews = async (req, res) => {
     );
 
     return res.status(200).json({
-      message: 'Success',
+      message: 'SUCCESS',
       review: data,
     });
   } catch (error) {
