@@ -27,7 +27,7 @@ const getProductAmount = async (filter, userId) => {
 
     const distance = getDistance(userLat, userLon, sellerLat, sellerLon);
     console.log(distance);
-    return distance < 5; // 5km 미만인 경우만 필터링
+    return distance < 5000; // 5km 미만인 경우만 필터링
   });
   const nearbySellerIds = nearbySellers.map((seller) => seller.id);
   console.log('셀러아이디:', nearbySellerIds);
@@ -72,7 +72,7 @@ const getTotalProductByCategoryId = async (userId) => {
 
     const distance = getDistance(userLat, userLon, sellerLat, sellerLon);
     console.log(distance);
-    return distance < 5; // 5km 미만인 경우만 필터링
+    return distance < 5000; // 5km 미만인 경우만 필터링
   });
   const nearbySellerIds = nearbySellers.map((seller) => seller.id);
   console.log('셀러아이디:', nearbySellerIds);
@@ -124,7 +124,7 @@ const getProductRandomSellerId = async (userId) => {
 
     const distance = getDistance(userLat, userLon, sellerLat, sellerLon);
     console.log(distance);
-    return distance < 500; // 5km 미만인 경우만 필터링
+    return distance < 5000; // 5km 미만인 경우만 필터링
   });
   const nearbySellerIds = nearbySellers.map((seller) => seller.id);
   console.log('셀러아이디:', nearbySellerIds);
@@ -186,7 +186,7 @@ const getProducts = async (filter, sort, limit, offset, userId) => {
 
     const distance = getDistance(userLat, userLon, sellerLat, sellerLon);
     console.log(distance);
-    return distance < 5; // 5km 미만인 경우만 필터링
+    return distance < 5000; // 5km 미만인 경우만 필터링
   });
   const nearbySellerIds = nearbySellers.map((seller) => seller.id);
 

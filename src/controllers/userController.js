@@ -84,7 +84,8 @@ const sellerSignUp = async (req, res) => {
     req.body.seller
   );
 
-  const geoCode = getGeoCode(address);
+  const userAddress = address;
+  const geoCode = await getGeoCode(userAddress);
   const latitude = geoCode.latitude;
   const longitude = geoCode.longitude;
 
@@ -130,7 +131,7 @@ const insertAddress = async (req, res) => {
 
   const { phoneNumber, zipCode, address, addressDetails } = req.body;
 
-  const geoCode = getGeoCode(address);
+  const geoCode = await getGeoCode(address);
   const latitude = geoCode.latitude;
   const longitude = geoCode.longitude;
 

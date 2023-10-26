@@ -127,6 +127,7 @@ const createSeller = async (
   phoneNumber,
   userId
 ) => {
+  console.log('userDao_셀러정보입력:', latitude, longitude);
   await AppDataSource.transaction(async (transactionManager) => {
     const seller = await transactionManager.query(
       `
@@ -212,7 +213,7 @@ const insertAddress = async (
   paymentId,
   price
 ) => {
-  await transactionManager.query(
+  await AppDataSource.query(
     `
       UPDATE users
       SET

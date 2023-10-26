@@ -70,11 +70,11 @@ const signIn = async (email, password) => {
 
   return {
     accessToken: token,
-    isSeller: !!existingUser.sellerId,
+    isSeller: existingUser.sellerId ? true : [],
     isSubscribe: isPremiumValue,
     points: existingUser.points,
     cartCount: +countCart.quantity ?? 0,
-    isKakao: !!existingUser.kakao,
+    isKakao: existingUser.kakao ? true : [],
   };
 };
 
@@ -95,6 +95,8 @@ const sellerSignUp = async (
 
   const existingSeller = await userDao.findSellerByName(name);
   if (existingSeller) throwError(400, 'INVALID_NAME');
+
+  console.log('userService_셀러정보입력:', latitude, longitude);
 
   await userDao.createSeller(
     name,
@@ -174,12 +176,12 @@ const kakaoSignIn = async (code) => {
 
   return {
     accessToken: token,
-    isSeller: !!existingUser.sellerId,
+    isSeller: existingUser.sellerId ? true : [],
     isAddress: !!existingUser.isAddress,
     isSubscribe: isPremiumValue,
     points: existingUser.points,
     cartCount: countCart.quantity,
-    isKakao: !!existingUser.kakao,
+    isKakao: existingUser.kakao ? true : [],
   };
 };
 
@@ -193,6 +195,7 @@ const insertAddress = async (
   userId
 ) => {
   const exisitingUser = await userDao.findUserById(userId);
+  console.log(exisitingUser);
 
   if (exisitingUser.zipCode) throwError(409, 'ALREADY');
   await userDao.insertAddress(
