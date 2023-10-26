@@ -2,11 +2,11 @@ const { productService } = require('../services');
 
 const getCategoryProduct = async (req, res) => {
   try {
-    const userID = req.userId;
-    const result = await productService.getTotalProductByCategoryId(userID);
+    const userId = req.userId;
+    const result = await productService.getTotalProductByCategoryId(userId);
 
     return res.status(200).json({
-      message: 'Success',
+      message: 'SUCCESS',
       data: result,
     });
   } catch (error) {
@@ -21,7 +21,7 @@ const getSellerProduct = async (req, res) => {
     const result = await productService.getProductRandomSellerId(userId);
 
     return res.status(200).json({
-      message: 'Success',
+      message: 'SUCCESS',
       data: result,
     });
   } catch (error) {
@@ -54,7 +54,7 @@ const getProducts = async (req, res) => {
     const quantity = await productService.getProductAmount(filter, userId);
     const id = await productService.getProductId(filter);
     return res.status(200).json({
-      message: 'Success',
+      message: 'SUCCESS',
       name,
       id,
       data: data,
@@ -71,7 +71,7 @@ const getProductDetail = async (req, res) => {
     const data = await productService.getProductDetail(id);
 
     return res.status(200).json({
-      message: 'Success',
+      message: 'SUCCESS',
       product: data,
     });
   } catch (error) {

@@ -11,7 +11,6 @@ const findUserById = async (id) => {
       users
     WHERE
       id = ?
-    LIMIT 1
     `,
     [id]
   );
@@ -34,7 +33,6 @@ const findUserByEmail = async (email) => {
       users
     WHERE
       email = ?
-    LIMIT 1
     `,
     [email]
   );
@@ -51,7 +49,6 @@ const findSellerByName = async (name) => {
       sellers
     WHERE
       name = ?
-    LIMIT 1
     `,
     [name]
   );
@@ -234,6 +231,7 @@ const findUserByKakao = async (kakao) => {
   const [user] = await AppDataSource.query(
     `
       SELECT
+        id,
         kakao,
         seller_id AS sellerId,
         zip_code AS zipCode,
@@ -242,7 +240,6 @@ const findUserByKakao = async (kakao) => {
         users
       WHERE
         kakao = ?
-      LIMIT 1
     `,
     [kakao]
   );
@@ -259,7 +256,6 @@ const findUserByPremiumId = async (userId) => {
         user_premium
       WHERE
         user_id = ?
-      LIMIT 1
     `,
     [userId]
   );
@@ -276,7 +272,6 @@ const findUserBySellerId = async (sellerId) => {
         users
       WHERE 
         seller_id = ?
-      LIMIT 1
     `,
     [sellerId]
   );
