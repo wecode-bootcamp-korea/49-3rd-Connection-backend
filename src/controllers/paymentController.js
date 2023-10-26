@@ -5,6 +5,8 @@ const getPayment = async (req, res) => {
   try {
     const userId = req.userId;
 
+    console.log('1111111', userId);
+
     const { imp_uid } = req.body;
     keyCheck({
       imp_uid,

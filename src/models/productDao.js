@@ -1,9 +1,36 @@
 const { AppDataSource } = require('./dataSource');
 
-const getProductAmount = async (whereQuery) => {
+const getSellerCoordinates = async () => {
+  const seller = await AppDataSource.query(
+    `SELECT 
+    id,
+    latitude,
+    longitude
+    FROM Sellers
+    `
+  );
+  return seller;
+};
+
+const getUserCoordinates = async (userId) => {
+  const user = await AppDataSource.query(
+    `SELECT 
+    id,
+    latitude,
+    longitude
+    FROM users
+    WHERE users.id=${userId}
+    `
+  );
+  console.log(user);
+  return user;
+};
+
+const getProductAmount = async (whereQuery, nearbySellerIds) => {
   const product = await AppDataSource.query(
     `SELECT * FROM products WHERE product_category_id
-    ${whereQuery}`
+    ${whereQuery}
+    AND products.seller_id IN (${nearbySellerIds.join(', ')})`
   );
   return product.length;
 };
@@ -49,9 +76,11 @@ const getCategoryNameById = async (categoryId) => {
 
   return name;
 };
-const getRandomSellerId = async () => {
+const getRandomSellerId = async (nearbySellerIds) => {
   const sellers = await AppDataSource.query(
-    `SELECT id FROM sellers ORDER BY rand() LIMIT 3;`
+    `SELECT id FROM sellers 
+    WHERE id IN (${nearbySellerIds.join(', ')})
+    ORDER BY rand() LIMIT 3`
   );
   return sellers;
 };
@@ -66,6 +95,44 @@ const getSellerNameById = async (sellerId) => {
 };
 
 const getProducts = async (
+  joinQuery = '',
+  whereQuery = '',
+  nearbySellerIds,
+  orderingQuery = '',
+  limitOffsetQuery = ''
+) => {
+  console.log(nearbySellerIds);
+  let query = `SELECT 
+        products.id AS productId,
+        products.name AS productName,
+        products.images AS productImg,
+        products.price AS originalPrice,
+        products.discount_rate AS discountRate,
+        products.price * (products.discount_rate / 100) AS discountAmount,
+        products.price - (products.price * (products.discount_rate / 100)) AS totalPrice,
+        (
+        SELECT COUNT(reviews.product_id)
+        FROM reviews
+        WHERE reviews.product_id = products.id
+        ) AS reviewNumber,
+        IFNULL((
+          SELECT IFNULL(SUM(reviews.rating), 0) / IFNULL(COUNT(reviews.product_id), 1)
+          FROM reviews
+          WHERE reviews.product_id = products.id), 0) AS rating
+          FROM products
+          ${joinQuery}
+          WHERE 1=1
+          ${whereQuery}
+          AND products.seller_id IN (${nearbySellerIds.join(', ')})
+          ${orderingQuery}
+          ${limitOffsetQuery}
+          `;
+  console.log(query);
+  const products = await AppDataSource.query(query);
+  return products;
+};
+
+const getProduct = async (
   joinQuery = '',
   whereQuery = '',
   orderingQuery = '',
@@ -112,11 +179,14 @@ const findProductByName = async (name) => {
     `,
     [name]
   );
-  console.log(result);
+  console.log('@@@@@@@@!!@@@', result);
   return !!result;
 };
 
 module.exports = {
+  getProduct,
+  getUserCoordinates,
+  getSellerCoordinates,
   getProductAmount,
   getTotalCategoryId,
   getRandomSellerId,

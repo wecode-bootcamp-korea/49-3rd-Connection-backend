@@ -15,7 +15,9 @@ const signUp = async (
   phoneNumber,
   zipCode,
   address,
-  addressDetails
+  addressDetails,
+  latitude,
+  longitude
 ) => {
   const emailRegx = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
   if (!email.match(emailRegx)) throwError(400, 'INVALID_EMAIL');
@@ -38,6 +40,8 @@ const signUp = async (
     zipCode,
     address,
     addressDetails,
+    latitude,
+    longitude,
     points,
     paymentId,
     price
@@ -66,11 +70,11 @@ const signIn = async (email, password) => {
 
   return {
     accessToken: token,
-    isSeller: !!existingUser.sellerId,
+    isSeller: existingUser.sellerId ? true : [],
     isSubscribe: isPremiumValue,
     points: existingUser.points,
     cartCount: +countCart.quantity ?? 0,
-    isKakao: !!existingUser.kakao,
+    isKakao: existingUser.kakao ? true : [],
   };
 };
 
@@ -80,6 +84,8 @@ const sellerSignUp = async (
   zipCode,
   address,
   addressDetails,
+  latitude,
+  longitude,
   phoneNumber,
   userId
 ) => {
@@ -90,12 +96,16 @@ const sellerSignUp = async (
   const existingSeller = await userDao.findSellerByName(name);
   if (existingSeller) throwError(400, 'INVALID_NAME');
 
+  console.log('userService_셀러정보입력:', latitude, longitude);
+
   await userDao.createSeller(
     name,
     image,
     zipCode,
     address,
     addressDetails,
+    latitude,
+    longitude,
     phoneNumber,
     userId
   );
@@ -166,12 +176,12 @@ const kakaoSignIn = async (code) => {
 
   return {
     accessToken: token,
-    isSeller: !!existingUser.sellerId,
+    isSeller: existingUser.sellerId ? true : [],
     isAddress: !!existingUser.isAddress,
     isSubscribe: isPremiumValue,
     points: existingUser.points,
     cartCount: countCart.quantity,
-    isKakao: !!existingUser.kakao,
+    isKakao: existingUser.kakao ? true : [],
   };
 };
 
@@ -180,9 +190,12 @@ const insertAddress = async (
   zipCode,
   address,
   addressDetails,
+  latitude,
+  longitude,
   userId
 ) => {
   const exisitingUser = await userDao.findUserById(userId);
+  console.log(exisitingUser);
 
   if (exisitingUser.zipCode) throwError(409, 'ALREADY');
   await userDao.insertAddress(
@@ -190,6 +203,8 @@ const insertAddress = async (
     zipCode,
     address,
     addressDetails,
+    latitude,
+    longitude,
     userId
   );
 };

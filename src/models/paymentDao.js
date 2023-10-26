@@ -5,14 +5,13 @@ const createPayment = async (method, totalPrice, shippingMethod, userId) => {
     try {
       const paymentMethod = await transactionManager.query(
         `
-          INSERT INTO payments(
-            method
-          )
-          VALUES (?)
+          SELECT id
+            FROM payments WHERE method=?
+         
         `,
         [method]
       );
-      const paymentId = paymentMethod.insertId;
+      const paymentId = paymentMethod[0].id;
       console.log('paymentId', paymentId);
 
       const ordersresult = await transactionManager.query(
