@@ -177,7 +177,7 @@ const kakaoSignIn = async (code) => {
   return {
     accessToken: token,
     isSeller: existingUser.sellerId ? true : [],
-    isAddress: !!existingUser.isAddress,
+    isAddress: !!existingUser.zipCode,
     isSubscribe: isPremiumValue,
     points: existingUser.points,
     cartCount: countCart.quantity,

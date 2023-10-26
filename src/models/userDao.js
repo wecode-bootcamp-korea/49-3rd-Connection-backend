@@ -234,6 +234,7 @@ const findUserByKakao = async (kakao) => {
   const [user] = await AppDataSource.query(
     `
       SELECT
+        id,
         kakao,
         seller_id AS sellerId,
         zip_code AS zipCode,
