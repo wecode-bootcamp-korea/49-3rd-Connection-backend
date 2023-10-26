@@ -10,6 +10,7 @@ const findUserById = async (id) => {
       users
     WHERE
       id = ?
+    LIMIT 1
     `,
     [id]
   );
@@ -32,6 +33,7 @@ const findUserByEmail = async (email) => {
       users
     WHERE
       email = ?
+    LIMIT 1
     `,
     [email]
   );
@@ -186,9 +188,7 @@ const insertAddress = async (
   zipCode,
   address,
   addressDetails,
-  userId,
-  paymentId,
-  price
+  userId
 ) => {
   await transactionManager.query(
     `
@@ -234,6 +234,7 @@ const findUserByPremiumId = async (userId) => {
         user_premium
       WHERE
         user_id = ?
+      LIMIT 1
     `,
     [userId]
   );
@@ -250,6 +251,7 @@ const findUserBySellerId = async (sellerId) => {
         users
       WHERE 
         seller_id = ?
+      LIMIT 1
     `,
     [sellerId]
   );
@@ -265,7 +267,7 @@ const countCart = async (userId) => {
       FROM
         carts
       WHERE
-        user_id =?
+        user_id = ?
     `,
     [userId]
   );

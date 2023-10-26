@@ -185,6 +185,7 @@ const insertAddress = async (
   const exisitingUser = await userDao.findUserById(userId);
 
   if (exisitingUser.zipCode) throwError(409, 'ALREADY');
+
   await userDao.insertAddress(
     phoneNumber,
     zipCode,
