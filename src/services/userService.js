@@ -67,6 +67,7 @@ const signIn = async (email, password) => {
   const countCart = await userDao.countCart(existingUser.id);
 
   const token = jwt.sign({ id: existingUser.id }, process.env.JWT_SECRET);
+  console.log('토큰큰큰', existingUser.id);
 
   return {
     accessToken: token,
@@ -174,10 +175,12 @@ const kakaoSignIn = async (code) => {
 
   const token = jwt.sign({ id: userId }, process.env.JWT_SECRET);
 
+  console.log(existingUser.zipCode);
+
   return {
     accessToken: token,
     isSeller: existingUser.sellerId ? true : [],
-    isAddress: !!existingUser.isAddress,
+    isAddress: !!existingUser.zipCode,
     isSubscribe: isPremiumValue,
     points: existingUser.points,
     cartCount: countCart.quantity,
@@ -198,6 +201,7 @@ const insertAddress = async (
   console.log(exisitingUser);
 
   if (exisitingUser.zipCode) throwError(409, 'ALREADY');
+
   await userDao.insertAddress(
     phoneNumber,
     zipCode,

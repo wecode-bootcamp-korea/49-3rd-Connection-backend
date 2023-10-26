@@ -17,6 +17,7 @@ exports.verifyToken = (req, res, next) => {
     );
 
     const userId = decoded['id'];
+    console.log(userId);
     req.user = decoded;
     req.userId = userId;
 

@@ -6,7 +6,7 @@ const getSellerCoordinates = async () => {
     id,
     latitude,
     longitude
-    FROM Sellers
+    FROM sellers
     `
   );
   return seller;

@@ -49,7 +49,6 @@ const findSellerByName = async (name) => {
       sellers
     WHERE
       name = ?
-    LIMIT 1
     `,
     [name]
   );
@@ -209,9 +208,7 @@ const insertAddress = async (
   addressDetails,
   latitude,
   longitude,
-  userId,
-  paymentId,
-  price
+  userId
 ) => {
   await AppDataSource.query(
     `
@@ -234,6 +231,7 @@ const findUserByKakao = async (kakao) => {
   const [user] = await AppDataSource.query(
     `
       SELECT
+        id,
         kakao,
         seller_id AS sellerId,
         zip_code AS zipCode,
@@ -242,7 +240,6 @@ const findUserByKakao = async (kakao) => {
         users
       WHERE
         kakao = ?
-      LIMIT 1
     `,
     [kakao]
   );
@@ -290,7 +287,7 @@ const countCart = async (userId) => {
       FROM
         carts
       WHERE
-        user_id =?
+        user_id = ?
     `,
     [userId]
   );
