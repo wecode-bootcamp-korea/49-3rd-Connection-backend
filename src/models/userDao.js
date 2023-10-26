@@ -5,7 +5,8 @@ const findUserById = async (id) => {
     `
     SELECT
       zip_code AS zipCode,
-      seller_id AS sellerId
+      seller_id AS sellerId,
+      points
     FROM
       users
     WHERE
@@ -66,6 +67,8 @@ const createUser = async (
   zipCode,
   address,
   addressDetails,
+  latitude,
+  longitude,
   points,
   paymentId,
   price
@@ -81,9 +84,11 @@ const createUser = async (
           zip_code,
           address,
           address_details,
+          latitude,
+          longitude,
           points
         ) VALUES
-          (?, ?, ?, ?, ?, ?, ?, ?)
+          (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
       [
         name,
@@ -93,6 +98,8 @@ const createUser = async (
         zipCode,
         address,
         addressDetails,
+        latitude,
+        longitude,
         points,
       ]
     );
@@ -117,9 +124,12 @@ const createSeller = async (
   zipCode,
   address,
   addressDetails,
+  latitude,
+  longitude,
   phoneNumber,
   userId
 ) => {
+  console.log('userDao_셀러정보입력:', latitude, longitude);
   await AppDataSource.transaction(async (transactionManager) => {
     const seller = await transactionManager.query(
       `
@@ -129,11 +139,22 @@ const createSeller = async (
           zip_code,
           address,
           address_details,
+          latitude,
+          longitude,
           phone_number
         ) VALUES
-          (?, ?, ?, ?, ?, ?)
+          (?, ?, ?, ?, ?, ?, ?, ?)
       `,
-      [name, image, zipCode, address, addressDetails, phoneNumber]
+      [
+        name,
+        image,
+        zipCode,
+        address,
+        addressDetails,
+        latitude,
+        longitude,
+        phoneNumber,
+      ]
     );
 
     const sellerId = seller.insertId;
@@ -188,20 +209,24 @@ const insertAddress = async (
   zipCode,
   address,
   addressDetails,
+  latitude,
+  longitude,
   userId
 ) => {
-  await transactionManager.query(
+  await AppDataSource.query(
     `
       UPDATE users
       SET
         phone_number = ?,
         zip_code = ?,
         address = ?,
-        address_details = ?
+        address_details = ?,
+        latitude = ?,
+        longitude = ?
       WHERE
         id = ?
     `,
-    [phoneNumber, zipCode, address, addressDetails, userId]
+    [phoneNumber, zipCode, address, addressDetails, latitude, longitude, userId]
   );
 };
 
