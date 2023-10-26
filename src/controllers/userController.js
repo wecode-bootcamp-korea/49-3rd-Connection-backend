@@ -129,6 +129,7 @@ const kakaoSignIn = async (req, res) => {
 const insertAddress = async (req, res) => {
   const userId = req.userId;
 
+  console.log(userId);
   const { phoneNumber, zipCode, address, addressDetails } = req.body;
 
   const geoCode = await getGeoCode(address);

@@ -16,21 +16,22 @@ const getProductId = async (filter) => {
 const getProductAmount = async (filter, userId) => {
   const sellers = await productDao.getSellerCoordinates();
   const user = await productDao.getUserCoordinates(userId);
+
   const userLat = user[0].latitude;
   const userLon = user[0].longitude;
-  console.log(user);
-  console.log(sellers);
+  // console.log(user);
+  // console.log(sellers);
 
   const nearbySellers = sellers.filter((seller) => {
     const sellerLat = seller.latitude;
     const sellerLon = seller.longitude;
 
     const distance = getDistance(userLat, userLon, sellerLat, sellerLon);
-    console.log(distance);
+    // console.log(distance);
     return distance < 5000; // 5km 미만인 경우만 필터링
   });
   const nearbySellerIds = nearbySellers.map((seller) => seller.id);
-  console.log('셀러아이디:', nearbySellerIds);
+  // console.log('셀러아이디:', nearbySellerIds);
 
   let id;
   let whereQuery;
@@ -54,7 +55,7 @@ const getProductDetail = async (id) => {
     item.discountAmount = parseInt(item.discountAmount);
     item.reviewNumbers = parseInt(item.reviewNumbers);
   });
-  console.log('data', data);
+  // console.log('data', data);
   return data;
 };
 
@@ -63,19 +64,19 @@ const getTotalProductByCategoryId = async (userId) => {
   const user = await productDao.getUserCoordinates(userId);
   const userLat = user[0].latitude;
   const userLon = user[0].longitude;
-  console.log(user);
-  console.log(sellers);
+  // console.log('카테고리 유저', user);
+  // console.log('카테고리 유저 아이디', userId);
 
   const nearbySellers = sellers.filter((seller) => {
     const sellerLat = seller.latitude;
     const sellerLon = seller.longitude;
 
     const distance = getDistance(userLat, userLon, sellerLat, sellerLon);
-    console.log(distance);
+    // console.log(distance);
     return distance < 5000; // 5km 미만인 경우만 필터링
   });
   const nearbySellerIds = nearbySellers.map((seller) => seller.id);
-  console.log('셀러아이디:', nearbySellerIds);
+  // console.log('셀러아이디:', nearbySellerIds);
 
   const categoryIds = await productDao.getTotalCategoryId();
   const categoryId = categoryIds.map((item) => item.id);
@@ -83,7 +84,7 @@ const getTotalProductByCategoryId = async (userId) => {
   let result = await Promise.all(
     categoryId.map(async (categoryId) => {
       const joinQuery = await builder.joinQuery();
-      console.log('조인쿼리 콘솔!', joinQuery);
+      // console.log('조인쿼리 콘솔!', joinQuery);
       const whereQuery = await builder.whereQueryWithCategory(categoryId);
       const product = await productDao.getProducts(
         joinQuery,
@@ -115,19 +116,19 @@ const getProductRandomSellerId = async (userId) => {
   const user = await productDao.getUserCoordinates(userId);
   const userLat = user[0].latitude;
   const userLon = user[0].longitude;
-  console.log(user);
-  console.log(sellers);
+  // console.log('카테고리 셀러', user);
+  // console.log('카테고리 셀러 아이디', userId);
 
   const nearbySellers = sellers.filter((seller) => {
     const sellerLat = seller.latitude;
     const sellerLon = seller.longitude;
 
     const distance = getDistance(userLat, userLon, sellerLat, sellerLon);
-    console.log(distance);
+    // console.log(distance);
     return distance < 5000; // 5km 미만인 경우만 필터링
   });
   const nearbySellerIds = nearbySellers.map((seller) => seller.id);
-  console.log('셀러아이디:', nearbySellerIds);
+  // console.log('셀러아이디:', nearbySellerIds);
 
   const sellerIds = await productDao.getRandomSellerId(nearbySellerIds);
 
@@ -159,7 +160,7 @@ const getProductRandomSellerId = async (userId) => {
 const getNameById = async (filter) => {
   let name;
   let result;
-  console.log(filter);
+  // console.log(filter);
   if (filter.seller == 0) {
     name = await productDao.getCategoryNameById(filter.category);
     result = name[0].category_name;
@@ -167,8 +168,8 @@ const getNameById = async (filter) => {
     name = await productDao.getSellerNameById(filter.seller);
     result = name[0].name;
   }
-  console.log(name[0].category_name);
-  console.log(name);
+  // console.log(name[0].category_name);
+  // console.log(name);
   return result;
 };
 
@@ -177,20 +178,20 @@ const getProducts = async (filter, sort, limit, offset, userId) => {
   const user = await productDao.getUserCoordinates(userId);
   const userLat = user[0].latitude;
   const userLon = user[0].longitude;
-  console.log(user);
-  console.log(sellers);
+  // console.log(user);
+  // console.log(sellers);
 
   const nearbySellers = sellers.filter((seller) => {
     const sellerLat = seller.latitude;
     const sellerLon = seller.longitude;
 
     const distance = getDistance(userLat, userLon, sellerLat, sellerLon);
-    console.log(distance);
+    // console.log(distance);
     return distance < 5000; // 5km 미만인 경우만 필터링
   });
   const nearbySellerIds = nearbySellers.map((seller) => seller.id);
 
-  console.log(filter);
+  // console.log(filter);
 
   let whereQuery;
   if (filter.category) {
@@ -202,7 +203,7 @@ const getProducts = async (filter, sort, limit, offset, userId) => {
   const orderingQuery = await builder.ordering(sort);
   const joinQuery = await builder.joinQuery();
   const limitOffsetQuery = await builder.limitOffsetQuery(limit, offset);
-  console.log('셀러아이디:', nearbySellerIds);
+  // console.log('셀러아이디:', nearbySellerIds);
   let data = await productDao.getProducts(
     joinQuery,
     whereQuery,
