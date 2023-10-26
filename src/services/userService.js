@@ -66,11 +66,11 @@ const signIn = async (email, password) => {
 
   return {
     accessToken: token,
-    isSeller: !!existingUser.sellerId,
+    isSeller: existingUser.sellerId ? true : [],
     isSubscribe: isPremiumValue,
     points: existingUser.points,
     cartCount: +countCart.quantity ?? 0,
-    isKakao: !!existingUser.kakao,
+    isKakao: existingUser.kakao ? true : [],
   };
 };
 
