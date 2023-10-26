@@ -21,12 +21,12 @@ const getPayment = async (req, res) => {
     const getpaymentValid = await paymentService.createPayment(imp_uid, userId);
     const cart = await paymentService.updateCart(userId, products, course);
 
-    console.log(cart);
+    const quantityInCart = cart && cart.quantity !== null ? cart.quantity : 0;
 
     if (getpaymentValid) {
       res
         .status(200)
-        .json({ message: 'PAYMENT_SUCCESS', cartQuantity: cart.quantity });
+        .json({ message: 'PAYMENT_SUCCESS', cartQuantity: quantityInCart });
     }
   } catch (error) {
     console.error();
