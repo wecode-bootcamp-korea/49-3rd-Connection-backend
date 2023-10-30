@@ -112,7 +112,7 @@ const sellerSignUp = async (
   );
 };
 
-const kakaoSignIn = async (code) => {
+const kakaoSignIn = async (code) => { 
   let kakaoToken;
 
   const queryString = `grant_type=authorization_code&client_id=${process.env.KAKAO_CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}&code=${code}`;

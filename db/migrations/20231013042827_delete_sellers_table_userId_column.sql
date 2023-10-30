@@ -1,6 +1,6 @@
 -- migrate:up
-ALTER TABLE `sellers` DROP FOREIGN KEY `sellers_ibfk_1`;
-ALTER TABLE sellers DROP COLUMN user_id;
+  ALTER TABLE `sellers` DROP FOREIGN KEY `sellers_ibfk_1`;
+  ALTER TABLE sellers DROP COLUMN user_id;
 
 -- migrate:down
 
