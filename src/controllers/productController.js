@@ -2,10 +2,13 @@ const { productService } = require('../services');
 
 const getCategoryProduct = async (req, res) => {
   try {
-    const result = await productService.getTotalProductByCategoryId();
+    const userId = req.userId;
+    const result = await productService.getTotalProductByCategoryId(userId);
+
+    console.log(result);
 
     return res.status(200).json({
-      message: 'Success',
+      message: 'SUCCESS',
       data: result,
     });
   } catch (error) {
@@ -16,10 +19,13 @@ const getCategoryProduct = async (req, res) => {
 
 const getSellerProduct = async (req, res) => {
   try {
-    const result = await productService.getProductRandomSellerId();
+    const userId = req.userId;
+    const result = await productService.getProductRandomSellerId(userId);
+
+    console.log(result);
 
     return res.status(200).json({
-      message: 'Success',
+      message: 'SUCCESS',
       data: result,
     });
   } catch (error) {
@@ -30,6 +36,7 @@ const getSellerProduct = async (req, res) => {
 
 const getProducts = async (req, res) => {
   try {
+    const userId = req.userId;
     const {
       sort = 'rating',
       limit = 12,
@@ -40,12 +47,18 @@ const getProducts = async (req, res) => {
 
     const filter = { category: categoryId, seller: sellerId };
 
-    const data = await productService.getProducts(filter, sort, limit, offset);
+    const data = await productService.getProducts(
+      filter,
+      sort,
+      limit,
+      offset,
+      userId
+    );
     const name = await productService.getNameById(filter);
-    const quantity = await productService.getProductAmount(filter);
+    const quantity = await productService.getProductAmount(filter, userId);
     const id = await productService.getProductId(filter);
     return res.status(200).json({
-      message: 'Success',
+      message: 'SUCCESS',
       name,
       id,
       data: data,
@@ -62,7 +75,7 @@ const getProductDetail = async (req, res) => {
     const data = await productService.getProductDetail(id);
 
     return res.status(200).json({
-      message: 'Success',
+      message: 'SUCCESS',
       product: data,
     });
   } catch (error) {

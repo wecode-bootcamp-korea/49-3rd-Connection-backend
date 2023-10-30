@@ -15,7 +15,9 @@ const signUp = async (
   phoneNumber,
   zipCode,
   address,
-  addressDetails
+  addressDetails,
+  latitude,
+  longitude
 ) => {
   const emailRegx = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
   if (!email.match(emailRegx)) throwError(400, 'INVALID_EMAIL');
@@ -38,6 +40,8 @@ const signUp = async (
     zipCode,
     address,
     addressDetails,
+    latitude,
+    longitude,
     points,
     paymentId,
     price
@@ -63,14 +67,15 @@ const signIn = async (email, password) => {
   const countCart = await userDao.countCart(existingUser.id);
 
   const token = jwt.sign({ id: existingUser.id }, process.env.JWT_SECRET);
+  console.log('토큰큰큰', existingUser.id);
 
   return {
     accessToken: token,
-    isSeller: !!existingUser.sellerId,
+    isSeller: existingUser.sellerId ? true : [],
     isSubscribe: isPremiumValue,
     points: existingUser.points,
     cartCount: +countCart.quantity ?? 0,
-    isKakao: !!existingUser.kakao,
+    isKakao: existingUser.kakao ? true : [],
   };
 };
 
@@ -80,6 +85,8 @@ const sellerSignUp = async (
   zipCode,
   address,
   addressDetails,
+  latitude,
+  longitude,
   phoneNumber,
   userId
 ) => {
@@ -90,18 +97,22 @@ const sellerSignUp = async (
   const existingSeller = await userDao.findSellerByName(name);
   if (existingSeller) throwError(400, 'INVALID_NAME');
 
+  console.log('userService_셀러정보입력:', latitude, longitude);
+
   await userDao.createSeller(
     name,
     image,
     zipCode,
     address,
     addressDetails,
+    latitude,
+    longitude,
     phoneNumber,
     userId
   );
 };
 
-const kakaoSignIn = async (code) => {
+const kakaoSignIn = async (code) => { 
   let kakaoToken;
 
   const queryString = `grant_type=authorization_code&client_id=${process.env.KAKAO_CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}&code=${code}`;
@@ -164,14 +175,16 @@ const kakaoSignIn = async (code) => {
 
   const token = jwt.sign({ id: userId }, process.env.JWT_SECRET);
 
+  console.log(existingUser.zipCode);
+
   return {
     accessToken: token,
-    isSeller: !!existingUser.sellerId,
-    isAddress: !!existingUser.isAddress,
+    isSeller: existingUser.sellerId ? true : [],
+    isAddress: !!existingUser.zipCode,
     isSubscribe: isPremiumValue,
     points: existingUser.points,
     cartCount: countCart.quantity,
-    isKakao: !!existingUser.kakao,
+    isKakao: existingUser.kakao ? true : [],
   };
 };
 
@@ -180,16 +193,22 @@ const insertAddress = async (
   zipCode,
   address,
   addressDetails,
+  latitude,
+  longitude,
   userId
 ) => {
   const exisitingUser = await userDao.findUserById(userId);
+  console.log(exisitingUser);
 
   if (exisitingUser.zipCode) throwError(409, 'ALREADY');
+
   await userDao.insertAddress(
     phoneNumber,
     zipCode,
     address,
     addressDetails,
+    latitude,
+    longitude,
     userId
   );
 };

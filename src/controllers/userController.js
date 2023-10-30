@@ -1,5 +1,6 @@
 const { userService } = require('../services');
 const { keyCheck } = require('../utils/keyCheck');
+const { getGeoCode } = require('../utils/AddressConverter');
 
 const signUp = async (req, res) => {
   const {
@@ -11,6 +12,15 @@ const signUp = async (req, res) => {
     address,
     addressDetails,
   } = req.body;
+
+  const userAddress = address;
+  console.log(userAddress);
+
+  const geoCode = await getGeoCode(userAddress);
+  console.log(geoCode);
+
+  const latitude = geoCode.latitude;
+  const longitude = geoCode.longitude;
 
   keyCheck({
     name,
@@ -29,7 +39,9 @@ const signUp = async (req, res) => {
     phoneNumber,
     zipCode,
     address,
-    addressDetails
+    addressDetails,
+    latitude,
+    longitude
   );
 
   res.status(200).json({
@@ -72,6 +84,11 @@ const sellerSignUp = async (req, res) => {
     req.body.seller
   );
 
+  const userAddress = address;
+  const geoCode = await getGeoCode(userAddress);
+  const latitude = geoCode.latitude;
+  const longitude = geoCode.longitude;
+
   keyCheck({
     name,
     image,
@@ -87,6 +104,8 @@ const sellerSignUp = async (req, res) => {
     zipCode,
     address,
     addressDetails,
+    latitude,
+    longitude,
     phoneNumber,
     userId
   );
@@ -110,7 +129,12 @@ const kakaoSignIn = async (req, res) => {
 const insertAddress = async (req, res) => {
   const userId = req.userId;
 
+  console.log(userId);
   const { phoneNumber, zipCode, address, addressDetails } = req.body;
+
+  const geoCode = await getGeoCode(address);
+  const latitude = geoCode.latitude;
+  const longitude = geoCode.longitude;
 
   keyCheck({
     phoneNumber,
@@ -124,6 +148,8 @@ const insertAddress = async (req, res) => {
     zipCode,
     address,
     addressDetails,
+    latitude,
+    longitude,
     userId
   );
 
